@@ -1,0 +1,187 @@
+/* ===== Buttons ===== */
+.u-btn {
+  --_pad-y: var(--space-3);
+  --_pad-x: var(--space-5);
+  --_radius: var(--radius-md);
+  --_fs: var(--fs-16);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--_pad-y) var(--_pad-x);
+  border-radius: var(--_radius);
+  border: 1px solid transparent;
+  font-size: var(--_fs);
+  line-height: var(--lh-normal);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--dur-2) var(--easing-std), opacity var(--dur-1) var(--easing-std),
+    transform var(--dur-1) var(--easing-std), border-color var(--dur-1) var(--easing-std);
+  user-select: none;
+}
+
+.u-btn--block {
+  width: 100%;
+}
+
+.u-btn__icon {
+  display: inline-flex;
+}
+.u-btn__icon--right {
+  margin-inline-start: var(--space-1);
+}
+
+/* sizes */
+.u-btn--sm {
+  --_pad-y: 0.5rem;
+  --_pad-x: 0.875rem;
+  --_fs: var(--fs-14);
+  --_radius: var(--radius-sm);
+}
+.u-btn--md {
+  /* defaults */
+}
+.u-btn--lg {
+  --_pad-y: var(--space-4);
+  --_pad-x: var(--space-6);
+  --_fs: var(--fs-18);
+  --_radius: var(--radius-lg);
+}
+
+/* variants */
+.u-btn--primary {
+  background: linear-gradient(180deg, var(--color-accent-700), var(--color-accent-600));
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.u-btn--primary:hover {
+  transform: translateY(-1px);
+}
+.u-btn--primary:active {
+  transform: translateY(0);
+}
+
+.u-btn--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+.u-btn--ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.u-btn--outline {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--chip-border);
+}
+
+/* focus ring */
+.u-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 6px #3654ff;
+}
+
+/* disabled */
+.u-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ===== IconButton ===== */
+.u-iconbtn {
+  --_size: 2.5rem;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-ink);
+  transition: background var(--dur-1) var(--easing-std), transform var(--dur-1) var(--easing-std);
+}
+.u-iconbtn--sm {
+  --_size: 2rem;
+}
+.u-iconbtn--md {
+  --_size: 2.5rem;
+}
+.u-iconbtn--lg {
+  --_size: 3rem;
+}
+
+.u-iconbtn--primary {
+  background: linear-gradient(180deg, var(--color-accent-700), var(--color-accent-600));
+  color: #fff;
+}
+.u-iconbtn--ghost:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.u-iconbtn--outline {
+  border-color: var(--chip-border);
+}
+
+.u-iconbtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 6px #3654ff;
+}
+
+/* ===== Chip ===== */
+.u-chip {
+  --_pad-y: 0.5rem;
+  --_pad-x: 0.875rem;
+  --_radius: var(--radius-sm);
+  --_fs: var(--fs-14);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5ch;
+  padding: var(--_pad-y) var(--_pad-x);
+  border-radius: var(--_radius);
+  border: 1px solid var(--chip-border);
+  background: #fff;
+  color: var(--color-ink);
+  font-size: var(--_fs);
+  line-height: var(--lh-normal);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur-1) var(--easing-std), border-color var(--dur-1) var(--easing-std),
+    color var(--dur-1) var(--easing-std);
+}
+
+.u-chip--sm {
+  --_pad-y: 0.4rem;
+  --_pad-x: 0.75rem;
+  --_fs: var(--fs-12);
+}
+.u-chip--md {
+  /* defaults */
+}
+
+.u-chip--soft {
+  background: rgba(22, 50, 205, 0.06);
+  border-color: rgba(22, 50, 205, 0.18);
+}
+.u-chip--outline {
+  background: transparent;
+}
+
+.u-chip.is-selected,
+.u-chip[data-selected] {
+  background: linear-gradient(180deg, var(--color-accent-700), var(--color-accent-600));
+  color: #fff;
+  border-color: transparent;
+}
+
+.u-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.u-chip:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-chip);
+}

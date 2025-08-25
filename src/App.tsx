@@ -9,6 +9,10 @@ import Chips from "./app/Chips";
 import "./styles/chips.css";
 import VoiceIcon from "./assets/voice.svg?react";
 
+import Button from "./components/Button";
+import IconButton from "./components/IconButton";
+import Chip from "./components/Chip";
+
 type View = "chips" | "typing" | "answer";
 const CHIP_ITEMS = ["Product", "Information", "Support", "Brand assets", "Consultation", "Dresses for summer"];
 
@@ -66,7 +70,7 @@ export default function App() {
     }
 
     const vv = window.visualViewport || null;
-    const THRESHOLD = 240; 
+    const THRESHOLD = 240;
 
     let baseHeight = 0;
     const currentVVH = () => (vv ? vv.height : window.innerHeight);
@@ -204,6 +208,21 @@ export default function App() {
   return (
     <div className="app-shell">
       <Background />
+
+      {/* DEV: playground – matomas tik developmente ir kai modalas uždarytas */}
+      {import.meta.env.DEV && !open && (
+        <div style={{ padding: "1rem", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <Button>Primary</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+          <IconButton label="Close">
+            {/* jei tavo failai yra public/img → naudok /img/close.svg; jei public šaknyje → /close.svg */}
+            <img src="/img/close.svg" alt="" />
+          </IconButton>
+          <Chip>Consultation</Chip>
+          <Chip selected>Order status</Chip>
+        </div>
+      )}
 
       {!open && (
         <AiButton

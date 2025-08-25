@@ -1,14 +1,17 @@
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap");
 @import "./styles/tokens.css";
+@import "./styles/ui.css";
 
 html,
 body,
 #root {
   height: 100%;
 }
+
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -20,6 +23,7 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
 button {
   font-family: inherit;
 }
