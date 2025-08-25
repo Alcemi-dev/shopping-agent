@@ -1,0 +1,724 @@
+/* ========== Variables (desktop defaults) ========== */
+:root {
+  --modal-w-desktop: 1330px;
+  --modal-h-desktop: 780px;
+
+  --text-on-dark: #fff;
+  --border-soft: rgba(255, 255, 255, 0.45);
+
+  --chip-ring: 0 0 0 2px #ffffff, 0 0 0 6px #3654ff;
+
+  --edge-min: 24px;
+  --edge-max: 64px;
+  --edge: clamp(var(--edge-min), 6vw, var(--edge-max));
+}
+
+/* ========== Root & Backdrop ========== */
+.modal-root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+}
+.modal-root.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-root.closing {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.modal-root.open .backdrop {
+  opacity: 1;
+}
+
+/* ========== Card (desktop-first) ========== */
+.modal-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(520px, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
+  height: var(--modal-h-desktop);
+  color: var(--text-on-dark);
+  border-radius: 28px;
+  border: 1px solid var(--border-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 30px 80px rgba(0, 0, 0, 0.45);
+  display: flex;
+  overflow: hidden;
+  background: #02092e url("/img/background-gradient-desktop.svg") center / cover no-repeat;
+}
+
+/* ========== Inner container ========== */
+.modal-ctr {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ========== Central column (H1 + chips + children) ========== */
+.modal-col {
+  width: 100%;
+  max-width: 480px;
+  margin: 140px auto 0; /* DESKTOP: distance from top */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 48px; /* DESKTOP: spacing between H1/chips/body */
+  overflow: visible;
+}
+
+/* ========== Nav ========== */
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 24px;
+  position: relative;
+}
+.icon-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.icon-btn img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.icon-btn:hover {
+  opacity: 0.9;
+}
+.icon-btn:focus-visible {
+  outline: 2px solid #8ab4ff;
+  outline-offset: 2px;
+}
+
+.head-logo-mobile {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.head-logo-mobile img {
+  height: 24px;
+  width: auto;
+  display: block;
+}
+.head-back {
+  display: inline-grid;
+}
+.head-spacer {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 481px) {
+  .modal-head {
+    padding: 18px 24px;
+  }
+  .head-back {
+    display: inline-grid !important;
+  }
+  .modal-head .head-logo-mobile {
+    display: none !important;
+  }
+}
+@media (max-width: 480px) {
+  .modal-head {
+    padding: 16px var(--gutter);
+  }
+  .head-logo-mobile {
+    display: inline-block !important;
+  }
+  .head-back {
+    display: none !important;
+  }
+}
+
+/* ========== Title ========== */
+.modal-title {
+  margin: 0;
+  text-align: center;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 400;
+  font-size: 30px; /* DESKTOP H1 size */
+  line-height: 1.2;
+  color: #fcfcfc;
+}
+.break--desktop {
+  display: inline;
+}
+.break--mobile {
+  display: none;
+}
+@media (max-width: 480px) {
+  .break--desktop {
+    display: none;
+  }
+  .break--mobile {
+    display: inline;
+  }
+}
+
+/* ========== Body ========== */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 0;
+}
+
+/* ========== Chips (desktop) ========== */
+.suggestions {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 47px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.06s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.chip:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #d9d9d9;
+}
+.chip:active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: transparent;
+  box-shadow: none;
+}
+.chip:focus-visible,
+.chip:focus:not(:active) {
+  box-shadow: var(--chip-ring);
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ========== Input bubble (desktop) ========== */
+.input-wrap {
+  width: 480px;
+  min-height: 120px;
+  max-height: 200px;
+  display: grid;
+  grid-template-columns: 1fr 44px;
+  align-items: end;
+  gap: 12px;
+  padding: 16px;
+  margin: 0;
+  border-radius: 10px;
+  background: #dee3ff;
+  border: 1px solid #fcfcfc;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  transition: box-shadow 0.18s ease, border-color 0.12s ease;
+  position: relative;
+  overflow: hidden;
+}
+.input-wrap::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 14px;
+  height: 40px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  background: linear-gradient(to bottom, rgba(222, 227, 255, 1), rgba(222, 227, 255, 0));
+}
+.input-wrap::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 72px;
+  bottom: 10px;
+  height: 40px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  background: linear-gradient(to top, rgba(222, 227, 255, 1), rgba(222, 227, 255, 0));
+}
+.input-wrap.has-overflow.scrolled::after {
+  opacity: 1;
+}
+.input-wrap.has-overflow.has-more-below::before {
+  opacity: 1;
+}
+
+.input-wrap:focus-within {
+  border-width: 2px;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.input-field {
+  box-sizing: border-box;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  resize: none;
+  width: 100%;
+  min-height: 88px;
+  max-height: 168px;
+  line-height: 1.5;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #444e85;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.input-field::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.input-field:focus,
+.input-field:not(:placeholder-shown) {
+  color: #0a1444;
+}
+.input-field::placeholder {
+  color: #444e85;
+  opacity: 0.9;
+}
+
+.input-action {
+  appearance: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: linear-gradient(180deg, #0a186a, #142fd0);
+  box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.input-action:hover {
+  box-shadow: 0 0 14px rgba(20, 47, 208, 0.45);
+}
+.input-action:active {
+  transform: none;
+}
+.input-action svg {
+  width: 30px;
+  height: 30px;
+}
+.input-action svg rect {
+  display: none;
+}
+
+/* ========== Dock (desktop) ========== */
+.input-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 56px;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+}
+.input-dock .input-wrap {
+  pointer-events: auto;
+}
+
+/* ========== Answer mode ========== */
+.modal-col.is-answer {
+  margin: 0 auto;
+  gap: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.modal-col.is-answer .modal-body {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+.answer-center {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.answer-bubble {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e7e9f2;
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  max-width: min(560px, 90%);
+}
+
+/* ========== Footer ========== */
+.modal-footer {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.powered-by {
+  height: 25px;
+  width: 61px;
+  opacity: 0.9;
+  display: block;
+}
+
+/* ================  MOBILE (≤480px) ==================== */
+
+@media (max-width: 480px) {
+  /* ----- Mobile knobs ----- */
+  :root {
+    --gutter: 28px;
+
+    /* INPUT DOCK SPACING (below the input bubble) */
+    --dock-gap-closed: var(--gutter); /* keyboard CLOSED  → bottom padding */
+    --dock-gap-open: 16px; /* keyboard OPEN    → bottom padding */
+
+    /* Measured by JS via --dock-h (fallback 112px) */
+    --dock-h: 112px;
+  }
+
+  /* Layout resets */
+  .modal-root {
+    justify-content: initial !important;
+    align-items: initial !important;
+  }
+
+  /* Full-viewport card; dvh support when available */
+  .modal-card {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100svh !important; /* fallback */
+    transform: none !important;
+    margin: 0 !important;
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    overflow: hidden;
+    background: #02092e url("/img/background-gradient-mobile.svg") center / cover no-repeat;
+  }
+  @supports (height: 100dvh) {
+    .modal-card {
+      height: 100dvh !important;
+    }
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .modal-ctr {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+    min-height: 0; /* allow inner scroll */
+  }
+
+  /* ----- MOBILE: H1 + chips vertical stack position (TOP) ----- */
+  /* KNOB: change margin (first value) to move the stack up/down */
+  .modal-col {
+    width: 100% !important;
+    max-width: none !important;
+    margin: clamp(48px, 26dvh, 250px) auto 0 !important; /* ↑ move closer/farther from top */
+    gap: 28px !important; /* spacing between H1 and chips */
+    align-items: stretch;
+    flex: 1 1 auto;
+    overflow: visible;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .modal-col.is-answer .modal-body {
+    padding: 0 var(--gutter) calc(12px + var(--dock-h) + var(--dock-gap-closed) + env(safe-area-inset-bottom, 0));
+  }
+
+  /* MOBILE H1 */
+  .modal-title {
+    width: 286px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 28px; /* KNOB: mobile H1 size (when keyboard CLOSED) */
+    line-height: 1.2;
+  }
+
+  /* Single scroll container + reserved space for input dock */
+  .modal-body {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    height: 100%;
+    padding: 0 var(--gutter) calc(12px + var(--dock-h) + var(--dock-gap-closed) + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Chips — single row with horizontal scroll */
+  .suggestions {
+    margin: 0;
+    display: flex !important;
+    padding-top: 6px; /* KNOB: mobile chips vertical padding */
+    padding-bottom: 6px; /* KNOB: mobile chips vertical padding */
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px; /* KNOB: horizontal gap between chips */
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    white-space: nowrap;
+  }
+  .suggestions::-webkit-scrollbar {
+    display: none;
+  }
+  .suggestions > * {
+    flex: 0 0 auto;
+  }
+
+  /* Chip “pill” look (mobile keeps desktop visuals) */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 47px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.06s ease;
+  }
+  .chip:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #d9d9d9;
+  }
+  .chip:active {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: transparent;
+  }
+  .chip:focus-visible,
+  .chip:focus:not(:active) {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 6px #3654ff;
+  }
+
+  /* Input dock pinned to the visible viewport bottom */
+  .input-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: env(safe-area-inset-bottom, 0);
+    z-index: 3;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    padding: 0 var(--gutter) var(--dock-gap-closed); /* KNOB: closed keyboard bottom gap */
+    background: none;
+  }
+  .input-dock .input-wrap {
+    pointer-events: auto;
+  }
+
+  .input-wrap {
+    width: 334px;
+    min-height: 96px;
+    max-height: 168px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 32px;
+    align-items: end;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #dee3ff;
+    border: 1px solid #fcfcfc;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+  }
+
+  .input-field {
+    min-height: 64px;
+    max-height: 136px;
+    overflow-y: auto;
+    font-size: 16px; /* prevent iOS auto-zoom */
+    background: transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .input-action {
+    margin-left: 0;
+  }
+
+  .input-wrap::before,
+  .input-wrap::after {
+    display: none !important;
+  }
+
+  .answer-bubble {
+    margin-bottom: calc(12px + var(--dock-h) + var(--dock-gap-closed));
+  }
+
+  .modal-footer {
+    display: none !important;
+  }
+
+  /* ===== Keyboard-open overrides (place at end of mobile block) ===== */
+
+  /* Reduce header padding to pull stack closer to top when keyboard is open */
+  html.kb-open .modal-root.open .modal-head {
+    padding: 6px var(--gutter) 4px !important;
+  }
+
+  /* TRUE lift: override vertical stack top margin (move H1+chips up) */
+  /* KNOB: tweak first value (e.g., 0–20px) for how close to navbar */
+  html.kb-open .modal-root.open .modal-ctr .modal-col {
+    margin: 20px auto 0 !important;
+    gap: 18px !important; /* spacing between H1 and chips while keyboard open */
+  }
+
+  /* Chips: slightly tighter vertical padding while keyboard is open */
+  html.kb-open .modal-root.open .suggestions {
+    padding-block: 4px !important;
+    margin-top: 6px !important; /* chips sit a bit lower than H1 (4–8px) */
+  }
+
+  /* Increase bottom reserve above keyboard (uses measured --dock-h) */
+  html.kb-open .modal-root.open .input-dock {
+    padding-bottom: calc(var(--dock-gap-open) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  html.kb-open .modal-root.open .modal-body {
+    padding-bottom: calc(12px + var(--dock-h) + var(--dock-gap-open) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  html.kb-open .modal-root.open .answer-bubble {
+    margin-bottom: calc(12px + var(--dock-h) + var(--dock-gap-open)) !important;
+  }
+
+  /* Slightly shrink the H1 while keyboard is open */
+  html.kb-open .modal-root.open #modal-title,
+  html.kb-open .modal-root.open .modal-title {
+    font-size: 27px !important; /* was 28px */
+    line-height: 1.2;
+  }
+
+  /* Smooth keyboard-open/close transitions */
+  .modal-root.open .modal-ctr .modal-col,
+  .modal-root.open .modal-head,
+  .modal-root.open .suggestions,
+  .modal-root.open .input-dock,
+  .modal-root.open .modal-body,
+  .modal-root.open .modal-title {
+    transition: margin 160ms ease, margin-top 160ms ease, padding 160ms ease, padding-bottom 160ms ease,
+      bottom 160ms ease, font-size 120ms ease;
+  }
+
+  /* Tiny perf hints for fixed element + layout changes */
+  .input-dock {
+    will-change: bottom, padding-bottom;
+    transform: translateZ(0);
+  }
+  .modal-col {
+    will-change: margin;
+  }
+  .modal-head {
+    will-change: padding;
+  }
+  .suggestions {
+    will-change: padding;
+  }
+
+  /* Respect reduced motion (mobile scope) */
+  @media (prefers-reduced-motion: reduce) {
+    .modal-root.open .modal-ctr .modal-col,
+    .modal-root.open .modal-head,
+    .modal-root.open .suggestions,
+    .modal-root.open .input-dock,
+    .modal-root.open .modal-body,
+    .modal-root.open .modal-title {
+      transition: none !important;
+    }
+  }
+}
+
+/* ========== Reduced motion (global) ========== */
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    transition: none !important;
+  }
+}

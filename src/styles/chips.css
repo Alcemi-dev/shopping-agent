@@ -1,0 +1,39 @@
+/* horizontalus scroll – tik už modalo konteksto */
+.chips-inline {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 4px;
+  scrollbar-width: none;
+}
+.chips-inline::-webkit-scrollbar {
+  display: none;
+}
+
+/* CHIPS tik šioje inline juostoje */
+.chips-inline .chip {
+  height: 47px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--chip-border);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fcfcfc;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chips-inline .chip:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.chips-inline .chip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 6px #3654ff, 0 0 0 8px #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: transparent;
+}
+.chips-inline .chip[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: transparent;
+}

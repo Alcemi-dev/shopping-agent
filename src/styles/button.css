@@ -1,0 +1,41 @@
+.ai-fab {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  /* vietoj top: ... -> kotvuojam prie apačios + safe area */
+  bottom: max(70px, calc(env(safe-area-inset-bottom, 0) + 20px));
+  /* senų Safari fallback (nebūtina, bet saugu) */
+  bottom: max(70px, calc(constant(safe-area-inset-bottom, 0) + 20px));
+
+  height: 48px;
+  padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 30px;
+  border: none;
+  background: var(--brand-blue);
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  box-shadow: 0 0 30px 1px var(--elev-50);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+
+  z-index: 1002;
+}
+
+.ai-fab:hover {
+  background: #2d46d9;
+  box-shadow: 0 0 35px 3px var(--elev-50);
+}
+
+.ai-fab__label {
+  line-height: 1;
+}
+
+.ai-fab__icon img {
+  display: block;
+  width: 18.33px;
+  height: 19.24px;
+}

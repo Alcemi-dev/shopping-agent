@@ -1,0 +1,20 @@
+.bg-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: url("/img/eshop-mobile.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 100% 100%;
+}
+
+@media (min-width: 800px) {
+  .bg-wrap {
+    background-image: url("/img/eshop-desktop.png");
+  }
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+}

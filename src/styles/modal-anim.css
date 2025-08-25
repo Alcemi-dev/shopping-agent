@@ -1,0 +1,34 @@
+@media (prefers-reduced-motion: no-preference) {
+  /* OPEN (grow kortelė + bendras turinio fade) */
+  .modal-root.open .modal-card {
+    transform-origin: 50% 85%;
+    animation: modal-grow 0.35s ease forwards;
+  }
+
+  /* H1 + chips + input pasirodo kartu */
+  .modal-root.open .modal-col,
+  .modal-root.open .input-dock {
+    opacity: 0;
+    animation: fade-in 0.25s ease 0.12s forwards;
+  }
+}
+
+/* Tik atidarymui reikalingi keyframes */
+@keyframes modal-grow {
+  from {
+    transform: translate(-50%, -50%) scale(0.86);
+    border-radius: 30px;
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 20px;
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}

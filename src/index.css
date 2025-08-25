@@ -1,0 +1,33 @@
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap");
+
+:root {
+  font-family: "Satoshi", "Inter", sans-serif;
+  --brand-blue: #1632cd;
+  --modal-bg: #02092e;
+  --text-on-dark: #fcfcfc;
+  --chip-border: #d9d9d9;
+  --elev-50: rgba(242, 244, 252, 0.5);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Satoshi", Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #000;
+  color: #111;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font-family: inherit;
+}
