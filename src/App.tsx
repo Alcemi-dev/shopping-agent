@@ -13,7 +13,6 @@ import InputBubble from "./components/InputBubble";
 import "./styles/layout.css";
 import "./styles/button.css";
 import "./styles/chips.css";
-import VoiceIcon from "./assets/voice.svg";
 
 type View = "chips" | "typing" | "answer";
 const CHIP_ITEMS = ["Product", "Information", "Support", "Brand assets", "Consultation", "Dresses for summer"];
@@ -27,19 +26,6 @@ export default function App() {
   const taRef = useRef<HTMLTextAreaElement>(null);
   const dockRef = useRef<HTMLDivElement>(null);
   const MAX_H = 136;
-
-  function updateFade(el: HTMLTextAreaElement) {
-    const wrap = el.closest(".input-wrap") as HTMLElement | null;
-    if (!wrap) return;
-
-    const hasOverflow = el.scrollHeight > el.clientHeight + 0.5;
-    const atTop = el.scrollTop <= 0;
-    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 0.5;
-
-    wrap.classList.toggle("has-overflow", hasOverflow);
-    wrap.classList.toggle("scrolled", !atTop);
-    wrap.classList.toggle("has-more-below", !atBottom);
-  }
 
   function autoresize(el: HTMLTextAreaElement) {
     el.style.height = "auto";
