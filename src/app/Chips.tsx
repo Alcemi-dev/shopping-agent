@@ -25,7 +25,7 @@ export default function Chips({ items, onPick }: Props) {
   return (
     <div
       ref={wrapRef}
-      className="suggestions"
+      className="chips-inline"
       role="list"
       tabIndex={0}
       onKeyDown={(e) => {

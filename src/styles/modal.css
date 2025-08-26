@@ -1,22 +1,29 @@
-/* ========== Variables (desktop defaults) ========== */
+/* ---- Knobs (mobile defaults) ---- */
 :root {
-  --modal-w-desktop: 1330px;
-  --modal-h-desktop: 780px;
+  /* spacing */
+  --gutter: 1.75rem; /* 28px */
 
-  --text-on-dark: #fff;
+  /* keyboard dock spacing */
+  --dock-gap-closed: var(--gutter);
+  --dock-gap-open: 1rem; /* 16px */
 
-  --edge-min: 24px;
-  --edge-max: 64px;
+  /* measured by JS; fallback */
+  --dock-h: 7rem; /* 112px */
+
+  /* desktop geometry knobs (naudojami tik @media ≥481px) */
+  --edge-min: 1.5rem; /* 24px */
+  --edge-max: 4rem; /* 64px */
   --edge: clamp(var(--edge-min), 6vw, var(--edge-max));
+  --modal-w-desktop: 83.125rem; /* 1330px */
+  --modal-h-desktop: 48.75rem; /* 780px */
 }
 
-/* ========== Root & Backdrop ========== */
+/* ================= Root & Backdrop ================= */
 .modal-root {
   position: fixed;
   inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* mobile: full-viewport modal, be centrinio translate */
+  display: block;
   z-index: var(--z-modal);
   opacity: 0;
   pointer-events: none;
@@ -34,77 +41,63 @@
   position: absolute;
   inset: 0;
   background: var(--backdrop);
-  opacity: 0;
+  opacity: 0; /* animacijos kol kas išjungtos */
   transition: none;
 }
 .modal-root.open .backdrop {
   opacity: 1;
 }
 
-/* ========== Card (desktop-first) ========== */
+/* ================= Card (mobile base: fullscreen) ================= */
 .modal-card {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(520px, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
-  max-height: var(--modal-max-h);
-  height: min(var(--modal-h-desktop), var(--modal-max-h));
-  color: var(--text-on-dark);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--outline);
-  box-shadow: var(--shadow-elev-1);
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100svh; /* fallback */
+  border: none;
+  border-radius: 0;
   display: flex;
   overflow: hidden;
-  background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center / cover no-repeat;
+  color: var(--text-on-dark);
+
+  background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center / cover no-repeat;
+}
+@supports (height: 100dvh) {
+  .modal-card {
+    height: 100dvh;
+  }
 }
 
-/* ========== Inner container ========== */
+/* ================= Inner container ================= */
 .modal-ctr {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 5px 0;
+  padding-bottom: 0;
   width: 100%;
   height: 100%;
-  min-height: 0; /* leidžia vaikams scrollintis */
-  overflow-y: auto; /* visas turinys scrolinasi viduje */
-  -webkit-overflow-scrolling: touch; /* inercinis iOS */
-  overscroll-behavior: contain;
+  min-height: 0; /* allow inner scroll on children */
 }
 
-/* ========== Central column (H1 + chips + children) ========== */
-.modal-col {
-  width: 100%;
-  max-width: 480px;
-  min-height: 0;
-  margin: 140px auto 0; /* DESKTOP: distance from top */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 48px; /* DESKTOP: spacing between H1/chips/body */
-  overflow: visible;
-}
-
-/* ========== Nav ========== */
+/* ================= Header (mobile) ================= */
 .modal-head {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  min-height: 24px;
+  min-height: 1.5rem; /* 24px */
+  padding: 1rem var(--gutter); /* 16px x gutter */
   position: relative;
 }
 .icon-btn {
   appearance: none;
   border: none;
   background: transparent;
-  padding: 8px;
+  padding: 0.5rem; /* 8px */
   margin: 0;
-  width: 40px;
-  height: 40px;
+  width: 2.5rem; /* 40px */
+  height: 2.5rem; /* 40px */
   display: inline-grid;
   place-items: center;
   cursor: pointer;
@@ -112,8 +105,8 @@
   transition: opacity 0.12s ease, transform 0.12s ease;
 }
 .icon-btn img {
-  width: 16px;
-  height: 16px;
+  width: 1rem; /* 16px */
+  height: 1rem;
   display: block;
 }
 .icon-btn:hover {
@@ -123,111 +116,101 @@
   outline: 2px solid #8ab4ff;
   outline-offset: 2px;
 }
-
 .head-logo-mobile {
-  display: none;
+  display: inline-block;
   background: transparent;
   border: 0;
   padding: 0;
 }
 .head-logo-mobile img {
-  height: 24px;
+  height: 1.5rem; /* 24px */
   width: auto;
   display: block;
 }
 .head-back {
-  display: inline-grid;
+  display: none;
 }
 .head-spacer {
   flex: 1 1 auto;
 }
 
-@media (min-width: 481px) {
-  .modal-head {
-    padding: 18px 24px;
-  }
-  .head-back {
-    display: inline-grid !important;
-  }
-  .modal-head .head-logo-mobile {
-    display: none !important;
-  }
-}
-@media (max-width: 480px) {
-  .modal-head {
-    padding: 16px var(--gutter);
-  }
-  .head-logo-mobile {
-    display: inline-block !important;
-  }
-  .head-back {
-    display: none !important;
-  }
-}
-
-/* ========== Title ========== */
+/* ================= Title ================= */
 .modal-title {
   margin: 0;
   text-align: center;
-  font-family: "Satoshi", sans-serif;
+  font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 400;
-  font-size: 30px; /* DESKTOP H1 size */
+  font-size: 1.75rem; /* 28px mobile */
   line-height: 1.2;
   color: var(--text-on-dark);
 }
 .break--desktop {
-  display: inline;
-}
-.break--mobile {
   display: none;
 }
-@media (max-width: 480px) {
-  .break--desktop {
-    display: none;
-  }
-  .break--mobile {
-    display: inline;
-  }
+.break--mobile {
+  display: inline;
 }
 
-/* ========== Body ========== */
-.modal-body {
+/* ================= Column & Body (mobile) ================= */
+.modal-col {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  /* H1/chips stack aukštis nuo viršaus (mobile) */
+  margin: clamp(3rem, 26dvh, 15.625rem) auto 0; /* 48px..250px */
+  gap: 1.75rem; /* 28px */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: 0;
+  align-items: stretch;
   overflow: visible;
-  gap: 20px;
   padding: 0;
 }
 
-/* ========== Chips (desktop) ========== */
-.suggestions {
-  display: flex !important;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  max-width: 480px;
-  margin: 0 auto;
+.modal-body {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* 16px */
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  height: 100%;
+  padding: 0 0 calc(0.75rem + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
 }
 
-/* ========== Dock (desktop) ========== */
+/* Chips — horizontal mobile rail (vizualas — styles/chips.css) */
+.suggestions {
+  margin: 0;
+  padding-block: 0.375rem; /* 6px */
+}
+.suggestions::-webkit-scrollbar {
+  display: none;
+}
+.suggestions > * {
+  flex: 0 0 auto;
+}
+
+/* Input dock pinned to visible viewport bottom (mobile) */
 .input-dock {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
-  bottom: 56px;
+  bottom: var(--safe-bottom);
+  z-index: 3;
+  margin: 0;
   display: flex;
   justify-content: center;
-  z-index: 2;
   pointer-events: none;
+  padding: 0 var(--gutter) var(--dock-gap-closed);
+  background: none;
 }
 .input-dock .input-wrap {
   pointer-events: auto;
 }
 
-/* ========== Answer mode ========== */
+/* Answer mode (mobile) */
 .modal-col.is-answer {
   margin: 0 auto;
   gap: 0;
@@ -241,8 +224,9 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 calc(0.75rem + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
 }
+
 .answer-center {
   width: 100%;
   display: flex;
@@ -252,262 +236,213 @@
   background: rgba(255, 255, 255, 0.08);
   color: #e7e9f2;
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 0.75rem 0.875rem; /* 12px 14px */
   border: 1px solid rgba(255, 255, 255, 0.18);
-  max-width: min(560px, 90%);
+  max-width: min(35rem, 90%); /* 560px */
+  margin-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-closed));
 }
 
-/* ========== Footer ========== */
+/* Footer (hidden on mobile) */
 .modal-footer {
-  position: absolute;
-  left: 22px;
-  bottom: 18px;
-  background: transparent;
-  padding: 0;
-  display: flex;
-  align-items: center;
+  display: none;
 }
 .powered-by {
-  height: 25px;
-  width: 61px;
+  height: 1.5625rem; /* 25px */
+  width: 3.8125rem; /* 61px */
   opacity: 0.9;
   display: block;
 }
 
-/* ================  MOBILE (≤480px) ==================== */
+/* ===== Keyboard-open overrides (mobile) ===== */
+html.kb-open .modal-root.open .modal-head {
+  padding: 0.375rem var(--gutter) 0.25rem !important; /* 6px  g  4px */
+}
 
-@media (max-width: 480px) {
-  /* ----- Mobile knobs ----- */
-  :root {
-    --gutter: 28px;
+html.kb-open .modal-root.open .modal-ctr .modal-col {
+  margin: 1.25rem auto 0 !important; /* 20px nuo viršaus */
+  gap: 1.125rem !important; /* 18px */
+}
 
-    /* INPUT DOCK SPACING (below the input bubble) */
-    --dock-gap-closed: var(--gutter); /* keyboard CLOSED  → bottom padding */
-    --dock-gap-open: 16px; /* keyboard OPEN    → bottom padding */
+html.kb-open .modal-root.open .suggestions {
+  padding-block: 0.25rem !important; /* 4px */
+  margin-top: 0.375rem !important; /* 6px */
+}
 
-    /* Measured by JS via --dock-h (fallback 112px) */
-    --dock-h: 112px;
-  }
+html.kb-open .modal-root.open .input-dock {
+  padding-bottom: calc(var(--dock-gap-open) + var(--safe-bottom)) !important;
+}
+html.kb-open .modal-root.open .modal-body {
+  padding-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
+}
+html.kb-open .modal-root.open .answer-bubble {
+  margin-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
+}
 
-  /* Layout resets */
-  .modal-root {
-    justify-content: initial !important;
-    align-items: initial !important;
-  }
+/* Slightly shrink the H1 while keyboard is open */
+html.kb-open .modal-root.open #modal-title,
+html.kb-open .modal-root.open .modal-title {
+  font-size: 1.6875rem !important; /* 27px */
+  line-height: 1.2;
+}
 
-  /* Full-viewport card; dvh support when available */
-  .modal-card {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100svh !important; /* fallback */
-    transform: none !important;
-    margin: 0 !important;
-    border: none;
-    border-radius: 0;
-    display: flex;
-    overflow: hidden;
-    background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center / cover no-repeat;
-  }
-  @supports (height: 100dvh) {
-    .modal-card {
-      height: 100dvh !important;
-    }
-  }
-
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
-  .modal-ctr {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border-radius: 0;
-    padding-bottom: 0;
-    min-height: 0; /* allow inner scroll */
-  }
-
-  /* ----- MOBILE: H1 + chips vertical stack position (TOP) ----- */
-  /* KNOB: change margin (first value) to move the stack up/down */
-  .modal-col {
-    width: 100% !important;
-    max-width: none !important;
-    margin: clamp(48px, 26dvh, 250px) auto 0 !important; /* ↑ move closer/farther from top */
-    gap: 28px !important; /* spacing between H1 and chips */
-    align-items: stretch;
-    flex: 1 1 auto;
-    overflow: visible;
-    padding: 0;
-    min-height: 0;
-  }
-
-  .modal-col.is-answer .modal-body {
-    padding: 0 var(--gutter) calc(12px + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
-  }
-
-  /* MOBILE H1 */
-  .modal-title {
-    width: 286px;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 28px; /* KNOB: mobile H1 size (when keyboard CLOSED) */
-    line-height: 1.2;
-  }
-
-  /* Single scroll container + reserved space for input dock */
-  .modal-body {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
-    height: 100%;
-    padding: 0 var(--gutter) calc(12px + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
-  }
-
-  /* Chips — single row with horizontal scroll */
-  .suggestions {
-    margin: 0;
-    display: flex !important;
-    padding-top: 6px; /* KNOB: mobile chips vertical padding */
-    padding-bottom: 6px; /* KNOB: mobile chips vertical padding */
-    flex-wrap: nowrap !important;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 12px; /* KNOB: horizontal gap between chips */
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    white-space: nowrap;
-  }
-  .suggestions::-webkit-scrollbar {
-    display: none;
-  }
-  .suggestions > * {
-    flex: 0 0 auto;
-  }
-
-  /* Input dock pinned to the visible viewport bottom */
-  .input-dock {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: var(--safe-bottom);
-    z-index: 3;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
-    padding: 0 var(--gutter) var(--dock-gap-closed); /* KNOB: closed keyboard bottom gap */
-    background: none;
-  }
-  .input-dock .input-wrap {
-    pointer-events: auto;
-  }
-
-  .answer-bubble {
-    margin-bottom: calc(12px + var(--dock-h) + var(--dock-gap-closed));
-  }
-
-  .modal-footer {
-    display: none !important;
-  }
-
-  /* ===== Keyboard-open overrides (place at end of mobile block) ===== */
-
-  /* Reduce header padding to pull stack closer to top when keyboard is open */
-  html.kb-open .modal-root.open .modal-head {
-    padding: 6px var(--gutter) 4px !important;
-  }
-
-  /* TRUE lift: override vertical stack top margin (move H1+chips up) */
-  /* KNOB: tweak first value (e.g., 0–20px) for how close to navbar */
-  html.kb-open .modal-root.open .modal-ctr .modal-col {
-    margin: 20px auto 0 !important;
-    gap: 18px !important; /* spacing between H1 and chips while keyboard open */
-  }
-
-  /* Chips: slightly tighter vertical padding while keyboard is open */
-  html.kb-open .modal-root.open .suggestions {
-    padding-block: 4px !important;
-    margin-top: 6px !important; /* chips sit a bit lower than H1 (4–8px) */
-  }
-
-  /* Increase bottom reserve above keyboard (uses measured --dock-h) */
-  html.kb-open .modal-root.open .input-dock {
-    padding-bottom: calc(var(--dock-gap-open) + var(--safe-bottom)) !important;
-  }
-  html.kb-open .modal-root.open .modal-body {
-    padding-bottom: calc(12px + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
-  }
-  html.kb-open .modal-root.open .answer-bubble {
-    margin-bottom: calc(12px + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
-  }
-  /* Slightly shrink the H1 while keyboard is open */
-  html.kb-open .modal-root.open #modal-title,
-  html.kb-open .modal-root.open .modal-title {
-    font-size: 27px !important; /* was 28px */
-    line-height: 1.2;
-  }
-
-  /* Smooth keyboard-open/close transitions */
+/* Respect reduced motion (mobile scope) */
+@media (prefers-reduced-motion: reduce) {
   .modal-root.open .modal-ctr .modal-col,
   .modal-root.open .modal-head,
   .modal-root.open .suggestions,
   .modal-root.open .input-dock,
   .modal-root.open .modal-body,
   .modal-root.open .modal-title {
-    transition: margin 160ms ease, margin-top 160ms ease, padding 160ms ease, padding-bottom 160ms ease,
-      bottom 160ms ease, font-size 120ms ease;
-  }
-
-  /* Tiny perf hints for fixed element + layout changes */
-  .input-dock {
-    will-change: bottom, padding-bottom;
-    transform: translateZ(0);
-  }
-  .modal-col {
-    will-change: margin;
-  }
-  .modal-head {
-    will-change: padding;
-  }
-  .suggestions {
-    will-change: padding;
-  }
-
-  /* Respect reduced motion (mobile scope) */
-  @media (prefers-reduced-motion: reduce) {
-    .modal-root.open .modal-ctr .modal-col,
-    .modal-root.open .modal-head,
-    .modal-root.open .suggestions,
-    .modal-root.open .input-dock,
-    .modal-root.open .modal-body,
-    .modal-root.open .modal-title {
-      transition: none !important;
-    }
+    transition: none !important;
   }
 }
 
-/* ========== Reduced motion (global) ========== */
+/* =========================================================
+   DESKTOP overrides (≥481px)
+   ========================================================= */
+@media (min-width: 481px) {
+  .modal-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(32.5rem, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
+    max-height: var(--modal-max-h);
+    height: min(var(--modal-h-desktop), var(--modal-max-h));
+    border: 1px solid var(--outline);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elev-1);
+    background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center / cover no-repeat;
+  }
+
+  .modal-ctr {
+    align-items: stretch;
+    padding: 0.3125rem 0; /* 5px vert – paliekam kaip minimalų */
+    overflow-y: auto; /* desktop'e scrollas ant viso turinio */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .modal-head {
+    padding: 1.125rem 1.5rem; /* 18px 24px */
+  }
+  .head-back {
+    display: inline-grid !important;
+  }
+  .modal-head .head-logo-mobile {
+    display: none !important;
+  }
+
+  .modal-title {
+    font-size: 1.875rem; /* 30px */
+  }
+  .break--desktop {
+    display: inline;
+  }
+  .break--mobile {
+    display: none;
+  }
+
+  .modal-col {
+    width: 100%;
+    max-width: 30rem; /* 480px */
+    margin: 8.75rem auto 0; /* 140px from top */
+    gap: 3rem; /* 48px */
+    align-items: stretch;
+  }
+
+  .modal-body {
+    max-width: 44rem;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem; /* 20px */
+    padding: 0;
+    overflow: visible;
+  }
+
+  /* Chips centre (vizualas – chips.css) */
+  .suggestions {
+    max-width: 30rem; /* ~480px “rails” */
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .suggestions .chips-inline {
+    display: flex;
+    flex-wrap: wrap; /* <— laužom į kelias eilutes */
+    justify-content: center;
+    gap: 1rem;
+    overflow: visible; /* be horiz. scroll */
+    padding: 0;
+    scrollbar-width: auto;
+  }
+  .suggestions .chips-inline::-webkit-scrollbar {
+    display: initial;
+  }
+
+  /* Dock – absolute virš footerio */
+  .input-dock {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3.5rem; /* 56px */
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+    padding: 0; /* desktop'e viduje nėra papildomo bottom gap */
+  }
+  .input-dock .input-wrap {
+    pointer-events: auto;
+  }
+
+  /* Answer mode */
+  .modal-col.is-answer {
+    margin: 0 auto;
+    gap: 0;
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-col.is-answer .modal-body {
+    width: 100%;
+    justify-content: center;
+    padding: 0;
+  }
+
+  /* Footer visible desktop */
+  .modal-footer {
+    position: absolute;
+    left: 1.375rem; /* 22px */
+    bottom: 1.125rem; /* 18px */
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ================= Global reduced motion ================= */
 @media (prefers-reduced-motion: reduce) {
   .backdrop {
     transition: none !important;
   }
 }
 
+/* Fallback (senesnėms naršyklėms be height:min()) */
 @supports not (height: min(1px, 2px)) {
-  .modal-card {
-    height: auto;
-    max-height: var(--modal-max-h);
+  @media (min-width: 481px) {
+    .modal-card {
+      height: auto;
+      max-height: var(--modal-max-h);
+    }
   }
 }
