@@ -1,14 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-import Background from "./app/Background";
-import AiButton from "./app/AiButton";
-import Modal from "./app/Modal";
-import Chips from "./app/Chips";
-
-import Button from "./components/Button";
-import IconButton from "./components/IconButton";
-import Chip from "./components/Chip";
-import InputBubble from "./components/InputBubble";
+import { Background, AiButton, Modal, Chips, InputBubble } from "./components";
 
 type View = "chips" | "typing" | "answer";
 const CHIP_ITEMS = ["Product", "Information", "Support", "Brand assets", "Consultation", "Dresses for summer"];
@@ -192,18 +183,6 @@ export default function App() {
   return (
     <div className="app-shell">
       <Background />
-      {import.meta.env.DEV && !open && (
-        <div className="dev-pane">
-          <Button>Primary</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-          <IconButton label="Close">
-            <img src="/img/close.svg" alt="" />
-          </IconButton>
-          <Chip>Consultation</Chip>
-          <Chip selected>Order status</Chip>
-        </div>
-      )}
 
       {!open && (
         <AiButton

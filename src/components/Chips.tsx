@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import Chip from "../components/Chip";
 
 type Props = { items: string[]; onPick: (val: string) => void };
 
@@ -73,17 +72,18 @@ export default function Chips({ items, onPick }: Props) {
       }}
     >
       {items.map((label) => (
-        <Chip
+        <button
           key={label}
-          className="chip" // šita klasė suteikia „ant tamsaus fono“ skin’ą iš modal.css
+          type="button"
+          className="chip"
           onClick={(e) => {
             if (dragging.current) return;
             onPick(label);
-            e.currentTarget.focus({ preventScroll: true });
+            (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });
           }}
         >
-          {label}
-        </Chip>
+          <span className="u-chip__label">{label}</span>
+        </button>
       ))}
     </div>
   );
