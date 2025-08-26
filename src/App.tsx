@@ -115,9 +115,15 @@ export default function App() {
   // Reali .input-dock aukščio metrika → --dock-h
   useEffect(() => {
     if (typeof window === "undefined" || !open) return;
+
     const root = document.documentElement;
     const dock = dockRef.current;
-    if (!dock) return;
+
+    // jei šiame view dock nėra (pvz., answer) – išvalom metriką ir išeinam
+    if (!dock) {
+      root.style.removeProperty("--dock-h");
+      return;
+    }
 
     const setDockH = () => {
       const h = Math.ceil(dock.getBoundingClientRect().height || 0);
@@ -145,7 +151,7 @@ export default function App() {
       window.removeEventListener("resize", onVV);
       root.style.removeProperty("--dock-h");
     };
-  }, [open]);
+  }, [open, view]);
 
   function pickChip(v: string) {
     setQuery(v);
