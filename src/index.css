@@ -9,9 +9,6 @@
 @import "./styles/modal.css";
 @import "./styles/input-bubble.css";
 
-/* (pasirinktinai) Animacijos, jei naudoji atskirai */
-@import "./styles/modal-anim.css";
-
 /* ===== Base / resets ===== */
 html,
 body,

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import "../styles/modal-anim.css";
 import "../styles/modal.css";
 
 type Props = {

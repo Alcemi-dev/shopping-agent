@@ -87,6 +87,10 @@
   /* Backdrop */
   --backdrop: rgba(0, 0, 0, 0.45);
 
+  /* Sizing */
+  --modal-max-h: 90dvh; /* globalus modalo aukščio limitas */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
   /* Alias suderinamumui su senu CSS */
   --modal-bg: var(--surface-modal);
   --chip-border: var(--outline);
