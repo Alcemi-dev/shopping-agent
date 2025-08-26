@@ -1,69 +1,153 @@
-/* InputBubble — top-only LIGHT overlay that sits ABOVE text */
+/* InputBubble — mobile-first, top-only LIGHT overlay, be bottom glow */
 
-/* Konteineris: stacking + clipping */
+/* === Bazinis konteineris (MOBILE) === */
 .input-wrap.input-bubble {
+  /* Išdėstymas */
   position: relative;
-  overflow: hidden; /* kad glow gražiai nusikirptų */
-  border-radius: var(--radius-md);
-  background: #fff;
-  border: 1px solid var(--chip-border);
-  z-index: 0; /* bazinis sluoksnis */
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  align-items: end;
+  gap: 12px;
+
+  /* Dydžiai */
+  width: min(334px, calc(100vw - 2 * var(--gutter, 28px)));
+  min-height: 96px;
+  max-height: 168px;
+  margin: 0 auto;
+  padding: 16px;
+
+  /* Vizualas */
+  background: var(--surface-bubble, #fff);
+  border: 1px solid var(--outline, #d9d9d9);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  z-index: 0;
 }
 
-/* Jei seniau buvo pseudo-glow (viršus/apačia) — išjungiam */
+/* Senus pseudo-glow išjungiame, jei dar kur nors likę */
 .input-wrap.input-bubble::before,
 .input-wrap.input-bubble::after {
   content: none !important;
 }
 
-/* Tekstas po overlay (z:1), bet virš background */
+/* === Teksto sritis === */
 .input-wrap.input-bubble .input-field {
-  position: relative;
-  z-index: 1;
-  background: transparent; /* kad overlay „lipdytųsi“ ant teksto */
-  font-size: var(--fs-16);
-  line-height: var(--lh-relaxed);
-  padding: var(--space-3) var(--space-12) var(--space-3) var(--space-4);
-  border-radius: inherit;
+  box-sizing: border-box;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  resize: none;
+
+  width: 100%;
+  min-height: 64px;
+  max-height: 136px;
+
+  font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
+  font-size: var(--fs-16, 1rem); /* iOS nezoomins */
+  line-height: var(--lh-relaxed, 1.5);
+  color: #444e85;
+
+  overflow-x: hidden;
+  overflow-y: hidden; /* autoresize keičia į auto kai reikia */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.input-wrap.input-bubble .input-field::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
-/* Voice/send action turi likti virš overlay (z:3) ir būti paspaudžiamas */
+.input-wrap.input-bubble .input-field::placeholder {
+  color: #444e85;
+  opacity: 0.9;
+}
+.input-wrap.input-bubble .input-field:focus,
+.input-wrap.input-bubble .input-field:not(:placeholder-shown) {
+  color: #0a1444;
+}
+
+/* === Voice/send mygtukas === */
 .input-wrap.input-bubble .input-action {
+  appearance: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
   position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 16px;
+  bottom: 16px; /* kaip Figma */
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  cursor: pointer;
+  background: linear-gradient(180deg, #0a186a, #142fd0);
+  box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
   z-index: 3; /* virš overlay */
-  color: var(--color-ink);
+}
+.input-wrap.input-bubble .input-action:hover {
+  box-shadow: 0 0 14px rgba(20, 47, 208, 0.45);
+}
+.input-wrap.input-bubble .input-action:active {
+  transform: none;
+}
+.input-wrap.input-bubble .input-action svg {
+  width: 30px;
+  height: 30px;
+}
+.input-wrap.input-bubble .input-action svg rect {
+  display: none;
 }
 
-/* Viršutinis ŠVIESUS overlay (z:2) — eina ant teksto */
+/* === Focus ring (vienodas su senąja versija) === */
+.input-wrap.input-bubble:focus-within {
+  border-width: 2px;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+/* === Tik viršutinis šviesus overlay virš teksto === */
 .input-wrap.input-bubble .input-fade-top {
-  --fade-h: 42px; /* koreguok 32–48px pagal skonį */
-  pointer-events: none; /* neblokuoja scroll/klikų */
+  --fade-h: 42px;
+  pointer-events: none;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   height: var(--fade-h);
-  z-index: 2; /* virš teksto (z:1), po action (z:3) */
+  z-index: 2; /* virš teksto (z:1), po mygtuko (z:3) */
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
-
-  /* ŠVIESUS gradientas: nuo beveik baltos į skaidrumą */
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.98) 0%,
     rgba(245, 248, 255, 0.92) 55%,
     rgba(255, 255, 255, 0) 100%
   );
-
-  opacity: 0; /* rodome tik kai reikia */
+  opacity: 0;
   transition: opacity var(--dur-1, 120ms) var(--easing-std, ease);
 }
-
-/* Rodyti, kai yra overflow arba vartotojas nuslinkęs žemyn */
 .input-wrap.input-bubble.has-overflow .input-fade-top,
 .input-wrap.input-bubble.scrolled .input-fade-top {
   opacity: 1;
+}
+
+/* === DESKTOP override'ai === */
+@media (min-width: 481px) {
+  .input-wrap.input-bubble {
+    width: 480px;
+    min-height: 120px;
+    max-height: 200px;
+    grid-template-columns: 1fr 44px;
+    padding: 16px;
+  }
+  .input-wrap.input-bubble .input-field {
+    min-height: 88px;
+    max-height: 168px;
+  }
 }

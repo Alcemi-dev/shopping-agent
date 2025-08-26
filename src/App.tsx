@@ -10,10 +10,6 @@ import IconButton from "./components/IconButton";
 import Chip from "./components/Chip";
 import InputBubble from "./components/InputBubble";
 
-import "./styles/layout.css";
-import "./styles/button.css";
-import "./styles/chips.css";
-
 type View = "chips" | "typing" | "answer";
 const CHIP_ITEMS = ["Product", "Information", "Support", "Brand assets", "Consultation", "Dresses for summer"];
 

@@ -5,8 +5,6 @@
 
   --text-on-dark: #fff;
 
-  --chip-ring: 0 0 0 2px #ffffff, 0 0 0 6px #3654ff;
-
   --edge-min: 24px;
   --edge-max: 64px;
   --edge: clamp(var(--edge-min), 6vw, var(--edge-max));
@@ -37,7 +35,7 @@
   inset: 0;
   background: var(--backdrop);
   opacity: 0;
-  transition: opacity 200ms ease;
+  transition: none;
 }
 .modal-root.open .backdrop {
   opacity: 1;
@@ -212,162 +210,6 @@
   gap: 16px;
   max-width: 480px;
   margin: 0 auto;
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 47px;
-  padding: 0 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.06s ease;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-.chip:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: var(--outline);
-}
-.chip:active {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: transparent;
-  box-shadow: none;
-}
-.chip:focus-visible,
-.chip:focus:not(:active) {
-  box-shadow: var(--chip-ring);
-  border-color: transparent;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* ========== Input bubble (desktop) ========== */
-.input-wrap {
-  width: 480px;
-  min-height: 120px;
-  max-height: 200px;
-  display: grid;
-  grid-template-columns: 1fr 44px;
-  align-items: end;
-  gap: 12px;
-  padding: 16px;
-  margin: 0;
-  border-radius: var(--radius-sm);
-  background: var(--surface-bubble); /* #FFFFFF per tokens */
-  border: 1px solid var(--outline); /* neutralus borderis */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  transition: box-shadow 0.18s ease, border-color 0.12s ease;
-  position: relative;
-  overflow: hidden;
-}
-.input-wrap::after {
-  content: "";
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 14px;
-  height: 40px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease;
-  background: linear-gradient(to bottom, rgba(222, 227, 255, 1), rgba(222, 227, 255, 0));
-}
-.input-wrap::before {
-  content: "";
-  position: absolute;
-  left: 16px;
-  right: 72px;
-  bottom: 10px;
-  height: 40px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease;
-  background: linear-gradient(to top, rgba(222, 227, 255, 1), rgba(222, 227, 255, 0));
-}
-.input-wrap.has-overflow.scrolled::after {
-  opacity: 1;
-}
-.input-wrap.has-overflow.has-more-below::before {
-  opacity: 1;
-}
-
-.input-wrap:focus-within {
-  border-width: 2px;
-  border-color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-}
-
-.input-field {
-  box-sizing: border-box;
-  background: transparent;
-  border: 0;
-  outline: 0;
-  resize: none;
-  width: 100%;
-  min-height: 88px;
-  max-height: 168px;
-  line-height: 1.5;
-  font-family: "Satoshi", sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  color: #444e85;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.input-field::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-.input-field:focus,
-.input-field:not(:placeholder-shown) {
-  color: #0a1444;
-}
-.input-field::placeholder {
-  color: #444e85;
-  opacity: 0.9;
-}
-
-.input-action {
-  appearance: none;
-  border: none;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  margin-left: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  background: linear-gradient(180deg, #0a186a, #142fd0);
-  box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
-  transition: transform 0.08s ease, box-shadow 0.12s ease;
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-.input-action:hover {
-  box-shadow: 0 0 14px rgba(20, 47, 208, 0.45);
-}
-.input-action:active {
-  transform: none;
-}
-.input-action svg {
-  width: 30px;
-  height: 30px;
-}
-.input-action svg rect {
-  display: none;
 }
 
 /* ========== Dock (desktop) ========== */
@@ -554,37 +396,6 @@
     flex: 0 0 auto;
   }
 
-  /* Chip “pill” look (mobile keeps desktop visuals) */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 47px;
-    padding: 0 12px;
-    border-radius: var(--radius-sm);
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 1;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease, transform 0.06s ease;
-  }
-  .chip:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: var(--outline);
-  }
-  .chip:active {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: transparent;
-  }
-  .chip:focus-visible,
-  .chip:focus:not(:active) {
-    box-shadow: 0 0 0 6px var(--ring-focus), 0 0 0 6px #3654ff;
-  }
-
   /* Input dock pinned to the visible viewport bottom */
   .input-dock {
     position: fixed;
@@ -601,42 +412,6 @@
   }
   .input-dock .input-wrap {
     pointer-events: auto;
-  }
-
-  .input-wrap {
-    width: 334px;
-    min-height: 96px;
-    max-height: 168px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 1fr 32px;
-    align-items: end;
-    gap: 12px;
-    padding: 16px;
-    border-radius: var(--radius-sm);
-    background: #dee3ff;
-    border: 1px solid var(--text-on-dark);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    overflow: hidden;
-  }
-
-  .input-field {
-    min-height: 64px;
-    max-height: 136px;
-    overflow-y: auto;
-    font-size: 16px; /* prevent iOS auto-zoom */
-    background: transparent;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .input-action {
-    margin-left: 0;
-  }
-
-  .input-wrap::before,
-  .input-wrap::after {
-    display: none !important;
   }
 
   .answer-bubble {

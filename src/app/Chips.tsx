@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import Chip from "../components/Chip";
 
 type Props = { items: string[]; onPick: (val: string) => void };
 
@@ -9,7 +10,6 @@ export default function Chips({ items, onPick }: Props) {
   const startX = useRef(0);
   const startScroll = useRef(0);
 
-  // nuimam focus nuo chip, kai spaudžiama už ribų
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
       const w = wrapRef.current;
@@ -41,7 +41,6 @@ export default function Chips({ items, onPick }: Props) {
         }
       }}
       onPointerDown={(e) => {
-        // Drag įjungiam tik touch/pen — ant mouse leidžiam normalų click
         if (e.pointerType === "mouse") return;
         const el = wrapRef.current;
         if (!el) return;
@@ -56,7 +55,6 @@ export default function Chips({ items, onPick }: Props) {
         const el = wrapRef.current;
         if (!el || !el.classList.contains("is-dragging")) return;
         const dx = e.clientX - startX.current;
-        // didesnis slenkstis, kad „netyčia“ neužsitriggerintų
         if (Math.abs(dx) > 12) dragging.current = true;
         el.scrollLeft = startScroll.current - dx;
         e.preventDefault();
@@ -65,7 +63,6 @@ export default function Chips({ items, onPick }: Props) {
         if (e.pointerType === "mouse") return;
         wrapRef.current?.classList.remove("is-dragging");
         (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
-        // atstatom po click įvykdymo
         requestAnimationFrame(() => (dragging.current = false));
       }}
       onPointerCancel={(e) => {
@@ -76,11 +73,9 @@ export default function Chips({ items, onPick }: Props) {
       }}
     >
       {items.map((label) => (
-        <button
+        <Chip
           key={label}
-          className="chip"
-          role="listitem"
-          type="button"
+          className="chip" // šita klasė suteikia „ant tamsaus fono“ skin’ą iš modal.css
           onClick={(e) => {
             if (dragging.current) return;
             onPick(label);
@@ -88,7 +83,7 @@ export default function Chips({ items, onPick }: Props) {
           }}
         >
           {label}
-        </button>
+        </Chip>
       ))}
     </div>
   );

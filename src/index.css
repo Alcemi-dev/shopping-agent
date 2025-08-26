@@ -8,6 +8,9 @@
 /* Feature CSS (centrizuojam čia, o ne App.tsx) */
 @import "./styles/modal.css";
 @import "./styles/input-bubble.css";
+@import "./styles/layout.css";
+@import "./styles/button.css";
+@import "./styles/chips.css";
 
 /* ===== Base / resets ===== */
 html,

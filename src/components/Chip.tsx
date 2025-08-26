@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean;
   size?: Size;
   variant?: Variant;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // ⬅️ leisk event
   className?: string;
 };
 
