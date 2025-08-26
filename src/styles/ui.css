@@ -185,3 +185,17 @@
   outline: none;
   box-shadow: var(--ring-chip);
 }
+
+.dev-pane {
+  position: fixed;
+  top: 6rem;
+  left: 1rem;
+  z-index: 10000;
+  background: #fff;
+  padding: 1rem;
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

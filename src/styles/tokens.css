@@ -63,4 +63,31 @@
   --dur-1: 120ms;
   --dur-2: 200ms;
   --easing-std: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Surfaces */
+  --surface-page: var(--color-bg);
+  --surface-modal: #02092e; /* gili mėlyna modalui */
+  --surface-bubble: #ffffff; /* balta burbulei */
+
+  /* Text + outline */
+  --text-on-dark: #fcfcfc; /* tekstas ant modal */
+  --outline: #d9d9d9; /* bendras kontūras */
+
+  /* Focus / ring */
+  --ring-focus: #3654ff;
+
+  /* Z-index sluoksniai */
+  --z-bg: 0;
+  --z-content: 10;
+  --z-modal: 1000;
+  --z-fab: 1100;
+  --z-toast: 1200;
+  --z-dev: 1300;
+
+  /* Backdrop */
+  --backdrop: rgba(0, 0, 0, 0.45);
+
+  /* Alias suderinamumui su senu CSS */
+  --modal-bg: var(--surface-modal);
+  --chip-border: var(--outline);
 }
