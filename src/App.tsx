@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+
 import Background from "./app/Background";
 import AiButton from "./app/AiButton";
-import "./styles/layout.css";
-import "./styles/button.css";
-import "./styles/modal.css";
 import Modal from "./app/Modal";
 import Chips from "./app/Chips";
-import "./styles/chips.css";
-import "./styles/input-bubble.css";
-import VoiceIcon from "./assets/voice.svg?react";
 
 import Button from "./components/Button";
 import IconButton from "./components/IconButton";
 import Chip from "./components/Chip";
 import InputBubble from "./components/InputBubble";
+
+import "./styles/layout.css";
+import "./styles/button.css";
+import "./styles/chips.css";
+import VoiceIcon from "./assets/voice.svg";
 
 type View = "chips" | "typing" | "answer";
 const CHIP_ITEMS = ["Product", "Information", "Support", "Brand assets", "Consultation", "Dresses for summer"];
