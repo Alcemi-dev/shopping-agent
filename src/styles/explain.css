@@ -1,0 +1,100 @@
+@import "./tokens.css";
+
+/* Explanation (mobile-first) */
+.explain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* 24px */
+  padding: 0 1rem 1.25rem; /* side + bottom space */
+}
+
+.explain-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* 20px */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.explain-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem; /* 16px */
+  align-items: center;
+  padding: 0.75rem 0.25rem; /* vertical rhythm */
+  border-radius: var(--radius-md);
+}
+
+.explain-icon {
+  color: var(--text-on-dark);
+  opacity: 0.92;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.explain-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.explain-subtitle {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.3;
+  color: var(--text-on-dark);
+}
+
+.explain-desc {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5;
+  color: var(--text-on-dark);
+  opacity: 0.92;
+}
+
+/* CTA */
+.explain-cta-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.explain-cta {
+  min-width: 7.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 2rem;
+  border: 0;
+  background: var(--surface);
+  color: var(--modal-bg);
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 0 0.6rem 0.25rem var(--shadow-soft, rgba(221, 227, 255, 0.6));
+  cursor: pointer;
+}
+
+/* Mažinam perteklinį dugno padding, kai rodom explanation */
+.modal-body:has(.explain) {
+  padding-bottom: 1.25rem;
+}
+
+@media (min-width: 481px) {
+  .explain {
+    gap: 2rem;
+    padding: 0 1.25rem 1.5rem;
+  }
+  .explain-list {
+    gap: 1.5rem;
+  }
+  .explain-desc {
+    max-width: 42ch;
+  }
+}
