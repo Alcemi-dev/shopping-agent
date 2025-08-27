@@ -261,6 +261,57 @@
   display: block;
 }
 
+/* Kategorijos ekranas (mobile) */
+.category-screen {
+  display: flex;
+  flex-direction: column;
+  padding-inline: 1.75rem;
+  align-items: center;
+  gap: 1.5rem; /* ~24px: burbulas → klausimas → subchipai */
+  margin-top: 0.5rem;
+}
+/* User bubble – Figma: 282px w, 80px h, 16px padding, 10px radius */
+.user-bubble {
+  box-sizing: border-box;
+  background: #dee3ff;
+  color: #0a1344;
+  border-radius: 10px;
+  padding: 1rem; /* 16px */
+  border: 1px solid #fcfcfc;
+  max-width: clamp(17.625rem, 70vw, 23.75rem); /* 282..380px */
+  min-height: 5rem; /* ~80px vizualiai */
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start; /* tekstas „remiasi“ į apačią kaip Figma */
+  line-height: 1.5; /* 24px ant 16px font-size */
+  margin-left: auto;
+}
+
+/* Klausimas po burbulu – Figma md/regular 16/24, centre */
+.subquestion {
+  margin: 0.25rem 0 0.25rem;
+  font-size: var(--fs-16);
+  line-height: 1.5;
+  color: var(--text-on-dark);
+  opacity: 0.9;
+  text-align: left;
+  align-self: flex-start;
+}
+.chips-block {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; /* kairė */
+}
+/* Sub-chipų tinklelis (naudoja tą patį <Chips/>) */
+.chips-block .chips-inline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  overflow: visible;
+  padding: 0;
+}
+
 /* ===== Keyboard-open overrides (mobile) ===== */
 html.kb-open .modal-root[open] .modal-head {
   padding: 0.375rem var(--gutter) 0.25rem !important; /* 6px  g  4px */
@@ -427,6 +478,18 @@ html.kb-open .modal-root[open] .answer-bubble {
     padding: 0;
     display: flex;
     align-items: center;
+  }
+
+  .category-screen {
+    gap: 1.5rem;
+    padding-inline: 0;
+  }
+  .category-screen {
+    gap: 1.5rem;
+  }
+  .user-bubble {
+    width: 23.75rem; /* 380px */
+    min-height: 5rem; /* ~80px */
   }
 }
 

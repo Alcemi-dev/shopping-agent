@@ -36,7 +36,7 @@
 .modal-card:has(.explain) .modal-title {
   max-width: 100%;
   margin-inline: auto;
-  margin-top: 1rem;
+  margin-top: 2rem;
   text-align: center;
   font-size: var(--fs-32);
   line-height: 1.2;
