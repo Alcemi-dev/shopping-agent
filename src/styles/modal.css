@@ -163,7 +163,7 @@
   width: 100%;
   max-width: none;
   min-height: 0;
-  margin: clamp(3rem, 26dvh, 15.625rem) auto 0; /* 48px..250px */
+  margin: 0 auto;
   gap: 1.75rem; /* 28px */
   display: flex;
   flex-direction: column;
@@ -316,7 +316,9 @@ html.kb-open .modal-root[open] .answer-bubble {
     box-shadow: var(--shadow-elev-1);
     background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center / cover no-repeat;
   }
-
+  .modal-card:has(.explain) {
+    background: var(--surface-modal) url("/img/background-gradient-explain.svg") center / cover no-repeat;
+  }
   .modal-ctr {
     align-items: stretch;
     padding: 0.3125rem 0; /* 5px vert – minimalus */
