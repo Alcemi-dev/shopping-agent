@@ -1,0 +1,158 @@
+@import "./tokens.css";
+
+/* ==== Vars for explain layout (rem) ==== */
+:root {
+  /* Col widths (Figma) */
+  --explain-col-w-mobile: 20.875rem; /* 334px */
+  --explain-col-w-desktop: 27.5rem; /* 440px */
+
+  /* Text column widths (Figma) */
+  --explain-text-w-mobile: 17.625rem; /* 282px = 334 - 32 - 20 */
+  --explain-text-w-desktop: 21.75rem; /* 348px = 400 - 32 - 20 */
+
+  /* Title wrap on desktop */
+  --explain-title-w-desktop: 25rem; /* 400px */
+
+  /* CTA width on desktop */
+  --explain-cta-w-desktop: 13.75rem; /* 220px */
+
+  /* Desktop vertical target: H1 top ≈ 132px from top of modal card */
+  --explain-h1-top-desktop: 8.25rem; /* 132px */
+}
+
+/* ===== Explanation (mobile-first) ===== */
+.explain {
+  width: 100%;
+  max-width: var(--explain-col-w-mobile);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem; /* 48px: H1 → list → CTA */
+  padding: 0 0 1.25rem; /* centrinė kolona be šoninių padding */
+}
+
+/* H1 (naudojam bendrą .modal-title tipografiją, tik ribojam plotį) */
+.modal-card:has(.explain) .modal-title {
+  max-width: 100%;
+  margin-inline: auto;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: var(--fs-32);
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--text-on-dark);
+}
+
+/* List */
+.explain-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* 24px */
+  margin-top: 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.explain-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem; /* 20px: ikona ↔ tekstas */
+  align-items: stretch; /* tekstas valdo eilutės aukštį */
+  border-radius: var(--radius-md);
+}
+
+.explain-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  /* — Ikonėlę pastatom „tarp“ h3 ir p — */
+  align-self: center; /* centras teksto stulpelio atžvilgiu */
+}
+.explain-icon img {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Fiksuojam realų teksto stulpelio plotį (kaip Figma), kad eilutės lūžtų identiškai */
+.explain-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* 4px tarp h3 ir p */
+  max-width: var(--explain-text-w-mobile);
+}
+
+.explain-subtitle {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.3;
+  color: var(--text-on-dark);
+}
+.explain-desc {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1rem; /* 16px */
+  line-height: 1.5;
+  color: var(--text-on-dark);
+  opacity: 0.92;
+}
+
+/* CTA */
+.explain-cta-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+.explain-cta {
+  width: 100%; /* MOBILE: pilnas 334px konteineris */
+  min-height: 3rem; /* ~48px */
+  padding: 0.75rem 2rem;
+  border-radius: 2.25rem;
+  border: 0;
+  background: var(--surface-page);
+  color: var(--modal-bg);
+  font-weight: 700;
+  line-height: 1.3;
+  /* Figma: Drop shadow X0 Y0 Blur 8.9 Spread 4, #DDE3FF */
+  box-shadow: 0 0 0.556rem 0.25rem var(--glow-soft);
+  cursor: pointer;
+}
+
+/* Tik explanation ekrane dugne – papildomas kvėpavimas */
+.modal-card:has(.explain) .modal-body {
+  padding-bottom: 1.25rem;
+}
+.modal-card:has(.explain) .modal-body .explain-cta-wrap {
+  padding-bottom: max(0.5rem, var(--safe-bottom));
+}
+
+/* Desktop */
+@media (min-width: 481px) {
+  /* Pastatom koloną taip, kad H1 startas būtų ~132px nuo viršaus */
+  .modal-card:has(.explain) .modal-col {
+    margin-top: 1rem;
+    gap: 3rem; /* 48px */
+  }
+
+  .explain-list {
+    margin: 0;
+  }
+
+  .explain {
+    max-width: var(--explain-col-w-desktop); /* 440px */
+  }
+  .modal-card:has(.explain) .modal-title {
+    max-width: var(--explain-title-w-desktop); /* 400px */
+  }
+  .explain-text {
+    max-width: var(--explain-text-w-desktop); /* 348px */
+  }
+  .explain-cta {
+    width: var(--explain-cta-w-desktop); /* 220px */
+  }
+}

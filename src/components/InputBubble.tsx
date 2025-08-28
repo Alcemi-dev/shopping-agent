@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import VoiceIcon from "../assets/voice.svg?react";
 
 type Props = {
   value: string;
@@ -10,7 +9,8 @@ type Props = {
 
 export default function InputBubble({ value, onChange, onSubmit, placeholder = "Ask anything…" }: Props) {
   const taRef = useRef<HTMLTextAreaElement>(null);
-  const MAX_H = 136; // kaip pas tave
+  const MAX_H = 136;
+  // kaip pas tave
 
   function autoresize(el: HTMLTextAreaElement) {
     el.style.height = "auto";
@@ -64,19 +64,12 @@ export default function InputBubble({ value, onChange, onSubmit, placeholder = "
           }
         }}
       />
-      <button
-        type="button"
-        className="input-action"
-        aria-label="Voice (coming soon)"
-        aria-disabled="true"
-        tabIndex={-1}
-        onPointerDown={(e) => e.preventDefault()}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={(e) => e.preventDefault()}
-      >
-        <VoiceIcon width={20} height={20} aria-hidden="true" focusable="false" />
+
+      {/* NEW: Send button */}
+      <button type="submit" className="input-action" aria-label="Send message">
+        <img src="/img/send-button.svg" alt="" width={32} height={32} />
       </button>
-      {/* Tik viršutinė „fade“ juosta */}
+
       <div className="input-fade-top" aria-hidden="true" />
     </form>
   );
