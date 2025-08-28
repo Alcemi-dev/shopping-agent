@@ -2,10 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Background, AiButton, Modal, Chips, InputBubble } from "./components";
 import Explain from "./components/Explain";
 
-// --- nauja būsena vaizdui: pridedam "category"
-type View = "explain" | "chips" | "typing" | "answer" | "category";
+/* ===== Types ===== */
+type View = "explain" | "chips" | "category" | "chat";
 
 type Category = "Consultation" | "Order status" | "Shipping & delivery" | "Returns" | "Product Information" | "Payment";
+
+type Msg =
+  | { id: string; role: "user"; text: string }
+  | { id: string; role: "assistant"; text: string }
+  | { id: string; role: "loading" };
 
 const CHIP_ITEMS: Category[] = [
   "Consultation",
@@ -16,7 +21,6 @@ const CHIP_ITEMS: Category[] = [
   "Payment",
 ];
 
-// 5 sub-chipai kiekvienai kategorijai
 const SUBCHIPS: Record<Category, string[]> = {
   Consultation: ["Book a call", "Skin type quiz", "Routine advice", "Shade matching", "Best-sellers"],
   "Order status": ["Track order", "Change address", "Cancel order", "Invoice copy", "Late delivery"],
@@ -32,7 +36,12 @@ const SUBCHIPS: Record<Category, string[]> = {
   Payment: ["Payment methods", "Installments", "Promo codes", "Billing issues", "Tax & VAT"],
 };
 
-// sakinys burbului pagal kategoriją
+const LOREM_58 =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac sapien auctor, sollicitudin sem sit amet, luctus diam. Phasellus molestie neque vel nunc pretium mollis. Nullam euismod scelerisque ipsum id iaculis. Duis malesuada blandit dui, in molestie quam commodo nec. Sed facilisis eros arcu, at laoreet nunc auctor ut. Proin nulla massa. Curabitur vitae risus in fermentum bibendum.";
+
+/* helper */
+const uid = () => Math.random().toString(36).slice(2);
+
 function sentenceFor(c: Category) {
   switch (c) {
     case "Consultation":
@@ -50,25 +59,51 @@ function sentenceFor(c: Category) {
   }
 }
 
+/* ===== Loader (5 dashes, 1/2/3 -> unloaded/loading/loaded) ===== */
+function LoadingRail() {
+  // 1 = unloaded, 2 = loading, 3 = loaded
+  const frames: Array<[number, number, number, number, number]> = [
+    [2, 1, 1, 1, 1],
+    [3, 2, 1, 1, 1],
+    [3, 3, 2, 1, 1],
+    [3, 3, 3, 2, 1],
+    [3, 3, 3, 3, 2],
+    [3, 3, 3, 3, 3],
+  ];
+  const [f, setF] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setF((p) => (p + 1) % frames.length), 160);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="loading-rail" aria-label="Loading" role="status">
+      {frames[f].map((n, i) => (
+        <span key={i} className={`dash dash--${n}`} />
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>("chips");
   const [query, setQuery] = useState("");
-  const [answer, setAnswer] = useState("");
-
-  // --- nauja būsena: kuri kategorija parinkta
   const [category, setCategory] = useState<Category | null>(null);
+  const [showSubchips, setShowSubchips] = useState(false);
+  const [messages, setMessages] = useState<Msg[]>([]);
 
   const dockRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement | null>(null);
+  const logRef = useRef<HTMLDivElement>(null);
 
-  // ===== Helpers =====
+  /* textarea helpers */
   function findTextarea(): HTMLTextAreaElement | null {
     const root = dockRef.current;
     if (!root) return null;
     return (root.querySelector("textarea.input-field") as HTMLTextAreaElement | null) ?? null;
   }
-
   function focusTextarea() {
     taRef.current = findTextarea();
     const el = taRef.current;
@@ -80,7 +115,7 @@ export default function App() {
     });
   }
 
-  // ===== Dock height → CSS var --dock-h =====
+  /* dock height -> --dock-h */
   useEffect(() => {
     const el = dockRef.current;
     if (!el) return;
@@ -92,30 +127,25 @@ export default function App() {
     return () => ro.disconnect();
   }, []);
 
-  // ===== VisualViewport → html.kb-open (iOS/Android keyboards) =====
+  /* mobile keyboard -> html.kb-open */
   useEffect(() => {
     const root = document.documentElement;
     if (!open) {
       root.classList.remove("kb-open");
       return;
     }
-
     const vv = (window as any).visualViewport as VisualViewport | undefined;
     const THRESHOLD = 240;
-
     let base = vv ? vv.height : window.innerHeight;
-
     const update = () => {
       const h = vv ? vv.height : window.innerHeight;
       const delta = base - h;
       if (delta > THRESHOLD) root.classList.add("kb-open");
       else root.classList.remove("kb-open");
     };
-
     const refreshBase = () => {
       base = vv ? vv.height : window.innerHeight;
     };
-
     update();
     window.addEventListener("resize", refreshBase);
     vv?.addEventListener("resize", update);
@@ -128,64 +158,89 @@ export default function App() {
     };
   }, [open]);
 
-  // ===== Actions =====
+  /* always scroll to bottom on new message */
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+  }, [messages]);
+  /* actions */
   const reset = () => {
     setView("chips");
     setQuery("");
-    setAnswer("");
     setCategory(null);
-  };
-
-  const submit = () => {
-    const q = query.trim();
-    if (!q) return;
-    setAnswer(`(demo) Answer for: ${q}`);
-    setView("answer");
+    setShowSubchips(false);
+    setMessages([]);
   };
 
   const handleOpen = () => {
     setOpen(true);
     setView("explain");
   };
-
   const handleClose = () => {
     setOpen(false);
     reset();
   };
-
   const handleBack = () => {
-    if (view === "answer") {
-      setView("typing");
-      requestAnimationFrame(() => focusTextarea());
-    } else if (view === "typing") {
+    if (view === "chat" || view === "category") {
       setView("chips");
-    } else if (view === "category") {
-      // grįžtam iš kategorijos į pradinį chipų ekraną
       setCategory(null);
-      setView("chips");
-    } else {
-      handleClose();
+      setShowSubchips(false);
+      setMessages([]);
+      setQuery("");
+      return;
     }
+    handleClose();
   };
 
-  // PRADINIO chipo paspaudimas → rodom kategorijos ekraną (nebe kopijuojam teksto į input)
+  /* top chip -> show user bubble + subchips below it */
   const pickTopChip = (v: string) => {
     const cat = v as Category;
     setCategory(cat);
+    setMessages([{ id: uid(), role: "user", text: sentenceFor(cat) }]);
+    setShowSubchips(true);
     setView("category");
   };
 
-  // Sub-chipo paspaudimas – kol kas idedam į input ir fokusas (galėsi pakeisti į submit ar kitą srautą)
+  /* subchip -> send immediately */
   const pickSubChip = (v: string) => {
-    setQuery(v);
-    setView("typing");
-    requestAnimationFrame(() => focusTextarea());
+    setShowSubchips(false);
+    send(v);
+    setView("chat");
   };
 
-  // Focus textarea automatically on "typing"
+  /* send flow: user bubble -> loader -> 58-word reply */
+  const send = (text: string) => {
+    const q = text.trim();
+    if (!q) return;
+    const loaderId = "load_" + uid();
+    setMessages((prev) => [...prev, { id: uid(), role: "user", text: q }, { id: loaderId, role: "loading" }]);
+    setQuery("");
+
+    // simulate typing delay then swap loader with assistant reply
+    setTimeout(() => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.role === "loading" && m.id === loaderId ? { id: uid(), role: "assistant", text: LOREM_58 } : m
+        )
+      );
+    }, 900);
+  };
+
+  /* input submit */
+  const submit = () => send(query);
+
+  /* focus textarea when we enter chat-ish views */
   useEffect(() => {
-    if (!open || view !== "typing") return;
-    focusTextarea();
+    if (!open) return;
+    if (view === "chips" || view === "category" || view === "chat") {
+      requestAnimationFrame(() => focusTextarea());
+    }
   }, [open, view]);
 
   return (
@@ -198,33 +253,9 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        // H1 tekstas: explanation – vienas, kituose – kitas
-        title={
-          view === "explain" ? (
-            <>
-              Welcome to the AI-
-              <span className="break--mobile">
-                <br />
-              </span>
-              powered search
-            </>
-          ) : (
-            <>
-              Hello, what are you
-              <span className="break--mobile">
-                <br />
-              </span>{" "}
-              looking
-              <span className="break--desktop">
-                <br />
-              </span>{" "}
-              for today?
-            </>
-          )
-        }
-        // paslepiam H1 tik kategorijos vaizde (Modal'e tvarkoma per showTitle)
-        showTitle={view !== "category"}
-        mode={view === "answer" ? "answer" : "default"}
+        title={view === "explain" ? "Welcome to the AI-powered search" : "Hello, what are you\nlooking for today?"}
+        showTitle={view !== "category" && messages.length === 0}
+        mode={"default"}
       >
         {view === "explain" ? (
           <Explain
@@ -235,34 +266,48 @@ export default function App() {
           />
         ) : (
           <>
-            {/* KATEGORIJOS ekranas */}
-            {view === "category" && category && (
-              <section className="category-screen" aria-live="polite">
-                <p className="user-bubble">{sentenceFor(category)}</p>
-                <p className="subquestion">What kind of information are you looking for?</p>
-                <div className="chips-block">
-                  <Chips items={SUBCHIPS[category]} onPick={pickSubChip} />
-                </div>
-              </section>
-            )}
-
-            {/* Pradiniai chipai – rodome tik "chips" ir "typing" vaizduose */}
-            {(view === "chips" || view === "typing") && (
+            {/* initial chips (only before any conversation starts) */}
+            {view === "chips" && messages.length === 0 && (
               <div className="suggestions">
                 <Chips items={CHIP_ITEMS} onPick={pickTopChip} />
               </div>
             )}
 
-            {/* Input dock OR Answer center (kaip buvo) */}
-            {view !== "answer" ? (
+            <div className="modal-body">
+              {/* chat log */}
+              <div className="chat-log" ref={logRef} aria-live="polite">
+                {messages.map((m) =>
+                  m.role === "user" ? (
+                    <div key={m.id} className="msg msg--user">
+                      <div className="msg-bubble">{m.text}</div>
+                    </div>
+                  ) : m.role === "loading" ? (
+                    <div key={m.id} className="msg msg--ai">
+                      <LoadingRail />
+                    </div>
+                  ) : (
+                    <div key={m.id} className="msg msg--ai">
+                      <p className="ai-text">{m.text}</p>
+                    </div>
+                  )
+                )}
+
+                {/* when a top category is chosen, show subchips prompt until one is clicked */}
+                {view === "category" && showSubchips && category && (
+                  <>
+                    <p className="subquestion">What kind of information are you looking for?</p>
+                    <div className="chips-block">
+                      <Chips items={SUBCHIPS[category]} onPick={pickSubChip} />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* input dock – always visible in non-explain views */}
               <div className="input-dock" ref={dockRef}>
                 <InputBubble value={query} onChange={setQuery} onSubmit={submit} placeholder="Ask anything…" />
               </div>
-            ) : (
-              <div className="answer-center">
-                <div className="answer-bubble">{answer}</div>
-              </div>
-            )}
+            </div>
           </>
         )}
       </Modal>

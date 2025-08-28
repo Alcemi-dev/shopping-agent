@@ -1,39 +1,33 @@
 /* ---- Knobs (mobile defaults) ---- */
 :root {
-  /* spacing */
   --gutter: 1.75rem; /* 28px */
-
-  /* keyboard dock spacing */
   --dock-gap-closed: var(--gutter);
   --dock-gap-open: 1rem; /* 16px */
-
-  /* measured by JS; fallback */
-  --dock-h: 7rem; /* 112px */
-
-  /* desktop geometry knobs (naudojami tik @media ≥481px) */
-  --edge-min: 1.5rem; /* 24px */
-  --edge-max: 4rem; /* 64px */
+  --dock-h: 7rem; /* 112px; JS perrašo */
+  --edge-min: 1.5rem;
+  --edge-max: 4rem;
   --edge: clamp(var(--edge-min), 6vw, var(--edge-max));
   --modal-w-desktop: 83.125rem; /* 1330px */
   --modal-h-desktop: 48.75rem; /* 780px */
+  --modal-max-h: 100svh;
+
+  /* Chat geometrija */
+  --chat-w: 20.875rem; /* 334px (mobile) – atitinka InputBubble */
+  --bubble-max: 23.75rem; /* 380px maksimalus burbulo plotis */
+  --msg-gap: 1.5rem; /* 20px tarpas tarp pranešimų */
+  --chat-bottom-pad: 1.75rem; /* ~12px „kvėpavimui“ virš inputo */
 }
 
-/* ================= Root & Backdrop (DIALOG) ================= */
-
-/* resetinam UA <dialog> stilius */
+/* ============== dialog root/backdrop ============== */
 .modal-root {
   padding: 0;
   margin: 0;
-  border: none;
+  border: 0;
   background: transparent;
 }
-
-/* uždarytas dialogas nerodomas */
 .modal-root:not([open]) {
   display: none;
 }
-
-/* atidarytas dialogas dengia visą viewport */
 .modal-root[open] {
   position: fixed;
   inset: 0;
@@ -42,32 +36,29 @@
   max-width: none;
   max-height: none;
   z-index: var(--z-modal);
-  pointer-events: auto;
 }
 @supports (height: 100dvh) {
   .modal-root[open] {
     height: 100dvh;
   }
 }
-
-/* natyvus backdrop iš <dialog> */
 .modal-root::backdrop {
   background: var(--backdrop);
-  opacity: 1; /* animacijų kol kas nedarom */
+  opacity: 1;
 }
 
-/* ================= Card (mobile base: fullscreen) ================= */
+/* ============== card (mobile fullscreen) ============== */
 .modal-card {
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: 100svh; /* fallback */
-  border: none;
-  border-radius: 0;
+  height: 100svh;
   display: flex;
   overflow: hidden;
   color: var(--text-on-dark);
-  background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center / cover no-repeat;
+  border: 0;
+  border-radius: 0;
+  background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center/cover no-repeat;
 }
 @supports (height: 100dvh) {
   .modal-card {
@@ -75,44 +66,42 @@
   }
 }
 
-/* ================= Inner container ================= */
+/* ============== inner container ============== */
 .modal-ctr {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: 0;
   width: 100%;
   height: 100%;
-  min-height: 0; /* allow inner scroll on children */
+  min-height: 0;
 }
 
-/* ================= Header (mobile) ================= */
+/* ============== header (mobile) ============== */
 .modal-head {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 1.5rem; /* 24px */
-  padding: 1rem var(--gutter); /* 16px x gutter */
-  position: relative;
+  min-height: 1.5rem;
+  padding: 1rem var(--gutter);
 }
 .icon-btn {
   appearance: none;
-  border: none;
+  border: 0;
   background: transparent;
-  padding: 0.5rem; /* 8px */
+  padding: 0.5rem;
   margin: 0;
-  width: 2.5rem; /* 40px */
-  height: 2.5rem; /* 40px */
+  width: 2.5rem;
+  height: 2.5rem;
   display: inline-grid;
   place-items: center;
   cursor: pointer;
   color: #fff;
-  transition: opacity 0.12s ease, transform 0.12s ease;
+  transition: opacity 0.12s, transform 0.12s;
 }
 .icon-btn img {
-  width: 1rem; /* 16px */
+  width: 1rem;
   height: 1rem;
   display: block;
 }
@@ -141,57 +130,52 @@
   flex: 1 1 auto;
 }
 
-/* ================= Title ================= */
+/* ============== title ============== */
 .modal-title {
   margin: 0;
   margin-top: clamp(6rem, 22vh, 12rem);
-  /* min 96px, vid. ~22% ekrano aukščio, max 192px */
   text-align: center;
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 400;
-  font-size: 1.75rem; /* 28px mobile */
+  font-size: 1.75rem;
   line-height: 1.2;
   color: var(--text-on-dark);
 }
 .break--desktop {
   display: none;
 }
+
 .break--mobile {
   display: inline;
 }
 
-/* ================= Column & Body (mobile) ================= */
+/* ============== column/body ============== */
 .modal-col {
   width: 100%;
   max-width: none;
   min-height: 0;
   margin: 0 auto;
-  gap: 1.75rem; /* 28px */
+  gap: 1.75rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  overflow: visible;
-  padding: 0;
 }
-
 .modal-body {
   width: 100%;
-  max-width: none;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* 16px */
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding-bottom: 4rem;
+  gap: 1rem;
   min-height: 0;
-  height: 100%;
-  padding: 0 0 calc(0.75rem + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
+  flex: 1 1 auto;
+  overflow: hidden; /* scroll gyvena .chat-log */
 }
 
-/* Chips — horizontal mobile rail (vizualas — styles/chips.css) */
+/* ============== suggestions ============== */
 .suggestions {
   margin: 0;
-  padding-block: 0.375rem; /* 6px */
+  padding-block: 0.375rem;
 }
 .suggestions::-webkit-scrollbar {
   display: none;
@@ -200,96 +184,59 @@
   flex: 0 0 auto;
 }
 
-/* Input dock pinned to visible viewport bottom (mobile) */
+/* ===== Input dock (mobile first) ===== */
 .input-dock {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: var(--safe-bottom);
-  z-index: 3;
-  margin: 0;
+  bottom: 32px; /* mobile offset */
+  z-index: 10;
   display: flex;
   justify-content: center;
   pointer-events: none;
-  padding: 0 var(--gutter) var(--dock-gap-closed);
+  padding: 0 var(--gutter);
   background: none;
 }
 .input-dock .input-wrap {
   pointer-events: auto;
 }
 
-/* Answer mode (mobile) */
-.modal-col.is-answer {
-  margin: 0 auto;
-  gap: 0;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.modal-col.is-answer .modal-body {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 0 0 calc(0.75rem + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
-}
-
-.answer-center {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-.answer-bubble {
-  background: rgba(255, 255, 255, 0.08);
-  color: #e7e9f2;
-  border-radius: var(--radius-md);
-  padding: 0.75rem 0.875rem; /* 12px 14px */
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  max-width: min(35rem, 90%); /* 560px */
-  margin-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-closed));
-}
-
-/* Footer (hidden on mobile) */
+/* ============== footer (hidden mobile) ============== */
 .modal-footer {
   display: none;
 }
 .powered-by {
-  height: 1.5625rem; /* 25px */
-  width: 3.8125rem; /* 61px */
+  height: 1.5625rem;
+  width: 3.8125rem;
   opacity: 0.9;
   display: block;
 }
 
-/* Kategorijos ekranas (mobile) */
+/* ============== category screen ============== */
 .category-screen {
   display: flex;
   flex-direction: column;
-  padding-inline: 1.75rem;
   align-items: center;
-  gap: 1.5rem; /* ~24px: burbulas → klausimas → subchipai */
+  gap: 1.5rem;
+  padding-inline: 1.75rem;
   margin-top: 0.5rem;
 }
-/* User bubble – Figma: 282px w, 80px h, 16px padding, 10px radius */
 .user-bubble {
   box-sizing: border-box;
   background: #dee3ff;
   color: #0a1344;
   border-radius: 10px;
-  padding: 1rem; /* 16px */
+  padding: 1rem;
   border: 1px solid #fcfcfc;
-  max-width: clamp(17.625rem, 70vw, 23.75rem); /* 282..380px */
-  min-height: 5rem; /* ~80px vizualiai */
+  max-width: clamp(17.625rem, 70vw, 23.75rem);
+  min-height: 5rem;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start; /* tekstas „remiasi“ į apačią kaip Figma */
-  line-height: 1.5; /* 24px ant 16px font-size */
+  align-items: flex-start;
+  line-height: 1.5;
   margin-left: auto;
 }
-
-/* Klausimas po burbulu – Figma md/regular 16/24, centre */
 .subquestion {
-  margin: 0.25rem 0 0.25rem;
+  margin: 4rem 0 0.75rem;
   font-size: var(--fs-16);
   line-height: 1.5;
   color: var(--text-on-dark);
@@ -300,9 +247,8 @@
 .chips-block {
   width: 100%;
   display: flex;
-  justify-content: flex-start; /* kairė */
+  justify-content: flex-start;
 }
-/* Sub-chipų tinklelis (naudoja tą patį <Chips/>) */
 .chips-block .chips-inline {
   display: flex;
   flex-wrap: wrap;
@@ -312,44 +258,108 @@
   padding: 0;
 }
 
-/* ===== Keyboard-open overrides (mobile) ===== */
-html.kb-open .modal-root[open] .modal-head {
-  padding: 0.375rem var(--gutter) 0.25rem !important; /* 6px  g  4px */
+/* ============== chat log (scroll čia) ============== */
+.chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
 }
-html.kb-open .modal-root[open] .modal-ctr .modal-col {
-  margin: 1.25rem auto 0 !important; /* 20px nuo viršaus */
-  gap: 1.125rem !important; /* 18px */
+.chat-log::-webkit-scrollbar {
+  display: none;
+}
+
+/* eilutės */
+.msg {
+  width: 100%;
+  display: flex;
+  margin: 0;
+}
+.msg + .msg {
+  margin-top: var(--msg-gap);
+} /* 40px tarpas */
+.msg--user {
+  justify-content: flex-end;
+}
+.msg--ai {
+  justify-content: flex-start;
+}
+
+/* USER bubble – pagal tekstą, bet iki 380px */
+.msg-bubble {
+  display: inline-block;
+  width: fit-content;
+  max-width: min(var(--bubble-max), 90%);
+  padding: 1rem;
+  border-radius: 10px;
+  background: #dee3ff;
+  color: #0a1344;
+  border: 1px solid rgba(252, 252, 252, 0.85);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* AI tekstas – be burbulo, tas pats max kaip user */
+.ai-text {
+  display: block;
+  margin: 0;
+  max-width: min(var(--bubble-max), 90%);
+  color: var(--text-on-dark);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ============== loading rail (be SVG) ============== */
+.loading-rail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 8px;
+}
+.dash {
+  width: 24px;
+  height: 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(31.7045px);
+  -webkit-backdrop-filter: blur(31.7045px);
+}
+.dash--1 {
+  background: rgba(254, 254, 254, 0.8);
+  background-blend-mode: soft-light;
+}
+.dash--2 {
+  background: linear-gradient(90deg, #fff -64.58%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+.dash--3 {
+  background: linear-gradient(90deg, #fff 98.62%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* ============== keyboard-open tweaks (mobile) ============== */
+html.kb-open .modal-root[open] .modal-head {
+  padding: 0.375rem var(--gutter) 0.25rem !important;
+}
+html.kb-open .modal-root[open] .modal-col {
+  margin: 1.25rem auto 0 !important;
+  gap: 1.125rem !important;
 }
 html.kb-open .modal-root[open] .suggestions {
-  padding-block: 0.25rem !important; /* 4px */
-  margin-top: 0.375rem !important; /* 6px */
+  padding-block: 0.25rem !important;
+  margin-top: 0.375rem !important;
 }
-html.kb-open .modal-root[open] .input-dock {
-  padding-bottom: calc(var(--dock-gap-open) + var(--safe-bottom)) !important;
-}
-html.kb-open .modal-root[open] .modal-body {
+html.kb-open .modal-root[open] .chat-log {
   padding-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
 }
-html.kb-open .modal-root[open] .answer-bubble {
-  margin-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
-}
 
-/* Respect reduced motion (mobile scope) */
-@media (prefers-reduced-motion: reduce) {
-  .modal-root[open] .modal-ctr .modal-col,
-  .modal-root[open] .modal-head,
-  .modal-root[open] .suggestions,
-  .modal-root[open] .input-dock,
-  .modal-root[open] .modal-body,
-  .modal-root[open] .modal-title {
-    transition: none !important;
-  }
-}
-
-/* =========================================================
-   DESKTOP overrides (≥481px)
-   ========================================================= */
+/* ============== desktop (≥481px) ============== */
 @media (min-width: 481px) {
+  :root {
+    --chat-w: 30rem;
+  } /* 480px input, burbulai max 380 kaip nurodyta */
   .modal-root[open] {
     display: flex;
     justify-content: center;
@@ -362,27 +372,25 @@ html.kb-open .modal-root[open] .answer-bubble {
     top: 50%;
     transform: translate(-50%, -50%);
     width: clamp(32.5rem, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
-    max-height: var(--modal-max-h);
     height: min(var(--modal-h-desktop), var(--modal-max-h));
     border: 1px solid var(--outline);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-elev-1);
-    background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center / cover no-repeat;
+    background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center/cover no-repeat;
   }
   .modal-card:has(.explain) {
-    background: var(--surface-modal) url("/img/background-gradient-explain.svg") center / cover no-repeat;
+    background: var(--surface-modal) url("/img/background-gradient-explain.svg") center/cover no-repeat;
   }
+
+  /* dialog container nefiksuoja scrollo – scroll tik chat-log */
   .modal-ctr {
-    align-items: stretch;
-    padding: 0.3125rem 0; /* 5px vert – minimalus */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    overflow: hidden;
+    padding: 0.3125rem 0;
   }
 
   .modal-head {
     padding: 1.125rem 1.5rem;
-  } /* 18px 24px */
+  }
   .head-back {
     display: inline-grid !important;
   }
@@ -393,7 +401,7 @@ html.kb-open .modal-root[open] .answer-bubble {
   .modal-title {
     margin-top: clamp(6rem, 16vh, 10rem);
     font-size: 1.875rem;
-  } /* 30px */
+  }
   .break--desktop {
     display: inline;
   }
@@ -403,104 +411,99 @@ html.kb-open .modal-root[open] .answer-bubble {
 
   .modal-col {
     width: 100%;
-    max-width: 30rem; /* 480px */
-    margin: 0 auto; /* 140px from top */
-    gap: 3rem; /* 48px */
-    align-items: stretch;
+    max-width: 30rem;
+    margin: 0 auto;
+    gap: 3rem;
   }
-
   .modal-body {
     max-width: 44rem;
-    display: flex;
     margin: 0 auto;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem; /* 20px */
+    gap: 1.25rem;
     padding: 0;
     overflow: visible;
+    padding-bottom: 5.5rem;
   }
 
-  /* Chips centre (vizualas – chips.css) */
   .suggestions {
-    max-width: 30rem; /* ~480px “rails” */
+    max-width: 30rem;
     margin: 0 auto;
     padding: 0;
   }
   .suggestions .chips-inline {
     display: flex;
-    flex-wrap: wrap; /* laužom į kelias eilutes */
+    flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
-    overflow: visible; /* be horiz. scroll */
+    overflow: visible;
     padding: 0;
-    scrollbar-width: auto;
-  }
-  .suggestions .chips-inline::-webkit-scrollbar {
-    display: initial;
   }
 
-  /* Dock – absolute virš footerio */
+  /* input dock virš footerio; footer fiksuotas */
   .input-dock {
-    position: absolute;
     left: 0;
     right: 0;
-    bottom: 3.5rem; /* 56px */
+    bottom: 45.85px;
     display: flex;
     justify-content: center;
     z-index: 2;
     pointer-events: none;
-    padding: 0; /* jokių papildomų gap */
+    padding: 0;
   }
   .input-dock .input-wrap {
     pointer-events: auto;
   }
 
-  /* Answer mode */
-  .modal-col.is-answer {
-    margin: 0 auto;
-    gap: 0;
-    flex: 1 1 auto;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-col.is-answer .modal-body {
-    width: 100%;
-    justify-content: center;
-    padding: 0;
-  }
-
-  /* Footer visible desktop */
   .modal-footer {
     position: absolute;
-    left: 1.375rem; /* 22px */
-    bottom: 1.125rem; /* 18px */
-    background: transparent;
-    padding: 0;
+    left: 1.375rem;
+    bottom: 1.125rem;
     display: flex;
     align-items: center;
+    background: transparent;
+    padding: 0;
   }
 
+  /* category tweaks */
   .category-screen {
     gap: 1.5rem;
     padding-inline: 0;
   }
-  .category-screen {
-    gap: 1.5rem;
-  }
   .user-bubble {
-    width: 23.75rem; /* 380px */
-    min-height: 5rem; /* ~80px */
+    width: 23.75rem;
+    min-height: 5rem;
+  }
+
+  /* Chat stulpelis centre, bet pranešimai ne per visą plotį */
+  .chat-log {
+    width: var(--chat-w);
+    max-width: 100%;
+    margin: 0 auto;
+    scrollbar-width: none;
+    padding-left: 0;
+    padding-right: 0;
+    /* svarbu: apatinis padding, kad turinys NENULYSTŲ po input'u */
+    padding-bottom: calc(var(--dock-h) + 3.5rem + 0.75rem);
+  }
+  .chat-log::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* tie patys max’ai kaip mobile */
+  .ai-text,
+  .msg-bubble {
+    max-width: var(--bubble-max);
   }
 }
 
-/* ================= Global reduced motion ================= */
+/* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .modal-root::backdrop {
     transition: none !important;
   }
 }
-
-/* Fallback (senesnėms naršyklėms be height:min()) */
 @supports not (height: min(1px, 2px)) {
   @media (min-width: 481px) {
     .modal-card {
