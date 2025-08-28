@@ -10,7 +10,7 @@
   gap: 12px;
 
   /* Dydžiai */
-  width: min(334px, calc(100vw - 2 * var(--gutter, 28px)));
+  width: 100%;
   min-height: 96px;
   max-height: 168px;
   margin: 0 auto;

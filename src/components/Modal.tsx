@@ -5,14 +5,21 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onBack?: () => void;
-  title: ReactNode; // 👈 svarbu: leidžiam ir string, ir JSX
+  title?: ReactNode;
   children: ReactNode;
   mode?: "default" | "answer";
-  showTitle?: boolean; // NEW
+  showTitle?: boolean;
 };
+
+/* Sub-komponentas: <Modal.Screen show={...}> */
+function ModalScreen({ show, children }: { show: boolean; children: ReactNode }) {
+  if (!show) return null;
+  return <>{children}</>;
+}
 
 export default function Modal({ open, onClose, onBack, title, children, mode = "default", showTitle = true }: Props) {
   const dlgRef = useRef<HTMLDialogElement | null>(null);
+  const headRef = useRef<HTMLDivElement | null>(null);
 
   // atidarymas/uždarymas per showModal/close
   useEffect(() => {
@@ -25,7 +32,7 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
     }
   }, [open]);
 
-  // Esc → onClose (dialog 'cancel' įvykis)
+  // Esc → onClose
   useEffect(() => {
     const dlg = dlgRef.current;
     if (!dlg) return;
@@ -37,7 +44,20 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
     return () => dlg.removeEventListener("cancel", onCancel);
   }, [onClose]);
 
-  // accessibility label
+  // measure header height -> --head-h (used for responsive chat height)
+  useEffect(() => {
+    const head = headRef.current;
+    if (!head) return;
+    const root = document.documentElement;
+    const ro = new ResizeObserver((entries) => {
+      const h = entries[0]?.contentRect.height ?? 0;
+      root.style.setProperty("--head-h", `${h}px`);
+    });
+    ro.observe(head);
+    return () => ro.disconnect();
+  }, []);
+
+  // accessibility props
   const labelProps =
     mode === "answer"
       ? { "aria-label": typeof title === "string" ? title : undefined }
@@ -45,6 +65,7 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
 
   return (
     <dialog
+      id="ai-modal"
       ref={dlgRef}
       className="modal-root"
       {...labelProps}
@@ -53,24 +74,24 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
       {/* STOP propagation – kad spaudžiant panelę neuždarytų */}
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-ctr">
-          <div className="modal-head" role="toolbar" aria-label="AI modal navigation">
-            <button type="button" className="head-logo-mobile" aria-label="Back" onClick={onBack ?? onClose}>
+          <div className="modal-head" role="toolbar" aria-label="AI modal navigation" ref={headRef}>
+            <button type="button" className="head-logo-mobile" onClick={onBack ?? onClose}>
               <img src="/img/logo-mobile.svg" alt="Alcemi" />
             </button>
 
-            <button className="icon-btn head-back" aria-label="Back" onClick={onBack ?? onClose}>
+            <button className="icon-btn head-back" onClick={onBack ?? onClose}>
               <img src="/img/back.svg" alt="" aria-hidden="true" />
             </button>
 
-            <div className="head-spacer" aria-hidden />
+            <div className="head-spacer" />
 
-            <button className="icon-btn head-close" aria-label="Close" onClick={onClose}>
+            <button className="icon-btn head-close" onClick={onClose}>
               <img src="/img/close.svg" alt="" aria-hidden="true" />
             </button>
           </div>
 
           <div className={`modal-col ${mode === "answer" ? "is-answer" : ""}`}>
-            {mode !== "answer" && showTitle && (
+            {mode !== "answer" && showTitle && title && (
               <h1 id="modal-title" className="modal-title">
                 {title}
               </h1>
@@ -86,3 +107,6 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
     </dialog>
   );
 }
+
+/* Attach subkomponentą */
+Modal.Screen = ModalScreen;

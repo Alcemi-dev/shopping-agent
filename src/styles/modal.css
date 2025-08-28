@@ -165,7 +165,6 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  padding-bottom: 4rem;
   gap: 1rem;
   min-height: 0;
   flex: 1 1 auto;
@@ -262,10 +261,12 @@
 .chat-log {
   flex: 1 1 auto;
   min-height: 0;
+  max-height: 520px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
   padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
+  margin-bottom: 7rem;
 }
 .chat-log::-webkit-scrollbar {
   display: none;
@@ -391,6 +392,10 @@ html.kb-open .modal-root[open] .chat-log {
   .modal-head {
     padding: 1.125rem 1.5rem;
   }
+  /* Chips screen: nuleidžiam header keliais px, kad sutaptų optiškai su kitais ekranų headeriais */
+  .modal-card:has(.suggestions) .modal-head {
+    padding-top: 1.6rem; /* buvo 1.125rem */
+  }
   .head-back {
     display: inline-grid !important;
   }
@@ -424,7 +429,6 @@ html.kb-open .modal-root[open] .chat-log {
     gap: 1.25rem;
     padding: 0;
     overflow: visible;
-    padding-bottom: 5.5rem;
   }
 
   .suggestions {
@@ -480,12 +484,17 @@ html.kb-open .modal-root[open] .chat-log {
   .chat-log {
     width: var(--chat-w);
     max-width: 100%;
+    /* Make chat height depend on device/card height instead of fixed px */
+    height: calc(min(var(--modal-h-desktop), var(--modal-max-h)) - var(--head-h, 88px) - 6rem);
+    flex: 1 1 auto;
+    min-height: 0;
     margin: 0 auto;
     scrollbar-width: none;
     padding-left: 0;
     padding-right: 0;
     /* svarbu: apatinis padding, kad turinys NENULYSTŲ po input'u */
-    padding-bottom: calc(var(--dock-h) + 3.5rem + 0.75rem);
+    padding-bottom: calc(var(--dock-h) + 4.5rem + 0.75rem);
+    margin-bottom: 8rem;
   }
   .chat-log::-webkit-scrollbar {
     display: none;
