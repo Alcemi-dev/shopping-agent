@@ -265,6 +265,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
+  scroll-behavior: smooth;
   padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
   margin-bottom: 7rem;
 }
