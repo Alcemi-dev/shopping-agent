@@ -1,68 +1,56 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
-import "../styles/modal.css";
+import { useEffect, useRef } from "react";
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onBack?: () => void;
-  title: string;
+  title: ReactNode; // 👈 svarbu: leidžiam ir string, ir JSX
   children: ReactNode;
   mode?: "default" | "answer";
+  showTitle?: boolean; // NEW
 };
 
-function withResponsiveBreaks(text: string) {
-  const m = text.match(/^(.*?\bare you)\s+(looking)\b(.*)$/i);
-  if (!m) return text;
-  const before = m[1];
-  const looking = m[2];
-  const after = m[3];
-  return (
-    <>
-      {before}
-      <span className="break--mobile" aria-hidden="true">
-        <br />
-      </span>{" "}
-      {looking}{" "}
-      <span className="break--desktop" aria-hidden="true">
-        <br />
-      </span>
-      {after.trimStart()}
-    </>
-  );
-}
+export default function Modal({ open, onClose, onBack, title, children, mode = "default", showTitle = true }: Props) {
+  const dlgRef = useRef<HTMLDialogElement | null>(null);
 
-export default function Modal({ open, onClose, onBack, title, children, mode = "default" }: Props) {
-  const [show, setShow] = useState(open);
-
-  // Mount/unmount pagal `open`
+  // atidarymas/uždarymas per showModal/close
   useEffect(() => {
-    if (open) setShow(true);
-    else if (show) setShow(false);
-  }, [open, show]);
+    const dlg = dlgRef.current;
+    if (!dlg) return;
+    if (open && !dlg.open) {
+      dlg.showModal();
+    } else if (!open && dlg.open) {
+      dlg.close();
+    }
+  }, [open]);
 
-  // ESC uždarymas kai atidaryta
+  // Esc → onClose (dialog 'cancel' įvykis)
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    const dlg = dlgRef.current;
+    if (!dlg) return;
+    const onCancel = (e: Event) => {
+      e.preventDefault();
+      onClose();
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+    dlg.addEventListener("cancel", onCancel);
+    return () => dlg.removeEventListener("cancel", onCancel);
+  }, [onClose]);
 
-  if (!show) return null;
+  // accessibility label
+  const labelProps =
+    mode === "answer"
+      ? { "aria-label": typeof title === "string" ? title : undefined }
+      : { "aria-labelledby": "modal-title" };
 
   return (
-    <div
-      id="ai-modal"
-      className="modal-root open"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      onClick={onClose}
+    <dialog
+      ref={dlgRef}
+      className="modal-root"
+      {...labelProps}
+      onClick={onClose} // click ant backdrop
     >
-      <div className="backdrop" />
+      {/* STOP propagation – kad spaudžiant panelę neuždarytų */}
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-ctr">
           <div className="modal-head" role="toolbar" aria-label="AI modal navigation">
@@ -82,9 +70,9 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
           </div>
 
           <div className={`modal-col ${mode === "answer" ? "is-answer" : ""}`}>
-            {mode !== "answer" && (
+            {mode !== "answer" && showTitle && (
               <h1 id="modal-title" className="modal-title">
-                {withResponsiveBreaks(title)}
+                {title}
               </h1>
             )}
             <div className="modal-body">{children}</div>
@@ -95,6 +83,6 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

@@ -1,13 +1,15 @@
 /* Fonts (palik tą patį CDN arba naudok savus) */
-@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,500&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap");
 
-/* Design tokens & baziniai UI utilitai */
+/* Design tokens */
 @import "./styles/tokens.css";
-@import "./styles/ui.css";
 
 /* Feature CSS (centrizuojam čia, o ne App.tsx) */
 @import "./styles/modal.css";
 @import "./styles/input-bubble.css";
+@import "./styles/background.css";
+@import "./styles/ai-button.css";
+@import "./styles/chips.css";
 
 /* ===== Base / resets ===== */
 html,

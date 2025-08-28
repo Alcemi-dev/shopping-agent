@@ -1,39 +1,93 @@
-/* horizontalus scroll – tik už modalo konteksto */
+/* ===== Base chip (mobile-first) ===== */
+.chip {
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1, 0.25rem);
+
+  min-height: 2.75rem; /* ~44px */
+  padding-inline: var(--space-3, 0.75rem);
+
+  border: none; /* default: jokio border */
+  border-radius: var(--radius-sm, 10px);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-on-dark, #fff);
+
+  font-family: var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
+  font-weight: 400;
+  font-size: var(--fs-16, 1rem);
+  line-height: 1.3;
+
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* HOVER: 1px baltas „borderis“ (per box-shadow − be layout šuolių) */
+.chip:hover {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 0 1px #fff;
+}
+
+/* LAIKANT nuspaudus – jokio borderio */
+.chip:active {
+  background: rgba(255, 255, 255, 0.26);
+  box-shadow: none !important;
+}
+
+/* TOGGLINTAS (aria-pressed="true"): toks pat fonas kaip hover */
+.chip[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+
+/* FOCUS RING: rodom tiek paprastam, tiek togglintam chip
+   (uždedam ir „1px baltą“, ir mėlyną iš tokens) */
+.chip:focus-visible:not(:active),
+.chip:focus:not(:active),
+.chip[aria-pressed="true"]:focus-visible:not(:active),
+.chip[aria-pressed="true"]:focus:not(:active) {
+  outline: none;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 0 2px #fff, /* imituoja baltą borderį */ 0 0 0 6px var(--ring-focus, #3654ff);
+}
+
+/* ===== Horizontalus rail (už modalo) — paliekam kaip buvo ===== */
 .chips-inline {
   display: flex;
-  gap: 10px;
+  gap: var(--space-4, 1rem);
   overflow-x: auto;
-  padding: 8px 4px;
+  padding: var(--space-2, 0.5rem) var(--space-1, 0.25rem);
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap; /* mobile: viena eilutė su horizontaliu scroll */
+  white-space: nowrap;
 }
 .chips-inline::-webkit-scrollbar {
   display: none;
 }
+/* Mobile/touch: kai chip togglintas, rodyk ring net ir be focus */
+@media (hover: none) and (pointer: coarse) {
+  .chip[aria-pressed="true"] {
+    /* baltas 1px + mėlynas token ring */
+    box-shadow: 0 0 0 1px #fff, 0 0 0 6px var(--ring-focus, #3654ff);
+  }
+}
 
-/* CHIPS tik šioje inline juostoje */
-.chips-inline .chip {
-  height: 47px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid var(--chip-border);
-  background: rgba(255, 255, 255, 0.1);
-  color: #fcfcfc;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 1.3;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.chips-inline .chip:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.chips-inline .chip:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 6px #3654ff, 0 0 0 8px #fff;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: transparent;
-}
-.chips-inline .chip[aria-pressed="true"] {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: transparent;
+/* ===== Desktop patobulinimai ===== */
+@media (min-width: 481px) {
+  .chip {
+    min-height: 2.9375rem; /* 47px */
+    font-size: 1.125rem; /* ~18px */
+    padding-inline: var(--space-3, 0.75rem);
+  }
+  .chips-inline {
+    overflow: visible;
+    flex-wrap: wrap; /* <— svarbiausia! */
+    justify-content: center;
+    white-space: normal;
+    gap: 1rem; /* ~16px */
+    padding: 0;
+  }
 }
