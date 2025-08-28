@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import "../styles/explain.css";
+import CtaButton from "./CtaButton";
 
 type Props = {
   onContinue: () => void;
@@ -45,9 +46,7 @@ const Explain: FC<Props> = ({ onContinue }) => {
       </ul>
 
       <div className="explain-cta-wrap">
-        <button type="button" className="explain-cta" onClick={onContinue}>
-          Got it, let’s go!
-        </button>
+        <CtaButton onClick={onContinue}>Got it, let’s go!</CtaButton>
       </div>
     </section>
   );
