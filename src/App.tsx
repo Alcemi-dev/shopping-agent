@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Background, AiButton, Modal, Chips, InputBubble } from "./components";
-import Explain from "./components/Explain";
+import { Background, AiButton, Modal, InputBubble } from "./components";
+import ExplainScreen from "./screens/ExplainScreen";
+import ChipsScreen from "./screens/ChipsScreen";
+import CategoryScreen from "./screens/CategoryScreen";
+import ChatScreen from "./screens/ChatScreen";
 
 /* ===== Types ===== */
 type View = "explain" | "chips" | "category" | "chat";
@@ -59,33 +62,6 @@ function sentenceFor(c: Category) {
   }
 }
 
-/* ===== Loader (5 dashes, 1/2/3 -> unloaded/loading/loaded) ===== */
-function LoadingRail() {
-  // 1 = unloaded, 2 = loading, 3 = loaded
-  const frames: Array<[number, number, number, number, number]> = [
-    [2, 1, 1, 1, 1],
-    [3, 2, 1, 1, 1],
-    [3, 3, 2, 1, 1],
-    [3, 3, 3, 2, 1],
-    [3, 3, 3, 3, 2],
-    [3, 3, 3, 3, 3],
-  ];
-  const [f, setF] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setF((p) => (p + 1) % frames.length), 160);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <div className="loading-rail" aria-label="Loading" role="status">
-      {frames[f].map((n, i) => (
-        <span key={i} className={`dash dash--${n}`} />
-      ))}
-    </div>
-  );
-}
-
 export default function App() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>("chips");
@@ -95,25 +71,6 @@ export default function App() {
   const [messages, setMessages] = useState<Msg[]>([]);
 
   const dockRef = useRef<HTMLDivElement>(null);
-  const taRef = useRef<HTMLTextAreaElement | null>(null);
-  const logRef = useRef<HTMLDivElement>(null);
-
-  /* textarea helpers */
-  function findTextarea(): HTMLTextAreaElement | null {
-    const root = dockRef.current;
-    if (!root) return null;
-    return (root.querySelector("textarea.input-field") as HTMLTextAreaElement | null) ?? null;
-  }
-  function focusTextarea() {
-    taRef.current = findTextarea();
-    const el = taRef.current;
-    if (!el) return;
-    requestAnimationFrame(() => {
-      el.focus();
-      el.selectionStart = el.value.length;
-      el.selectionEnd = el.value.length;
-    });
-  }
 
   /* dock height -> --dock-h */
   useEffect(() => {
@@ -158,17 +115,6 @@ export default function App() {
     };
   }, [open]);
 
-  /* always scroll to bottom on new message */
-  useEffect(() => {
-    const el = logRef.current;
-    if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollTo({
-        top: el.scrollHeight,
-        behavior: "smooth",
-      });
-    });
-  }, [messages]);
   /* actions */
   const reset = () => {
     setView("chips");
@@ -198,7 +144,6 @@ export default function App() {
     handleClose();
   };
 
-  /* top chip -> show user bubble + subchips below it */
   const pickTopChip = (v: string) => {
     const cat = v as Category;
     setCategory(cat);
@@ -207,14 +152,12 @@ export default function App() {
     setView("category");
   };
 
-  /* subchip -> send immediately */
   const pickSubChip = (v: string) => {
     setShowSubchips(false);
     send(v);
     setView("chat");
   };
 
-  /* send flow: user bubble -> loader -> 58-word reply */
   const send = (text: string) => {
     const q = text.trim();
     if (!q) return;
@@ -222,7 +165,6 @@ export default function App() {
     setMessages((prev) => [...prev, { id: uid(), role: "user", text: q }, { id: loaderId, role: "loading" }]);
     setQuery("");
 
-    // simulate typing delay then swap loader with assistant reply
     setTimeout(() => {
       setMessages((prev) =>
         prev.map((m) =>
@@ -232,16 +174,12 @@ export default function App() {
     }, 900);
   };
 
-  /* input submit */
-  const submit = () => send(query);
-
-  /* focus textarea when we enter chat-ish views */
-  useEffect(() => {
-    if (!open) return;
-    if (view === "chips" || view === "category" || view === "chat") {
-      requestAnimationFrame(() => focusTextarea());
+  const submit = () => {
+    if (query.trim()) {
+      send(query);
+      if (view !== "chat") setView("chat"); // pereis į chat view
     }
-  }, [open, view]);
+  };
 
   return (
     <div className="app-root">
@@ -255,60 +193,32 @@ export default function App() {
         onBack={handleBack}
         title={view === "explain" ? "Welcome to the AI-powered search" : "Hello, what are you\nlooking for today?"}
         showTitle={view !== "category" && messages.length === 0}
-        mode={"default"}
       >
-        {view === "explain" ? (
-          <Explain
-            onContinue={() => {
-              setView("chips");
-              requestAnimationFrame(() => focusTextarea());
-            }}
+        <Modal.Screen show={view === "explain"}>
+          <ExplainScreen onContinue={() => setView("chips")} />
+        </Modal.Screen>
+
+        <Modal.Screen show={view === "chips"}>
+          <ChipsScreen items={CHIP_ITEMS} onPick={pickTopChip} />
+        </Modal.Screen>
+
+        {/* Chat log turi visada būti viršuje */}
+        <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
+          <ChatScreen
+            messages={messages}
+            extra={
+              view === "category" &&
+              category &&
+              showSubchips && <CategoryScreen items={SUBCHIPS[category]} onPick={pickSubChip} />
+            }
           />
-        ) : (
-          <>
-            {/* initial chips (only before any conversation starts) */}
-            {view === "chips" && messages.length === 0 && (
-              <div className="suggestions">
-                <Chips items={CHIP_ITEMS} onPick={pickTopChip} />
-              </div>
-            )}
+        </Modal.Screen>
 
-            <div className="modal-body">
-              {/* chat log */}
-              <div className="chat-log" ref={logRef} aria-live="polite">
-                {messages.map((m) =>
-                  m.role === "user" ? (
-                    <div key={m.id} className="msg msg--user">
-                      <div className="msg-bubble">{m.text}</div>
-                    </div>
-                  ) : m.role === "loading" ? (
-                    <div key={m.id} className="msg msg--ai">
-                      <LoadingRail />
-                    </div>
-                  ) : (
-                    <div key={m.id} className="msg msg--ai">
-                      <p className="ai-text">{m.text}</p>
-                    </div>
-                  )
-                )}
-
-                {/* when a top category is chosen, show subchips prompt until one is clicked */}
-                {view === "category" && showSubchips && category && (
-                  <>
-                    <p className="subquestion">What kind of information are you looking for?</p>
-                    <div className="chips-block">
-                      <Chips items={SUBCHIPS[category]} onPick={pickSubChip} />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* input dock – always visible in non-explain views */}
-              <div className="input-dock" ref={dockRef}>
-                <InputBubble value={query} onChange={setQuery} onSubmit={submit} placeholder="Ask anything…" />
-              </div>
-            </div>
-          </>
+        {/* Input visur, išskyrus explain */}
+        {view !== "explain" && (
+          <div className="input-dock" ref={dockRef}>
+            <InputBubble value={query} onChange={setQuery} onSubmit={submit} placeholder="Ask anything…" />
+          </div>
         )}
       </Modal>
     </div>
