@@ -14,8 +14,10 @@ export type Product = {
   rating?: number; // pvz. 4.8
   reviews?: number; // pvz. 20
 };
+
 export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra?: React.ReactNode }) {
   const logRef = useRef<HTMLDivElement>(null);
+
   // 👇 filtruojam dublikatus pagal id
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
@@ -28,8 +30,12 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
 
   useEffect(() => {
     const el = logRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    if (!el || uniqueMessages.length === 0) return;
+
+    // visada scrollinam į apačią (įskaitant produktus)
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [uniqueMessages, extra]);
+
   return (
     <div className="chat-log" ref={logRef} aria-live="polite">
       {uniqueMessages.map((m) => {
@@ -63,7 +69,6 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
                 onSelect={(label) => {
                   const chosen = act.actions.find((a) => a.label === label);
                   if (chosen) {
-                    // čia gali paleisti tą pačią logiką kaip paspaudus chip anksčiau
                     console.log("User selected:", chosen.value);
                   }
                 }}
@@ -88,12 +93,11 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
   );
 }
 
-/* === ProductMessage (užrezervuoja vietą ir iškviečia overlay) === */
 function ProductMessage({ products, header, footer }: { products: Product[]; header?: string; footer?: string }) {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const rect = useAnchorRect(anchorEl);
 
-  // 🔽 perskaitom --dock-h ir pridedam rezervo apačioje
+  // --dock-h
   const [dockH, setDockH] = useState(0);
   useEffect(() => {
     const v = getComputedStyle(document.documentElement).getPropertyValue("--dock-h").trim();
@@ -101,8 +105,22 @@ function ProductMessage({ products, header, footer }: { products: Product[]; hea
     setDockH(px);
   }, []);
 
-  const base = products.length === 1 ? 420 : 320; // vizualinė juostos+teksto bazė
-  const reserve = Math.max(0, dockH + 150); // papildomas „oro“ tarpas virš input
+  // Desktop detekcija pagal tavo breakpoint (≥ 481px)
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 481px)");
+    const apply = (e: MediaQueryList | MediaQueryListEvent) => setIsDesktop("matches" in e ? e.matches : mq.matches);
+    apply(mq);
+    if (mq.addEventListener) mq.addEventListener("change", apply as any);
+    else mq.addListener(apply as any);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", apply as any);
+      else mq.removeListener(apply as any);
+    };
+  }, []);
+
+  const base = products.length === 1 ? 420 : 320;
+  const reserve = isDesktop ? Math.max(0, dockH + 120) : 0;
 
   return (
     <div className="msg msg--ai">

@@ -314,7 +314,7 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        title={view === "explain" ? "Welcome to the AI-powered search" : "Hello, what are you\nlooking for today?"}
+        title={view === "explain" ? "How to use Quick Search" : "Hello, what are you\nlooking for today?"}
         showTitle={view !== "category" && messages.length === 0}
       >
         <Modal.Screen show={view === "explain"}>

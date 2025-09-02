@@ -12,23 +12,20 @@ const Explain: FC<Props> = ({ onContinue }) => {
       <ul className="explain-list" role="list">
         <li className="explain-item">
           <span className="explain-icon" aria-hidden="true">
-            <img src="/img/speak-icon.svg" alt="" />
-          </span>
-          <div className="explain-text">
-            <h3 className="explain-subtitle">Speak with you</h3>
-            <p className="explain-desc">Yes, volume up! Choose and have a voice conversation</p>
-          </div>
-        </li>
-
-        <li className="explain-item">
-          <span className="explain-icon" aria-hidden="true">
             <img src="/img/find-icon.svg" alt="" />
           </span>
           <div className="explain-text">
-            <h3 className="explain-subtitle">Find perfect product</h3>
-            <p className="explain-desc">
-              Find the perfect match in the whole shop inventory based on your individual needs
-            </p>
+            <h3 className="explain-subtitle">Find Perfect Product</h3>
+            <p className="explain-desc">Explain what you're looking for just like you would to a store assistant</p>
+          </div>
+        </li>
+        <li className="explain-item">
+          <span className="explain-icon" aria-hidden="true">
+            <img src="/img/speak-icon.svg" alt="" />
+          </span>
+          <div className="explain-text">
+            <h3 className="explain-subtitle">Voice Chat</h3>
+            <p className="explain-desc">Choose voice mode and have a natural back-and-forth conversation</p>
           </div>
         </li>
 
@@ -37,16 +34,14 @@ const Explain: FC<Props> = ({ onContinue }) => {
             <img src="/img/get-info-icon.svg" alt="" />
           </span>
           <div className="explain-text">
-            <h3 className="explain-subtitle">Get information about anything</h3>
-            <p className="explain-desc">
-              Tracking your order? Product care information? We’ve got you covered on everything and anything.
-            </p>
+            <h3 className="explain-subtitle">Get Instant Answers</h3>
+            <p className="explain-desc">Fast help with anything from tracking your order to receiving a consultation</p>
           </div>
         </li>
       </ul>
 
       <div className="explain-cta-wrap">
-        <CtaButton onClick={onContinue}>Got it, let’s go!</CtaButton>
+        <CtaButton onClick={onContinue}>Get Started</CtaButton>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "../styles/products-strip.css";
 import type { Product } from "../screens/ChatScreen";
-import { useDragScroll } from "../hooks/useDragScroll"; // 👈 import
+import { useDragScroll } from "../hooks/useDragScroll";
 
 type Props = {
   products: Product[];
@@ -19,6 +19,14 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
 
+  // 👇 kai tik produktai atsiranda ar pasikeičia, scrollinam į apačią
+  useEffect(() => {
+    const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
+    if (chatLog) {
+      chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
+    }
+  }, [products, header, footer]);
+
   if (!overlayRoot || !anchorRect) return null;
 
   const single = products.length === 1;
@@ -33,17 +41,14 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
         </div>
       ) : null}
 
-      {/* 👇 drag-scroll ref */}
-      <div className="products-scroll" ref={scrollRef} role="list">
+      {/* 👇 scroll konteineris su klase pagal kiekį */}
+      <div className={`products-scroll${single ? " is-single" : " is-multiple"}`} ref={scrollRef} role="list">
         {products.map((p) => {
-          const isMuted = !!muted[p.id];
+          const key = String(p.id);
+          const isMuted = !!muted[key];
+
           return (
-            <article
-              key={p.id}
-              role="listitem"
-              className={`product-card${isMuted ? " is-muted" : ""}`}
-              aria-label={p.title}
-            >
+            <article key={key} className={`product-card${isMuted ? " is-muted" : ""}`} aria-label={p.title}>
               <div className="image-wrap">
                 <img className="product-img" src={p.img} alt={p.title} />
 
@@ -53,7 +58,14 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
                     className="circle"
                     aria-label="Dislike"
                     aria-pressed={isMuted}
-                    onClick={() => setMuted((m) => ({ ...m, [p.id]: !m[p.id] }))}
+                    onClick={() => {
+                      setMuted((m) => {
+                        const key = String(p.id);
+                        const next = { ...m, [key]: !m[key] };
+                        console.log("Dislike toggled:", key, "=>", !m[key], next);
+                        return next;
+                      });
+                    }}
                   >
                     <img src="/img/dislike.svg" alt="" />
                   </button>

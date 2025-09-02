@@ -59,12 +59,12 @@ export type Msg = UserMsg | AssistantTextMsg | LoadingMsg | ProductsMsg | Action
 
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
+  "Payment",
+  "Returns",
   "Consultation",
   "Order status",
-  "Shipping & delivery",
-  "Returns",
   "Product Information",
-  "Payment",
+  "Shipping & delivery",
 ];
 
 export const SUBCHIPS: Record<Category, string[]> = {

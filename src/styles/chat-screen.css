@@ -81,3 +81,11 @@
   background: linear-gradient(90deg, #fff 98.62%, #0e248b 100%);
   box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
 }
+
+/* Desktop override */
+@media (min-width: 481px) {
+  .chat-log {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

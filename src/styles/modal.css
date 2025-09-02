@@ -413,12 +413,15 @@ html.kb-open .modal-root[open] .chat-log {
   pointer-events: none;
 }
 
-#modal-overlays,
-.products-wrap,
-.products-strip,
-.products-scroll {
-  pointer-events: auto !important;
+#modal-overlays .products-wrap,
+#modal-overlays .products-strip,
+#modal-overlays .products-scroll,
+#modal-overlays .product-card,
+#modal-overlays .reactions,
+#modal-overlays .add-btn {
+  pointer-events: auto; /* 👈 tikras turinys gauna paspaudimus */
 }
+
 /* Tik desktopui, kad neišliptų iš mobile */
 @media (min-width: 481px) {
   .modal-ctr,
