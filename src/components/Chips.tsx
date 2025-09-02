@@ -1,8 +1,26 @@
 import { useEffect, useRef } from "react";
 
-type Props = { items: string[]; onPick: (val: string) => void };
+/** Galima paduoti tiesiog string'ą arba struktūrą su label/value */
+export type ChipItem = string | { label: string; value: string; disabled?: boolean };
 
-export default function Chips({ items, onPick }: Props) {
+function getLabel(it: ChipItem) {
+  return typeof it === "string" ? it : it.label;
+}
+function getValue(it: ChipItem) {
+  return typeof it === "string" ? it : it.value ?? it.label;
+}
+
+type Props = {
+  items: ChipItem[];
+  /** SENAS API: palikta suderinamumui (nelaikoma privaloma) */
+  onPick?: (val: string) => void;
+  /** NAUJAS API: patogesnis „no products/actions“ naudojimui */
+  onSelect?: (val: string, item: ChipItem) => void;
+  /** (optional) papildomos klasės, jei kada prireiktų kitur */
+  className?: string;
+};
+
+export default function Chips({ items, onPick, onSelect, className }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const dragging = useRef(false);
@@ -24,7 +42,7 @@ export default function Chips({ items, onPick }: Props) {
   return (
     <div
       ref={wrapRef}
-      className="chips-inline"
+      className={`chips-inline${className ? ` ${className}` : ""}`}
       role="list"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -71,20 +89,31 @@ export default function Chips({ items, onPick }: Props) {
         dragging.current = false;
       }}
     >
-      {items.map((label) => (
-        <button
-          key={label}
-          type="button"
-          className="chip"
-          onClick={(e) => {
-            if (dragging.current) return;
-            onPick(label);
-            (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });
-          }}
-        >
-          <span className="u-chip__label">{label}</span>
-        </button>
-      ))}
+      {items.map((item) => {
+        const label = getLabel(item);
+        const value = getValue(item);
+        const disabled = typeof item === "string" ? false : !!item.disabled;
+
+        return (
+          <button
+            key={value}
+            type="button"
+            className="chip"
+            role="listitem"
+            disabled={disabled}
+            onClick={(e) => {
+              if (dragging.current || disabled) return;
+              // palaikome SENĄ API
+              onPick?.(value);
+              // ir NAUJĄ API
+              onSelect?.(value, item);
+              (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });
+            }}
+          >
+            <span className="u-chip__label">{label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

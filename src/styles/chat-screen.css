@@ -1,0 +1,83 @@
+/* === Chat log (scroll čia) === */
+.chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
+  margin-bottom: 7rem;
+}
+.chat-log::-webkit-scrollbar {
+  display: none;
+}
+
+/* eilutės */
+.msg {
+  width: 100%;
+  display: flex;
+  margin: 0;
+}
+.msg + .msg {
+  margin-top: var(--msg-gap);
+}
+.msg--user {
+  justify-content: flex-end;
+}
+.msg--ai {
+  justify-content: flex-start;
+}
+
+/* USER bubble – pagal tekstą */
+.msg-bubble {
+  display: inline-block;
+  width: fit-content;
+  max-width: min(var(--bubble-max), 90%);
+  padding: 1rem;
+  border-radius: 10px;
+  background: #dee3ff;
+  color: #0a1344;
+  border: 1px solid rgba(252, 252, 252, 0.85);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* AI tekstas */
+.ai-text {
+  display: block;
+  margin: 0;
+  max-width: min(var(--bubble-max), 90%);
+  color: var(--text-on-dark);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* === LoadingRail animacija === */
+.loading-rail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 8px;
+}
+.dash {
+  width: 24px;
+  height: 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(31.7045px);
+  -webkit-backdrop-filter: blur(31.7045px);
+}
+.dash--1 {
+  background: rgba(254, 254, 254, 0.8);
+  background-blend-mode: soft-light;
+}
+.dash--2 {
+  background: linear-gradient(90deg, #fff -64.58%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+.dash--3 {
+  background: linear-gradient(90deg, #fff 98.62%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}

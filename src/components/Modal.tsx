@@ -71,7 +71,6 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
       {...labelProps}
       onClick={onClose} // click ant backdrop
     >
-      {/* STOP propagation – kad spaudžiant panelę neuždarytų */}
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-ctr">
           <div className="modal-head" role="toolbar" aria-label="AI modal navigation" ref={headRef}>
@@ -103,10 +102,12 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
             <img className="powered-by" src="/img/logo-desktop.svg" alt="Powered by Alcemi" />
           </div>
         </div>
+
+        {/* Čia pridedam host elementą produktų juostai */}
+        <div id="modal-overlays" aria-hidden />
       </div>
     </dialog>
   );
 }
 
-/* Attach subkomponentą */
 Modal.Screen = ModalScreen;
