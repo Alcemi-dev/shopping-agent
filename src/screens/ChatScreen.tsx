@@ -4,18 +4,24 @@ import { ProductsStripMessage } from "../components/ProductsStripMessage";
 import { useAnchorRect } from "../hooks/useAnchorRect";
 import Chips from "../components/Chips";
 import "../styles/chat-screen.css";
-import type { Msg, ProductsMsg, ActionsMsg } from "../types"; // <-- import common Msg type
+import type { Msg, ProductsMsg, ActionsMsg } from "../types";
 
 export type Product = {
   id: string;
   title: string;
   img: string;
   price?: number | string;
-  rating?: number; // pvz. 4.8
-  reviews?: number; // pvz. 20
+  rating?: number;
+  reviews?: number;
 };
 
-export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra?: React.ReactNode }) {
+type ChatScreenProps = {
+  messages: Msg[];
+  extra?: React.ReactNode;
+  onAddToCart?: (title: string) => void; // 🛒 callback
+};
+
+export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
 
   // 👇 filtruojam dublikatus pagal id
@@ -31,8 +37,6 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
   useEffect(() => {
     const el = logRef.current;
     if (!el || uniqueMessages.length === 0) return;
-
-    // visada scrollinam į apačią (įskaitant produktus)
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [uniqueMessages, extra]);
 
@@ -57,7 +61,15 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
 
         if (m.kind === "products") {
           const prod = m as ProductsMsg;
-          return <ProductMessage key={m.id} products={prod.products} header={prod.header} footer={prod.footer} />;
+          return (
+            <ProductMessage
+              key={m.id}
+              products={prod.products}
+              header={prod.header}
+              footer={prod.footer}
+              onAddToCart={onAddToCart}
+            />
+          );
         }
 
         if (m.kind === "actions") {
@@ -93,7 +105,17 @@ export default function ChatScreen({ messages, extra }: { messages: Msg[]; extra
   );
 }
 
-function ProductMessage({ products, header, footer }: { products: Product[]; header?: string; footer?: string }) {
+function ProductMessage({
+  products,
+  header,
+  footer,
+  onAddToCart,
+}: {
+  products: Product[];
+  header?: string;
+  footer?: string;
+  onAddToCart?: (title: string) => void;
+}) {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const rect = useAnchorRect(anchorEl);
 
@@ -105,7 +127,7 @@ function ProductMessage({ products, header, footer }: { products: Product[]; hea
     setDockH(px);
   }, []);
 
-  // Desktop detekcija pagal tavo breakpoint (≥ 481px)
+  // Desktop detekcija (≥ 481px)
   const [isDesktop, setIsDesktop] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 481px)");
@@ -127,7 +149,13 @@ function ProductMessage({ products, header, footer }: { products: Product[]; hea
       <div ref={setAnchorEl}>
         <OverlayAnchor height={base + reserve} />
       </div>
-      <ProductsStripMessage products={products} anchorRect={rect} header={header} footer={footer} />
+      <ProductsStripMessage
+        products={products}
+        anchorRect={rect}
+        header={header}
+        footer={footer}
+        onAddToCart={onAddToCart} // 🛒 perduodam toliau
+      />
     </div>
   );
 }

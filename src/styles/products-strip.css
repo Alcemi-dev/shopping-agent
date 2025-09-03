@@ -223,9 +223,96 @@
   font-size: 16px;
 }
 
+/* Success block (common) */
+.success-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  height: 72px;
+  background: rgba(252, 252, 252, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 8px;
+  margin-top: 12px;
+  box-sizing: border-box;
+  width: 100%; /* default full width */
+  max-width: 334px; /* mobile default */
+}
+
+.success-block .checkmark {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-block .success-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+
+.success-block .product-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #fcfcfc;
+  font-weight: 600;
+  width: 100%;
+}
+
+.success-block .product-line .product-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.success-block .product-line .product-qty {
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.success-block .added {
+  font-size: 13px;
+  font-weight: 400;
+  color: #fcfcfc;
+  opacity: 0.85;
+}
+
+.success-block .view-cart {
+  flex-shrink: 0;
+  border: 1px solid #fcfcfc;
+  border-radius: 35px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fcfcfc;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.success-block .view-cart:hover {
+  background: #fcfcfc;
+  color: #02092e;
+}
+
 /* === OverlayAnchor fix === */
 [data-overlay-anchor] {
   pointer-events: none !important;
+}
+
+.msg.msg--ai:has([data-overlay-anchor]) {
+  pointer-events: none; /* neleisti blokuoti */
+  background: transparent !important;
 }
 
 /* === Desktop overrides === */
@@ -311,4 +398,16 @@
     border-bottom-left-radius: 10;
     margin-left: -1px;
   }
+
+  .success-block {
+    max-width: 418px;
+  }
+}
+.add-btn,
+.btn-primary,
+.btn-secondary,
+.view-cart {
+  position: relative;
+  z-index: 50;
+  cursor: pointer;
 }

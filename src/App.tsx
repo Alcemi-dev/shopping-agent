@@ -8,9 +8,9 @@ import { MOCK_PRODUCTS } from "./data/products";
 import type { Msg, Category, View, Collected } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
 
-/* ================== MODULE-LEVEL (persistuoja per StrictMode remount) ================== */
-const processedLoaderIds = new Set<string>(); // kuriuos loaderius jau apdorojom
-const pendingQueries = new Map<string, string>(); // loaderId -> klausimas (q)
+/* ================== MODULE-LEVEL ================== */
+const processedLoaderIds = new Set<string>();
+const pendingQueries = new Map<string, string>();
 
 /* helper */
 const uid = () => Math.random().toString(36).slice(2);
@@ -40,6 +40,9 @@ export default function App() {
   const [showSubchips, setShowSubchips] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [, setCollected] = useState<Collected>({}); // state machine memory
+
+  // 🛒 Cart state
+  const [cartCount, setCartCount] = useState(0);
 
   const dockRef = useRef<HTMLDivElement>(null);
 
@@ -131,7 +134,7 @@ export default function App() {
     setView("chat");
   };
 
-  // === SEND (jokių async čia – tik įrašom loaderį ir užregistruojam query) ===
+  // === SEND (užregistruoja query) ===
   const send = (text: string) => {
     const q = text.trim();
     if (!q) return;
@@ -139,21 +142,17 @@ export default function App() {
     const userMsg: Msg = { id: uid(), role: "user", kind: "text", text: q };
     const loaderId = uid();
 
-    // neleisti, kad keli loaderiai iškart atsirastų
     setMessages((prev) => {
       const last = prev[prev.length - 1];
-      if (last?.kind === "loading") {
-        return prev; // jau laukiam atsakymo → nebededam dar vieno
-      }
+      if (last?.kind === "loading") return prev;
       return [...prev, userMsg, { id: loaderId, role: "system", kind: "loading" } as Msg];
     });
 
-    // registruojam query
     pendingQueries.set(loaderId, q);
     setQuery("");
   };
 
-  // === STATE MACHINE EFFECT (reaguoja į naują loaderį, apdoroja TIK KARTĄ) ===
+  // === STATE MACHINE EFFECT ===
   useEffect(() => {
     let loader: Msg | undefined;
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -166,9 +165,7 @@ export default function App() {
     if (!loader) return;
     if (processedLoaderIds.has(loader.id)) return;
 
-    // iškart pažymim, kad šitas loader jau tvarkomas
     processedLoaderIds.add(loader.id);
-
     const q = pendingQueries.get(loader.id) ?? "";
 
     const t = setTimeout(() => {
@@ -197,12 +194,7 @@ export default function App() {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === loader!.id
-                ? ({
-                    ...m,
-                    role: "assistant",
-                    kind: "text",
-                    text: "Great! What’s your budget range?",
-                  } as Msg)
+                ? ({ ...m, role: "assistant", kind: "text", text: "Great! What’s your budget range?" } as Msg)
                 : m
             )
           );
@@ -212,7 +204,6 @@ export default function App() {
         // 3) pasirinkimas pagal tekstą
         if (!current.budget) {
           const newState = { ...current, budget: q.toLowerCase() };
-
           const scenario = q.toLowerCase().includes("none")
             ? "none"
             : q.toLowerCase().includes("many")
@@ -251,7 +242,6 @@ export default function App() {
               )
             );
           } else {
-            // NO RESULTS → VISKĄ viename update
             const actionsId = loader.id + "-actions";
             const supportId = loader.id + "-support";
 
@@ -286,10 +276,8 @@ export default function App() {
                 ])
             );
           }
-
           return newState;
         }
-
         return current;
       });
     }, 900);
@@ -304,6 +292,12 @@ export default function App() {
     }
   };
 
+  // 🛒 Add-to-cart handler
+  const handleAddToCart = (title: string) => {
+    console.log("Added:", title);
+    setCartCount((c) => c + 1);
+  };
+
   return (
     <div className="app-root">
       <Background />
@@ -314,8 +308,19 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        title={view === "explain" ? "How to use Quick Search" : "Hello, what are you\nlooking for today?"}
+        modalTitle={view === "explain" ? "How to use Quick Search" : "Hello, what are you\nlooking for today?"}
         showTitle={view !== "category" && messages.length === 0}
+        rightSlot={
+          cartCount > 0 && (
+            <div className="cart-indicator">
+              <div className="cart-icon-wrap">
+                <img src="/img/cart.svg" alt="Cart" />
+                <span className="badge">{cartCount}</span>
+              </div>
+              <span className="cart-label">Cart</span>
+            </div>
+          )
+        }
       >
         <Modal.Screen show={view === "explain"}>
           <ExplainScreen onContinue={() => setView("chips")} />
@@ -328,6 +333,7 @@ export default function App() {
         <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
           <ChatScreen
             messages={messages}
+            onAddToCart={handleAddToCart}
             extra={
               view === "category" &&
               category &&

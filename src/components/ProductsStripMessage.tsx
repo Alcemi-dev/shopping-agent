@@ -9,11 +9,13 @@ type Props = {
   anchorRect: DOMRect | null;
   header?: string;
   footer?: string;
+  onAddToCart?: (title: string) => void; // 🛒 callback
 };
 
-export function ProductsStripMessage({ products, anchorRect, header, footer }: Props) {
+export function ProductsStripMessage({ products, anchorRect, header, footer, onAddToCart }: Props) {
   const overlayRoot = typeof document !== "undefined" ? document.getElementById("modal-overlays") : null;
   const [muted, setMuted] = useState<Record<string, boolean>>({});
+  const [added, setAdded] = useState(false); // 👈 CTA -> Success toggle
   const topPx = useMemo(() => (anchorRect ? anchorRect.top + window.scrollY : 0), [anchorRect]);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +27,7 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer]);
+  }, [products, header, footer, added]);
 
   if (!overlayRoot || !anchorRect) return null;
 
@@ -62,7 +64,6 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
                       setMuted((m) => {
                         const key = String(p.id);
                         const next = { ...m, [key]: !m[key] };
-                        console.log("Dislike toggled:", key, "=>", !m[key], next);
                         return next;
                       });
                     }}
@@ -74,7 +75,16 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
                   </button>
                 </div>
 
-                <button type="button" className="add-btn" aria-label="Add">
+                {/* 🛒 Add-to-cart mygtukas */}
+                <button
+                  type="button"
+                  className="add-btn"
+                  aria-label="Add"
+                  onClick={() => {
+                    onAddToCart?.(p.title);
+                    setAdded(true);
+                  }}
+                >
                   <img src="/img/add.svg" alt="" />
                 </button>
               </div>
@@ -108,13 +118,37 @@ export function ProductsStripMessage({ products, anchorRect, header, footer }: P
       {/* Footer / CTA */}
       <div className="products-contain">
         {single ? (
-          <div className="products-cta">
-            <p className="cta-q">Would you like me to add this product to your cart?</p>
-            <div className="cta-buttons">
-              <button className="btn-primary">Yes, add to cart</button>
-              <button className="btn-secondary">No</button>
+          !added ? (
+            <div className="products-cta">
+              <p className="cta-q">Would you like me to add this product to your cart?</p>
+              <div className="cta-buttons">
+                <button
+                  className="btn-primary"
+                  onClick={() => {
+                    onAddToCart?.(products[0].title);
+                    setAdded(true); // 👈 CTA -> Success block
+                  }}
+                >
+                  Yes, add to cart
+                </button>
+                <button className="btn-secondary">No</button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="success-block">
+              <div className="checkmark">
+                <img src="/img/check.svg" alt="✓" />
+              </div>
+              <div className="success-col">
+                <div className="product-line">
+                  <span className="product-name">{products[0].title}</span>
+                  <span className="product-qty">x1</span>
+                </div>
+                <span className="added">Added to cart</span>
+              </div>
+              <button className="view-cart">View cart</button>
+            </div>
+          )
         ) : null}
 
         {showFooter ? <p className="products-followup">{footer}</p> : null}
