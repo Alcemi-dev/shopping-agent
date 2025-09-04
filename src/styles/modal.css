@@ -16,21 +16,18 @@
 }
 
 /* dialog */
-.modal-root {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-}
+
 .modal-root:not([open]) {
   display: none;
 }
 .modal-root[open] {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100svh;
+  min-width: 100vw;
+  border: none;
+  min-height: 100svh;
   z-index: var(--z-modal);
+  background: none;
 }
 @supports (height: 100dvh) {
   .modal-root[open] {
@@ -38,10 +35,9 @@
   }
 }
 .modal-root::backdrop {
-  background: var(--backdrop);
+  background: rgba(0, 0, 0, 0.45); /* gali naudoti permatomą juodą */
   opacity: 1;
 }
-
 /* card */
 .modal-card {
   position: fixed;
@@ -52,6 +48,10 @@
   overflow: hidden;
   color: var(--text-on-dark);
   background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center/cover no-repeat;
+}
+.modal-card::backdrop {
+  display: ;
+  opacity: 1;
 }
 @supports (height: 100dvh) {
   .modal-card {
@@ -80,6 +80,7 @@
   justify-content: space-between;
   min-height: 1.5rem;
   padding: 1rem var(--gutter) 1rem;
+  flex-shrink: 0;
 }
 .icon-btn {
   appearance: none;

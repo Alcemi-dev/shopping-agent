@@ -1,4 +1,4 @@
-import { useEffect, useRef, forwardRef } from "react";
+import { useEffect, useRef, forwardRef, useLayoutEffect } from "react";
 
 type Props = {
   value: string;
@@ -10,21 +10,8 @@ type Props = {
 const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
   ({ value, onChange, onSubmit, placeholder = "Ask anything…" }, ref) => {
     const taRef = useRef<HTMLTextAreaElement>(null);
+    const roRef = useRef<ResizeObserver | null>(null);
     const MAX_H = 136;
-
-    function autoresize(el: HTMLTextAreaElement) {
-      el.style.height = "auto";
-      const next = Math.min(el.scrollHeight, MAX_H);
-      el.style.height = next + "px";
-      el.style.overflowY = el.scrollHeight > next ? "auto" : "hidden";
-      updateFade(el);
-    }
-
-    function resetSize(el: HTMLTextAreaElement) {
-      el.style.height = "auto"; // resetinam
-      el.style.overflowY = "hidden";
-      updateFade(el);
-    }
 
     function updateFade(el: HTMLTextAreaElement) {
       const wrap = el.closest(".input-wrap") as HTMLElement | null;
@@ -35,11 +22,63 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
       wrap.classList.toggle("scrolled", !atTop);
     }
 
+    function autoresize(el: HTMLTextAreaElement) {
+      // Saugiam perskaičiavimui — pirma nuliojam, tada matuojam
+      el.style.height = "auto";
+      const next = Math.min(el.scrollHeight, MAX_H);
+      el.style.height = next + "px";
+      el.style.overflowY = el.scrollHeight > next ? "auto" : "hidden";
+      updateFade(el);
+    }
+
+    function resetSize(el: HTMLTextAreaElement) {
+      el.style.height = "auto";
+      el.style.overflowY = "hidden";
+      updateFade(el);
+    }
+
+    // 1) Perskaičiuoti kai keičiasi value
     useEffect(() => {
       const el = taRef.current;
       if (!el) return;
       autoresize(el);
     }, [value]);
+
+    // 2) Perskaičiuoti kai keičiasi layout (breakpoint’ai, modal width ir pan.)
+    useLayoutEffect(() => {
+      const el = taRef.current;
+      if (!el) return;
+
+      // pradinė būsena
+      autoresize(el);
+
+      // ResizeObserver ant textarea ir jos wrap’o
+      const wrap = el.closest(".input-wrap") as HTMLElement | null;
+      const ro = new ResizeObserver(() => {
+        // Vengiame sinchroninio reflow — atidedam į kitą frame
+        requestAnimationFrame(() => {
+          if (taRef.current) autoresize(taRef.current);
+        });
+      });
+      ro.observe(el);
+      if (wrap) ro.observe(wrap);
+      roRef.current = ro;
+
+      // Fallback: lango resize / orientationchange
+      const onWinResize = () => {
+        if (!taRef.current) return;
+        requestAnimationFrame(() => autoresize(taRef.current!));
+      };
+      window.addEventListener("resize", onWinResize);
+      window.addEventListener("orientationchange", onWinResize);
+
+      return () => {
+        ro.disconnect();
+        roRef.current = null;
+        window.removeEventListener("resize", onWinResize);
+        window.removeEventListener("orientationchange", onWinResize);
+      };
+    }, []);
 
     return (
       <form
@@ -47,7 +86,7 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
         onSubmit={(e) => {
           e.preventDefault();
           onSubmit();
-          if (taRef.current) resetSize(taRef.current); // resetinam po submit
+          if (taRef.current) resetSize(taRef.current); // reset po submit
         }}
       >
         <textarea
@@ -69,7 +108,7 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              e.currentTarget.form?.requestSubmit(); // 🔑 triggerinam formos submitą
+              e.currentTarget.form?.requestSubmit();
               if (taRef.current) resetSize(taRef.current);
             }
           }}
