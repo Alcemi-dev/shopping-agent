@@ -1,0 +1,160 @@
+/* === Chat log (scroll čia) === */
+.chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain; /* 👈 neleidžia „per-scrollint“ */
+  -webkit-overflow-scrolling: auto; /* iOS smooth scroll, bet be bounce */
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  padding: 0 var(--gutter) 0;
+  margin-bottom: 8rem;
+}
+.chat-log::-webkit-scrollbar {
+  display: none;
+}
+
+/* eilutės */
+.msg {
+  width: 100%;
+  display: flex;
+  margin: 0;
+}
+.msg + .msg {
+  margin-top: var(--msg-gap);
+}
+.msg--user {
+  justify-content: flex-end;
+}
+.msg--ai {
+  justify-content: flex-start;
+}
+
+/* USER bubble – pagal tekstą */
+.msg-bubble {
+  display: inline-block;
+  width: fit-content;
+  max-width: min(var(--bubble-max), 90%);
+  padding: 1rem;
+  border-radius: 10px;
+  background: #dee3ff;
+  color: #0a1344;
+  border: 1px solid rgba(252, 252, 252, 0.85);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* AI tekstas */
+.ai-text {
+  display: block;
+  margin: 0;
+  max-width: min(var(--bubble-max), 100%);
+
+  color: var(--text-on-dark);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.msg.recommendation-chips .chips-inline {
+  margin-left: -2rem;
+  padding-left: 2rem;
+  margin-right: -2rem;
+  padding-right: 2rem;
+}
+.msg.support-text {
+  padding-bottom: 2rem;
+}
+
+/* === LoadingRail animacija === */
+.loading-rail {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 8px;
+}
+.dash {
+  width: 24px;
+  height: 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(31.7045px);
+  -webkit-backdrop-filter: blur(31.7045px);
+}
+.dash--1 {
+  background: rgba(254, 254, 254, 0.8);
+  background-blend-mode: soft-light;
+}
+.dash--2 {
+  background: linear-gradient(90deg, #fff -64.58%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+.dash--3 {
+  background: linear-gradient(90deg, #fff 98.62%, #0e248b 100%);
+  box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+
+.chat-head-fade {
+  position: sticky;
+  top: 0;
+  height: 44px;
+  margin-top: -44px; /* kad neužstumtų turinio */
+  background: linear-gradient(180deg, #02092e 0%, rgba(2, 9, 46, 0) 50%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Desktop override */
+@media (min-width: 610px) {
+  .chat-log {
+    width: 44rem;
+    margin-left: -7rem;
+    margin-bottom: 10.8rem;
+  }
+
+  .ai-text {
+    padding-left: 5.4rem;
+  }
+
+  .msg--user {
+    padding-right: 5.4rem;
+  }
+  .modal-ctr {
+    padding-bottom: 0;
+  }
+
+  .loading-rail {
+    padding-left: 5.4rem;
+  }
+
+  .subquestion {
+    padding-left: 5.4rem;
+  }
+
+  .chips-inline {
+    padding-left: 5.4rem;
+    justify-content: left;
+  }
+
+  .products-header {
+    padding-bottom: 1rem;
+  }
+
+  .products-followup {
+    padding-top: 1rem;
+  }
+  .msg.recommendation-chips .chips-inline {
+    padding-left: 7.4rem;
+  }
+}
+
+/*.chat-foot-fade {
+  position: sticky;
+  bottom: 0;
+  height: 40px;
+  margin-bottom: -100px;
+  background: linear-gradient(180deg, rgba(59, 84, 218, 0) 0%, #3b54da 100%);
+  filter: blur(7px);
+  pointer-events: none;
+  z-index: 5;
+}*/

@@ -69,7 +69,7 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              onSubmit();
+              e.currentTarget.form?.requestSubmit(); // 🔑 triggerinam formos submitą
               if (taRef.current) resetSize(taRef.current);
             }
           }}

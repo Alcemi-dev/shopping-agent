@@ -4,7 +4,7 @@
 :root {
   /* Col widths (Figma) */
   --explain-col-w-mobile: 20.875rem; /* 334px */
-  --explain-col-w-desktop: 27.5rem; /* 440px */
+  --explain-col-w-desktop: 22rem; /* 440px */
 
   /* Text column widths (Figma) */
   --explain-text-w-mobile: 17.625rem; /* 282px = 334 - 32 - 20 */
@@ -132,7 +132,7 @@
 }
 
 /* Desktop */
-@media (min-width: 481px) {
+@media (min-width: 610px) {
   /* Pastatom koloną taip, kad H1 startas būtų ~132px nuo viršaus */
   .modal-card:has(.explain) .modal-col {
     margin-top: 1rem;

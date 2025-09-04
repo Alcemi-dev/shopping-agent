@@ -67,6 +67,7 @@
 .chips-inline::-webkit-scrollbar {
   display: none;
 }
+
 /* Mobile/touch: kai chip togglintas, rodyk ring net ir be focus */
 @media (hover: none) and (pointer: coarse) {
   .chip[aria-pressed="true"] {
@@ -76,7 +77,7 @@
 }
 
 /* ===== Desktop patobulinimai ===== */
-@media (min-width: 481px) {
+@media (min-width: 610px) {
   .chip {
     min-height: 2.9375rem; /* 47px */
     font-size: 1.125rem; /* ~18px */

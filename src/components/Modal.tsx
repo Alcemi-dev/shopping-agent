@@ -5,10 +5,11 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onBack?: () => void;
-  title?: ReactNode;
+  modalTitle?: ReactNode;
   children: ReactNode;
   mode?: "default" | "answer";
   showTitle?: boolean;
+  rightSlot?: ReactNode; // 🛒 papildomai
 };
 
 /* Sub-komponentas: <Modal.Screen show={...}> */
@@ -17,7 +18,16 @@ function ModalScreen({ show, children }: { show: boolean; children: ReactNode })
   return <>{children}</>;
 }
 
-export default function Modal({ open, onClose, onBack, title, children, mode = "default", showTitle = true }: Props) {
+export default function Modal({
+  open,
+  onClose,
+  onBack,
+  modalTitle,
+  children,
+  mode = "default",
+  showTitle = true,
+  rightSlot, // 🛒 pridėjau čia
+}: Props) {
   const dlgRef = useRef<HTMLDialogElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
 
@@ -60,7 +70,7 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
   // accessibility props
   const labelProps =
     mode === "answer"
-      ? { "aria-label": typeof title === "string" ? title : undefined }
+      ? { "aria-label": typeof modalTitle === "string" ? modalTitle : undefined }
       : { "aria-labelledby": "modal-title" };
 
   return (
@@ -71,7 +81,6 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
       {...labelProps}
       onClick={onClose} // click ant backdrop
     >
-      {/* STOP propagation – kad spaudžiant panelę neuždarytų */}
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-ctr">
           <div className="modal-head" role="toolbar" aria-label="AI modal navigation" ref={headRef}>
@@ -85,15 +94,18 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
 
             <div className="head-spacer" />
 
+            {/* 🛒 Cart vieta */}
+            {rightSlot}
+
             <button className="icon-btn head-close" onClick={onClose}>
               <img src="/img/close.svg" alt="" aria-hidden="true" />
             </button>
           </div>
 
           <div className={`modal-col ${mode === "answer" ? "is-answer" : ""}`}>
-            {mode !== "answer" && showTitle && title && (
+            {mode !== "answer" && showTitle && modalTitle && (
               <h1 id="modal-title" className="modal-title">
-                {title}
+                {modalTitle}
               </h1>
             )}
             <div className="modal-body">{children}</div>
@@ -103,10 +115,12 @@ export default function Modal({ open, onClose, onBack, title, children, mode = "
             <img className="powered-by" src="/img/logo-desktop.svg" alt="Powered by Alcemi" />
           </div>
         </div>
+
+        {/* Čia pridedam host elementą produktų juostai */}
+        <div id="modal-overlays" aria-hidden />
       </div>
     </dialog>
   );
 }
 
-/* Attach subkomponentą */
 Modal.Screen = ModalScreen;

@@ -4,43 +4,13 @@ import ExplainScreen from "./screens/ExplainScreen";
 import ChipsScreen from "./screens/ChipsScreen";
 import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
+import { MOCK_PRODUCTS } from "./data/products";
+import type { Msg, Category, View, Collected } from "./types";
+import { CHIP_ITEMS, SUBCHIPS } from "./types";
 
-/* ===== Types ===== */
-type View = "explain" | "chips" | "category" | "chat";
-
-type Category = "Consultation" | "Order status" | "Shipping & delivery" | "Returns" | "Product Information" | "Payment";
-
-type Msg =
-  | { id: string; role: "user"; text: string }
-  | { id: string; role: "assistant"; text: string }
-  | { id: string; role: "loading" };
-
-const CHIP_ITEMS: Category[] = [
-  "Consultation",
-  "Order status",
-  "Shipping & delivery",
-  "Returns",
-  "Product Information",
-  "Payment",
-];
-
-const SUBCHIPS: Record<Category, string[]> = {
-  Consultation: ["Book a call", "Skin type quiz", "Routine advice", "Shade matching", "Best-sellers"],
-  "Order status": ["Track order", "Change address", "Cancel order", "Invoice copy", "Late delivery"],
-  "Shipping & delivery": [
-    "Delivery methods",
-    "Shipping status",
-    "Shipping costs",
-    "Delivery times",
-    "International shipping",
-  ],
-  Returns: ["Start a return", "Return policy", "Refund timing", "Exchange item", "Return label"],
-  "Product Information": ["Ingredients", "How to use", "Allergies & safety", "Stock availability", "Sizes & variants"],
-  Payment: ["Payment methods", "Installments", "Promo codes", "Billing issues", "Tax & VAT"],
-};
-
-const LOREM_58 =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac sapien auctor, sollicitudin sem sit amet, luctus diam. Phasellus molestie neque vel nunc pretium mollis. Nullam euismod scelerisque ipsum id iaculis. Duis malesuada blandit dui, in molestie quam commodo nec. Sed facilisis eros arcu, at laoreet nunc auctor ut. Proin nulla massa. Curabitur vitae risus in fermentum bibendum.";
+/* ================== MODULE-LEVEL ================== */
+const processedLoaderIds = new Set<string>();
+const pendingQueries = new Map<string, string>();
 
 /* helper */
 const uid = () => Math.random().toString(36).slice(2);
@@ -69,6 +39,10 @@ export default function App() {
   const [category, setCategory] = useState<Category | null>(null);
   const [showSubchips, setShowSubchips] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [, setCollected] = useState<Collected>({}); // state machine memory
+
+  // 🛒 Cart state
+  const [cartCount, setCartCount] = useState(0);
 
   const dockRef = useRef<HTMLDivElement>(null);
 
@@ -122,6 +96,7 @@ export default function App() {
     setCategory(null);
     setShowSubchips(false);
     setMessages([]);
+    setCollected({});
   };
 
   const handleOpen = () => {
@@ -139,6 +114,7 @@ export default function App() {
       setShowSubchips(false);
       setMessages([]);
       setQuery("");
+      setCollected({});
       return;
     }
     handleClose();
@@ -147,7 +123,7 @@ export default function App() {
   const pickTopChip = (v: string) => {
     const cat = v as Category;
     setCategory(cat);
-    setMessages([{ id: uid(), role: "user", text: sentenceFor(cat) }]);
+    setMessages([{ id: uid(), role: "user", kind: "text", text: sentenceFor(cat) }]);
     setShowSubchips(true);
     setView("category");
   };
@@ -158,27 +134,176 @@ export default function App() {
     setView("chat");
   };
 
+  // === SEND (užregistruoja query) ===
   const send = (text: string) => {
     const q = text.trim();
     if (!q) return;
-    const loaderId = "load_" + uid();
-    setMessages((prev) => [...prev, { id: uid(), role: "user", text: q }, { id: loaderId, role: "loading" }]);
+
+    const userMsg: Msg = { id: uid(), role: "user", kind: "text", text: q };
+    const loaderId = uid();
+
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last?.kind === "loading") return prev;
+      return [...prev, userMsg, { id: loaderId, role: "system", kind: "loading" } as Msg];
+    });
+
+    pendingQueries.set(loaderId, q);
     setQuery("");
-
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.role === "loading" && m.id === loaderId ? { id: uid(), role: "assistant", text: LOREM_58 } : m
-        )
-      );
-    }, 900);
   };
+  // === STATE MACHINE EFFECT ===
+  useEffect(() => {
+    let loader: Msg | undefined;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i];
+      if (m.kind === "loading") {
+        loader = m;
+        break;
+      }
+    }
+    if (!loader) return;
+    if (processedLoaderIds.has(loader.id)) return;
 
+    processedLoaderIds.add(loader.id);
+    const q = pendingQueries.get(loader.id) ?? "";
+
+    const t = setTimeout(() => {
+      pendingQueries.delete(loader!.id);
+
+      setCollected((current) => {
+        // 1) ask skinType
+        if (!current.skinType) {
+          const msgId = loader!.id + "-skin";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "text",
+                  text: "What’s your skin type? (oily, dry, normal…)",
+                } as Msg,
+              ])
+          );
+          return { ...current, skinType: "pending" };
+        }
+
+        // 2) ask budget
+        if (current.skinType === "pending") {
+          const msgId = loader!.id + "-budget";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "text",
+                  text: "Great! What’s your budget range?",
+                } as Msg,
+              ])
+          );
+          return { ...current, skinType: q.toLowerCase() };
+        }
+
+        // 3) pasirinkimas pagal tekstą
+        if (!current.budget) {
+          const newState = { ...current, budget: q.toLowerCase() };
+          const scenario = q.toLowerCase().includes("none")
+            ? "none"
+            : q.toLowerCase().includes("many")
+            ? "many"
+            : "one";
+
+          if (scenario === "one") {
+            const msgId = loader!.id + "-one";
+            setMessages((prev) =>
+              prev
+                .filter((m) => m.id !== loader!.id)
+                .concat([
+                  {
+                    id: msgId,
+                    role: "assistant",
+                    kind: "products",
+                    products: [MOCK_PRODUCTS[0]],
+                    header:
+                      "Based on your skin type and other indications, this is the best match for your needs in our store:",
+                  } as Msg,
+                ])
+            );
+          } else if (scenario === "many") {
+            const msgId = loader!.id + "-many";
+            setMessages((prev) =>
+              prev
+                .filter((m) => m.id !== loader!.id)
+                .concat([
+                  {
+                    id: msgId,
+                    role: "assistant",
+                    kind: "products",
+                    products: MOCK_PRODUCTS,
+                    header:
+                      "I couldn’t find anything for your exact request, but here are the closest matches that our customers love:",
+                    footer: "Do you need any further help?",
+                  } as Msg,
+                ])
+            );
+          } else {
+            const noResultsId = loader!.id + "-none";
+            const actionsId = loader!.id + "-actions";
+            const supportId = loader!.id + "-support";
+
+            setMessages((prev) =>
+              prev
+                .filter((m) => m.id !== loader!.id)
+                .concat([
+                  {
+                    id: noResultsId,
+                    role: "assistant",
+                    kind: "text",
+                    text: `No results found for ${q}. I suggest checking these items:`,
+                    extraClass: "no-results",
+                  } as Msg,
+                  {
+                    id: actionsId,
+                    role: "assistant",
+                    kind: "actions",
+                    actions: [
+                      { label: "Recommendation 1", value: "rec1" },
+                      { label: "Recommendation 2", value: "rec2" },
+                    ],
+                    extraClass: "recommendation-chips",
+                  } as Msg,
+                  {
+                    id: supportId,
+                    role: "assistant",
+                    kind: "text",
+                    text: "If you need immediate help, call us (+3706 465 8132) or send us an email (info@shop.lt). Would you like me to help you draft and send an email to our customer support manager?",
+                    extraClass: "support-text",
+                  } as Msg,
+                ])
+            );
+          }
+          return newState;
+        }
+        return current;
+      });
+    }, 900);
+
+    return () => clearTimeout(t);
+  }, [messages]);
   const submit = () => {
     if (query.trim()) {
       send(query);
-      if (view !== "chat") setView("chat"); // pereis į chat view
+      if (view !== "chat") setView("chat");
     }
+  };
+
+  // 🛒 Add-to-cart handler
+  const handleAddToCart = (title: string) => {
+    console.log("Added:", title);
+    setCartCount((c) => c + 1);
   };
 
   return (
@@ -191,8 +316,19 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        title={view === "explain" ? "Welcome to the AI-powered search" : "Hello, what are you\nlooking for today?"}
+        modalTitle={view === "explain" ? "How to use Quick Search" : "Hello, what are you\nlooking for today?"}
         showTitle={view !== "category" && messages.length === 0}
+        rightSlot={
+          cartCount > 0 && (
+            <div className="cart-indicator">
+              <div className="cart-icon-wrap">
+                <img src="/img/cart.svg" alt="Cart" />
+                <span className="badge">{cartCount}</span>
+              </div>
+              <span className="cart-label">Cart</span>
+            </div>
+          )
+        }
       >
         <Modal.Screen show={view === "explain"}>
           <ExplainScreen onContinue={() => setView("chips")} />
@@ -202,10 +338,10 @@ export default function App() {
           <ChipsScreen items={CHIP_ITEMS} onPick={pickTopChip} />
         </Modal.Screen>
 
-        {/* Chat log turi visada būti viršuje */}
         <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
           <ChatScreen
             messages={messages}
+            onAddToCart={handleAddToCart}
             extra={
               view === "category" &&
               category &&
@@ -214,7 +350,6 @@ export default function App() {
           />
         </Modal.Screen>
 
-        {/* Input visur, išskyrus explain */}
         {view !== "explain" && (
           <div className="input-dock" ref={dockRef}>
             <InputBubble value={query} onChange={setQuery} onSubmit={submit} placeholder="Ask anything…" />
