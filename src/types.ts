@@ -29,6 +29,7 @@ export type AssistantTextMsg = {
   role: "assistant";
   kind: "text";
   text: string;
+  extraClass?: string;
 };
 
 export type LoadingMsg = {
@@ -52,6 +53,7 @@ export type ActionsMsg = {
   role: "assistant";
   kind: "actions";
   actions: { label: string; value: string }[];
+  extraClass?: string;
 };
 
 // Union

@@ -151,7 +151,6 @@ export default function App() {
     pendingQueries.set(loaderId, q);
     setQuery("");
   };
-
   // === STATE MACHINE EFFECT ===
   useEffect(() => {
     let loader: Msg | undefined;
@@ -174,29 +173,36 @@ export default function App() {
       setCollected((current) => {
         // 1) ask skinType
         if (!current.skinType) {
+          const msgId = loader!.id + "-skin";
           setMessages((prev) =>
-            prev.map((m) =>
-              m.id === loader!.id
-                ? ({
-                    ...m,
-                    role: "assistant",
-                    kind: "text",
-                    text: "What’s your skin type? (oily, dry, normal…)",
-                  } as Msg)
-                : m
-            )
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "text",
+                  text: "What’s your skin type? (oily, dry, normal…)",
+                } as Msg,
+              ])
           );
           return { ...current, skinType: "pending" };
         }
 
         // 2) ask budget
         if (current.skinType === "pending") {
+          const msgId = loader!.id + "-budget";
           setMessages((prev) =>
-            prev.map((m) =>
-              m.id === loader!.id
-                ? ({ ...m, role: "assistant", kind: "text", text: "Great! What’s your budget range?" } as Msg)
-                : m
-            )
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "text",
+                  text: "Great! What’s your budget range?",
+                } as Msg,
+              ])
           );
           return { ...current, skinType: q.toLowerCase() };
         }
@@ -211,53 +217,54 @@ export default function App() {
             : "one";
 
           if (scenario === "one") {
+            const msgId = loader!.id + "-one";
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === loader!.id
-                  ? ({
-                      ...m,
-                      role: "assistant",
-                      kind: "products",
-                      products: [MOCK_PRODUCTS[0]],
-                      header:
-                        "Based on your skin type and other indications, this is the best match for your needs in our store:",
-                    } as Msg)
-                  : m
-              )
+              prev
+                .filter((m) => m.id !== loader!.id)
+                .concat([
+                  {
+                    id: msgId,
+                    role: "assistant",
+                    kind: "products",
+                    products: [MOCK_PRODUCTS[0]],
+                    header:
+                      "Based on your skin type and other indications, this is the best match for your needs in our store:",
+                  } as Msg,
+                ])
             );
           } else if (scenario === "many") {
+            const msgId = loader!.id + "-many";
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === loader!.id
-                  ? ({
-                      ...m,
-                      role: "assistant",
-                      kind: "products",
-                      products: MOCK_PRODUCTS,
-                      header:
-                        "I couldn’t find anything for your exact request, but here are the closest matches that our customers love:",
-                      footer: "Do you need any further help?",
-                    } as Msg)
-                  : m
-              )
+              prev
+                .filter((m) => m.id !== loader!.id)
+                .concat([
+                  {
+                    id: msgId,
+                    role: "assistant",
+                    kind: "products",
+                    products: MOCK_PRODUCTS,
+                    header:
+                      "I couldn’t find anything for your exact request, but here are the closest matches that our customers love:",
+                    footer: "Do you need any further help?",
+                  } as Msg,
+                ])
             );
           } else {
-            const actionsId = loader.id + "-actions";
-            const supportId = loader.id + "-support";
+            const noResultsId = loader!.id + "-none";
+            const actionsId = loader!.id + "-actions";
+            const supportId = loader!.id + "-support";
 
             setMessages((prev) =>
               prev
-                .map((m) =>
-                  m.id === loader!.id
-                    ? ({
-                        ...m,
-                        role: "assistant",
-                        kind: "text",
-                        text: `No results found for ${q}. I suggest checking these items:`,
-                      } as Msg)
-                    : m
-                )
+                .filter((m) => m.id !== loader!.id)
                 .concat([
+                  {
+                    id: noResultsId,
+                    role: "assistant",
+                    kind: "text",
+                    text: `No results found for ${q}. I suggest checking these items:`,
+                    extraClass: "no-results",
+                  } as Msg,
                   {
                     id: actionsId,
                     role: "assistant",
@@ -266,12 +273,14 @@ export default function App() {
                       { label: "Recommendation 1", value: "rec1" },
                       { label: "Recommendation 2", value: "rec2" },
                     ],
+                    extraClass: "recommendation-chips",
                   } as Msg,
                   {
                     id: supportId,
                     role: "assistant",
                     kind: "text",
                     text: "If you need immediate help, call us (+3706 465 8132) or send us an email (info@shop.lt). Would you like me to help you draft and send an email to our customer support manager?",
+                    extraClass: "support-text",
                   } as Msg,
                 ])
             );
@@ -284,7 +293,6 @@ export default function App() {
 
     return () => clearTimeout(t);
   }, [messages]);
-
   const submit = () => {
     if (query.trim()) {
       send(query);

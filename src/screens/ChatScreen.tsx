@@ -1,10 +1,8 @@
-import { useRef, useEffect, useState, useMemo } from "react";
-import { OverlayAnchor } from "../components/OverlayAnchor";
+import { useRef, useLayoutEffect, useEffect, useState, useMemo } from "react";
 import { ProductsStripMessage } from "../components/ProductsStripMessage";
-import { useAnchorRect } from "../hooks/useAnchorRect";
 import Chips from "../components/Chips";
 import "../styles/chat-screen.css";
-import type { Msg, ProductsMsg, ActionsMsg } from "../types";
+import type { Msg } from "../types";
 
 export type Product = {
   id: string;
@@ -23,8 +21,9 @@ type ChatScreenProps = {
 
 export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
+  const [showHeadFade, setShowHeadFade] = useState(false);
+  const [showFootFade, setShowFootFade] = useState(false);
 
-  // 👇 filtruojam dublikatus pagal id
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
     return messages.filter((m) => {
@@ -33,19 +32,44 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
       return true;
     });
   }, [messages]);
-
-  useEffect(() => {
+  // vietoj tavo useLayoutEffect
+  useLayoutEffect(() => {
     const el = logRef.current;
     if (!el || uniqueMessages.length === 0) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-  }, [uniqueMessages, extra]);
+
+    const lastMsgId = uniqueMessages[uniqueMessages.length - 1]?.id;
+    if (!lastMsgId) return;
+
+    // surandam paskutinį message elementą ir scrolinam į jį
+    const lastEl = el.querySelector(`[data-msg-id="${lastMsgId}"]`);
+    if (lastEl) {
+      (lastEl as HTMLElement).scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [uniqueMessages.length]);
+  // scroll listener abiem fade’ams
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      setShowHeadFade(el.scrollTop > 0);
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+      setShowFootFade(!atBottom);
+    };
+
+    onScroll();
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className="chat-log" ref={logRef} aria-live="polite">
+      {showHeadFade && <div className="chat-head-fade" />}
+
       {uniqueMessages.map((m) => {
         if (m.role === "user" && m.kind === "text") {
           return (
-            <div key={m.id} className="msg msg--user">
+            <div key={m.id} data-msg-id={m.id} className="msg msg--user">
               <div className="msg-bubble">{m.text}</div>
             </div>
           );
@@ -53,36 +77,37 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
 
         if (m.role === "assistant" && m.kind === "text") {
           return (
-            <div key={m.id} className="msg msg--ai">
+            <div
+              key={m.id}
+              data-msg-id={m.id}
+              className={`msg msg--ai ${"extraClass" in m && m.extraClass ? m.extraClass : ""}`}
+            >
               <p className="ai-text">{m.text}</p>
             </div>
           );
         }
 
         if (m.kind === "products") {
-          const prod = m as ProductsMsg;
           return (
-            <ProductMessage
-              key={m.id}
-              products={prod.products}
-              header={prod.header}
-              footer={prod.footer}
-              onAddToCart={onAddToCart}
-            />
+            <div key={m.id} data-msg-id={m.id} className="msg msg--ai">
+              <ProductsStripMessage
+                products={m.products}
+                header={m.header}
+                footer={m.footer}
+                onAddToCart={onAddToCart}
+              />
+            </div>
           );
         }
 
         if (m.kind === "actions") {
-          const act = m as ActionsMsg;
           return (
-            <div key={m.id} className="msg msg--ai">
+            <div key={m.id} data-msg-id={m.id} className={`msg msg--ai ${m.extraClass ?? ""}`}>
               <Chips
-                items={act.actions.map((a) => a.label)}
+                items={m.actions.map((a) => a.label)}
                 onSelect={(label) => {
-                  const chosen = act.actions.find((a) => a.label === label);
-                  if (chosen) {
-                    console.log("User selected:", chosen.value);
-                  }
+                  const chosen = m.actions.find((a) => a.label === label);
+                  if (chosen) console.log("User selected:", chosen.value);
                 }}
               />
             </div>
@@ -91,7 +116,7 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
 
         if (m.kind === "loading") {
           return (
-            <div key={m.id} className="msg msg--ai">
+            <div key={m.id} data-msg-id={m.id} className="msg msg--ai">
               <LoadingRail />
             </div>
           );
@@ -100,62 +125,8 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
         return null;
       })}
 
+      {showFootFade && <div className="chat-foot-fade" />}
       {extra}
-    </div>
-  );
-}
-
-function ProductMessage({
-  products,
-  header,
-  footer,
-  onAddToCart,
-}: {
-  products: Product[];
-  header?: string;
-  footer?: string;
-  onAddToCart?: (title: string) => void;
-}) {
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-  const rect = useAnchorRect(anchorEl);
-
-  // --dock-h
-  const [dockH, setDockH] = useState(0);
-  useEffect(() => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue("--dock-h").trim();
-    const px = parseFloat(v.replace("px", "")) || 0;
-    setDockH(px);
-  }, []);
-
-  // Desktop detekcija (≥ 481px)
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 481px)");
-    const apply = (e: MediaQueryList | MediaQueryListEvent) => setIsDesktop("matches" in e ? e.matches : mq.matches);
-    apply(mq);
-    if (mq.addEventListener) mq.addEventListener("change", apply as any);
-    else mq.addListener(apply as any);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", apply as any);
-      else mq.removeListener(apply as any);
-    };
-  }, []);
-
-  const base = products.length === 1 ? 420 : 320;
-  const reserve = isDesktop ? Math.max(0, dockH + 120) : 0;
-
-  return (
-    <div className="msg msg--ai">
-      <div ref={setAnchorEl}>
-        <OverlayAnchor height={base + reserve} />
-      </div>
-      <ProductsStripMessage
-        products={products}
-        anchorRect={rect}
-        header={header}
-        footer={footer}
-        onAddToCart={onAddToCart} // 🛒 perduodam toliau
-      />
     </div>
   );
 }

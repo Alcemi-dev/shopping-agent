@@ -12,6 +12,13 @@
   padding: 0 0 8px 0;
   z-index: 500;
 }
+
+.products-scroll.is-multiple {
+  margin-left: -1.75rem;
+  padding-left: 1.75rem;
+  margin-right: -1.75rem;
+  padding-right: 1.75rem;
+}
 .products-strip > * {
   pointer-events: auto;
 }
@@ -20,8 +27,7 @@
 .products-header,
 .products-footer {
   pointer-events: auto;
-  padding: 0 24px;
-  max-width: min(720px, 90%);
+  max-width: min(720px, 100%);
   margin: 0.25rem 0 0.5rem;
   color: #fcfcfc;
   line-height: 1.5;
@@ -33,7 +39,7 @@
   gap: 16px;
   overflow-x: auto;
   overflow-y: visible;
-  padding: 8px 24px;
+  padding-top: 8px;
   pointer-events: auto;
   cursor: grab;
   -ms-overflow-style: none;
@@ -164,7 +170,6 @@
   transition: opacity 0.25s ease;
 }
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] {
-  background: rgba(255, 64, 64, 0.9);
   border: none;
 }
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] img {
@@ -174,50 +179,76 @@
 /* === CTA buttons === */
 .products-cta {
   pointer-events: auto;
-  padding: 0 24px 16px;
+  padding: 0 0 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 2rem;
 }
+
 .products-cta .cta-q {
   margin: 0;
   font-size: 16px;
   line-height: 150%;
   color: #fcfcfc;
 }
+
 .cta-buttons {
   pointer-events: auto;
   display: flex;
-  gap: 12px;
-  margin: 12px 24px 0;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 12px;
 }
+
+/* Primary button – Add to cart */
 .cta-buttons .btn-primary {
-  flex: 1;
+  flex-grow: 1; /* užima daugiau vietos */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  height: 48px;
   background: #fcfcfc;
   color: #02092e;
-  border-radius: 35px;
+  font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 16px;
-  padding: 12px 32px;
+  line-height: 130%;
   border: none;
+  border-radius: 35.5px;
+  box-shadow: 0px 0px 5px 2px #dde3ff;
+  cursor: pointer;
+  z-index: 1;
 }
+
+/* Secondary button – Not now */
 .cta-buttons .btn-secondary {
-  flex: 1;
+  flex-grow: 0; /* mažesnis */
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  height: 48px;
   background: transparent;
-  border: 1px solid #fcfcfc;
   color: #fcfcfc;
-  border-radius: 35px;
+  font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 16px;
-  padding: 12px 32px;
+  line-height: 130%;
+  border: 1px solid #fcfcfc;
+  border-radius: 35.5px;
+  cursor: pointer;
 }
 
 /* === Follow-up text === */
 .products-followup {
   pointer-events: auto;
-  padding: 0 24px 16px;
+  padding: 0 0 16px;
   max-width: min(720px, 90%);
-  margin: 0.75rem 0 0;
+  margin: 0.75rem 0 1rem;
   color: #fcfcfc;
   line-height: 1.5;
   font-size: 16px;
@@ -234,9 +265,12 @@
   backdrop-filter: blur(15px);
   border-radius: 8px;
   margin-top: 12px;
+  margin-bottom: 1.75rem;
+
+  /* mobile full width su gutter */
+  width: 100%;
+
   box-sizing: border-box;
-  width: 100%; /* default full width */
-  max-width: 334px; /* mobile default */
 }
 
 .success-block .checkmark {
@@ -316,7 +350,7 @@
 }
 
 /* === Desktop overrides === */
-@media (min-width: 481px) {
+@media (min-width: 610px) {
   .products-strip {
     position: relative; /* 👈 desktop jau nebėra absolute */
   }
@@ -326,7 +360,7 @@
     left: 0;
     width: 100%;
     padding: 0 0 8px 0;
-    z-index: 500;
+    z-index: 99;
   }
   .products-strip > * {
     pointer-events: auto;

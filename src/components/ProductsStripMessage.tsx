@@ -1,27 +1,21 @@
-import { useMemo, useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useRef, useEffect, useState } from "react";
 import "../styles/products-strip.css";
 import type { Product } from "../screens/ChatScreen";
 import { useDragScroll } from "../hooks/useDragScroll";
 
 type Props = {
   products: Product[];
-  anchorRect: DOMRect | null;
   header?: string;
   footer?: string;
-  onAddToCart?: (title: string) => void; // 🛒 callback
+  onAddToCart?: (title: string) => void;
 };
 
-export function ProductsStripMessage({ products, anchorRect, header, footer, onAddToCart }: Props) {
-  const overlayRoot = typeof document !== "undefined" ? document.getElementById("modal-overlays") : null;
+export function ProductsStripMessage({ products, header, footer, onAddToCart }: Props) {
   const [muted, setMuted] = useState<Record<string, boolean>>({});
-  const [added, setAdded] = useState(false); // 👈 CTA -> Success toggle
-  const topPx = useMemo(() => (anchorRect ? anchorRect.top + window.scrollY : 0), [anchorRect]);
-
+  const [added, setAdded] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
 
-  // 👇 kai tik produktai atsiranda ar pasikeičia, scrollinam į apačią
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
@@ -29,21 +23,17 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
     }
   }, [products, header, footer, added]);
 
-  if (!overlayRoot || !anchorRect) return null;
-
   const single = products.length === 1;
   const showFooter = !single && !!footer;
 
-  return createPortal(
-    <div className="products-wrap" style={{ top: topPx }}>
-      {/* Header */}
-      {header ? (
+  return (
+    <div className="products-wrap">
+      {header && (
         <div className="products-contain">
           <p className="products-header">{header}</p>
         </div>
-      ) : null}
+      )}
 
-      {/* 👇 scroll konteineris su klase pagal kiekį */}
       <div className={`products-scroll${single ? " is-single" : " is-multiple"}`} ref={scrollRef} role="list">
         {products.map((p) => {
           const key = String(p.id);
@@ -60,13 +50,12 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
                     className="circle"
                     aria-label="Dislike"
                     aria-pressed={isMuted}
-                    onClick={() => {
+                    onClick={() =>
                       setMuted((m) => {
-                        const key = String(p.id);
                         const next = { ...m, [key]: !m[key] };
                         return next;
-                      });
-                    }}
+                      })
+                    }
                   >
                     <img src="/img/dislike.svg" alt="" />
                   </button>
@@ -75,7 +64,6 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
                   </button>
                 </div>
 
-                {/* 🛒 Add-to-cart mygtukas */}
                 <button
                   type="button"
                   className="add-btn"
@@ -96,7 +84,6 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
                   ) : (
                     <span className="price">120 €</span>
                   )}
-
                   <span className="reviews">
                     <img src="/img/star.svg" alt="" />
                     <span>{p.rating ?? 4.8}</span>
@@ -105,7 +92,6 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
                     </a>
                   </span>
                 </div>
-
                 <h4 className="title" title={p.title}>
                   {p.title}
                 </h4>
@@ -115,23 +101,22 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
         })}
       </div>
 
-      {/* Footer / CTA */}
       <div className="products-contain">
-        {single ? (
-          !added ? (
+        {single &&
+          (!added ? (
             <div className="products-cta">
-              <p className="cta-q">Would you like me to add this product to your cart?</p>
+              <p className="cta-q">Add this to your cart?</p>
               <div className="cta-buttons">
                 <button
                   className="btn-primary"
                   onClick={() => {
                     onAddToCart?.(products[0].title);
-                    setAdded(true); // 👈 CTA -> Success block
+                    setAdded(true);
                   }}
                 >
-                  Yes, add to cart
+                  Add to cart
                 </button>
-                <button className="btn-secondary">No</button>
+                <button className="btn-secondary">Not now</button>
               </div>
             </div>
           ) : (
@@ -148,12 +133,10 @@ export function ProductsStripMessage({ products, anchorRect, header, footer, onA
               </div>
               <button className="view-cart">View cart</button>
             </div>
-          )
-        ) : null}
+          ))}
 
-        {showFooter ? <p className="products-followup">{footer}</p> : null}
+        {showFooter && <p className="products-followup">{footer}</p>}
       </div>
-    </div>,
-    overlayRoot
+    </div>
   );
 }

@@ -132,7 +132,7 @@
 }
 
 /* Desktop */
-@media (min-width: 481px) {
+@media (min-width: 610px) {
   /* Pastatom koloną taip, kad H1 startas būtų ~132px nuo viršaus */
   .modal-card:has(.explain) .modal-col {
     margin-top: 1rem;
