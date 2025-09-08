@@ -54,13 +54,12 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
       pendingQueries.delete(loader!.id);
 
       setCollected((current) => {
-        const scenario = q.includes("none")
-          ? "none"
-          : q.includes("many")
-          ? "many"
-          : q.includes("one")
-          ? "one"
-          : "default";
+        let scenario: string;
+        if (q.includes("none")) scenario = "none";
+        else if (q.includes("many")) scenario = "many";
+        else if (q.includes("one")) scenario = "one";
+        else if (q.includes("feedback")) scenario = "feedback";
+        else scenario = "default";
 
         if (scenario === "one") {
           const msgId = loader!.id + "-one";
@@ -128,6 +127,19 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                 } as Msg,
               ])
           );
+        } else if (scenario === "feedback") {
+          const msgId = loader!.id + "-feedback";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "feedback", // 👈 special kind, kad App žinotų rodyti FeedbackScreen
+                } as Msg,
+              ])
+          );
         } else {
           const msgId = loader!.id + "-default";
           setMessages((prev) =>
@@ -142,7 +154,8 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                     "This is a default text message, to test different outcomes use the following keywords listed below:\n" +
                     "- type 'one' → one product\n" +
                     "- type 'many' → many products\n" +
-                    "- type 'none' → no results + recommendations",
+                    "- type 'none' → no results + recommendations\n" +
+                    "- type 'feedback' → feedback screen",
                 } as Msg,
               ])
           );
