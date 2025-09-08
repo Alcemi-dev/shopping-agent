@@ -162,6 +162,7 @@
   flex-direction: column;
   gap: 1rem;
   min-height: 0;
+  height: 100dvh;
   flex: 1 1 auto;
   overflow: hidden;
 }
