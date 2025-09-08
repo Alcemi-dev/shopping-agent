@@ -16,6 +16,13 @@
   display: none;
 }
 
+/* 👇 čia pridedam tarpelį gale */
+.chat-log::after {
+  content: "";
+  display: block;
+  height: 2rem; /* tarpas tarp paskutinės žinutės ir inputo */
+}
+
 /* eilutės */
 .msg {
   width: 100%;
@@ -51,20 +58,23 @@
   display: block;
   margin: 0;
   max-width: min(var(--bubble-max), 100%);
-
   color: var(--text-on-dark);
   line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+/* rekomendacijų chipai */
 .msg.recommendation-chips .chips-inline {
   margin-left: -2rem;
   padding-left: 2rem;
   margin-right: -2rem;
   padding-right: 2rem;
 }
+
+/* support text be padding-bottom – tarpelį daro ::after */
 .msg.support-text {
-  padding-bottom: 2rem;
+  /* no padding-bottom needed */
 }
 
 /* === LoadingRail animacija === */
@@ -73,7 +83,6 @@
   align-items: center;
   gap: 7px;
   height: 8px;
-  padding-bottom: 3rem;
 }
 .dash {
   width: 24px;
@@ -117,7 +126,6 @@
     padding-left: 5.4rem;
     max-width: 44rem;
     padding-right: 5.4rem;
-    padding-bottom: 2rem;
   }
 
   .msg--user {
