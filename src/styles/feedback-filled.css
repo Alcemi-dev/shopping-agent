@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 90dvh;
+  height: 50rem;
   border-radius: 1.25rem;
   padding: 4rem 1rem;
   padding-bottom: calc(2rem + env(safe-area-inset-bottom)); /* 👈 padaro tarpą apačioj */
