@@ -6,9 +6,10 @@ import type { Msg } from "../types";
 type Props = {
   m: Msg;
   onAddToCart?: (title: string) => void;
+  onActionSelect?: (value: string) => void; // 👈 pridėta
 };
 
-export default function MessageRenderer({ m, onAddToCart }: Props) {
+export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Props) {
   // USER text
   if (m.role === "user" && m.kind === "text") {
     return (
@@ -44,7 +45,10 @@ export default function MessageRenderer({ m, onAddToCart }: Props) {
           items={m.actions.map((a) => a.label)}
           onSelect={(label) => {
             const chosen = m.actions.find((a) => a.label === label);
-            if (chosen) console.log("User selected:", chosen.value);
+            if (chosen) {
+              console.log("User selected:", chosen.value);
+              onActionSelect?.(chosen.value); // 👈 kviečiam viršutinę logiką
+            }
           }}
         />
       </div>

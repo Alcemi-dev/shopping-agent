@@ -44,4 +44,13 @@ button,
 input,
 textarea {
   font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Globaliai nuimam focus outline */
+button:focus,
+button:focus-visible,
+input:focus,
+textarea:focus {
+  -webkit-tap-highlight-color: transparent;
 }

@@ -121,7 +121,7 @@ export default function App() {
     setView("chat");
   };
 
-  // Pasinaudojam engine siuntimu (vietoj buvusios send funkcijos)
+  // Pasinaudojam engine siuntimu
   const send = (text: string) => {
     if (text.trim()) {
       engineRef.current.send(text);
@@ -130,12 +130,12 @@ export default function App() {
     }
   };
 
-  // Vietoj tavo "STATE MACHINE EFFECT" – deleguojam engine’ui
+  // deleguojam engine’ui
   useEffect(() => {
     engineRef.current.handleMessagesEffect(messages);
   }, [messages]);
 
-  // 🛒 Add-to-cart handler
+  // Add-to-cart handler
   const handleAddToCart = (title: string) => {
     console.log("Added:", title);
     setCartCount((c) => c + 1);

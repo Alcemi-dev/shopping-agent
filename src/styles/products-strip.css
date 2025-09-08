@@ -117,17 +117,27 @@
   gap: 0.5rem; /* 8px */
   z-index: 10;
 }
+
 .product-card .reactions .circle {
   width: 1.75rem; /* 28px */
   height: 1.75rem; /* 28px */
   border-radius: 1rem; /* 16px */
-  background: rgba(252, 252, 252, 0.7);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
+
+  /* 🔹 visada pusiau permatomi */
+  background: rgba(252, 252, 252, 0.5);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+/* Hover – paryškėja */
+.product-card .reactions .circle:hover {
+  opacity: 1;
 }
 
 /* Add button (bottom-right) */
@@ -139,7 +149,6 @@
   height: 2rem; /* 32px */
   border-radius: 50%;
   background: #fcfcfc;
-  box-shadow: 0 0 8.9px 4px #dde3ff; /* palikta 1:1 */
   border: none;
   display: flex;
   align-items: center;
@@ -174,7 +183,7 @@
 }
 .product-card .reviews img {
   width: 0.875rem; /* 14px */
-  height: 0.875rem; /* 14px */
+  height: 0.875rem;
 }
 .product-card .reviews .reviews-count {
   color: #fcfcfc;
@@ -192,16 +201,19 @@
   overflow: hidden;
 }
 
-/* Dislike active -> prigesinta */
+/* Dislike active -> prigesinta kortelė */
 .product-card.is-muted {
   opacity: 0.35;
   transition: opacity 0.25s ease;
 }
+
+/* 🔹 Bet dislike mygtukas išlieka ryškus */
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] {
-  border: none;
+  opacity: 1;
+  background: rgba(252, 252, 252, 1);
 }
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] img {
-  filter: brightness(0) invert(1);
+  filter: none; /* ikona normali */
 }
 
 /* === 5) CTA mygtukai (single product) ==================================== */
@@ -369,7 +381,7 @@
   pointer-events: none !important;
 }
 .msg.msg--ai:has([data-overlay-anchor]) {
-  pointer-events: none; /* neleisti blokuoti chato */
+  /*pointer-events: none; */
   background: transparent !important;
 }
 
@@ -383,9 +395,15 @@
   cursor: pointer;
 }
 
+.product-card .reactions,
+.product-card .add-btn,
+.chip {
+  pointer-events: auto !important;
+}
+
 /* === 9) Desktop overrides (≥ 610px) ====================================== */
 
-@media (min-width: 38.125rem) {
+@media (min-width: 610px) {
   /* 610px */
   /* Burbulas jau absolute by default – nieko nekeičiam, tik vidines ribas */
 
@@ -427,7 +445,6 @@
     padding-left: 0;
   }
 
-
   .products-cta {
     align-items: flex-start;
     max-width: 30rem;
@@ -461,5 +478,16 @@
 
   .success-block {
     max-width: 26.125rem; /* 418px */
+  }
+
+  .product-card,
+  .product-card * {
+    pointer-events: auto;
+  }
+
+  .product-card .reactions,
+  .product-card .add-btn {
+    z-index: 100;
+    pointer-events: auto;
   }
 }

@@ -115,6 +115,9 @@
 
   .ai-text {
     padding-left: 5.4rem;
+    max-width: 44rem;
+    padding-right: 5.4rem;
+    padding-bottom: 2rem;
   }
 
   .msg--user {

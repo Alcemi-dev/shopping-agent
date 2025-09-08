@@ -47,19 +47,21 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
                 <div className="reactions">
                   <button
                     type="button"
-                    className="circle"
+                    className="circle circle--dislike"
                     aria-label="Dislike"
                     aria-pressed={isMuted}
-                    onClick={() =>
+                    onClick={() => {
+                      console.log("Dislike click:", { key, isMuted });
                       setMuted((m) => {
                         const next = { ...m, [key]: !m[key] };
+                        console.log("Muted state updated:", next);
                         return next;
-                      })
-                    }
+                      });
+                    }}
                   >
                     <img src="/img/dislike.svg" alt="" />
                   </button>
-                  <button type="button" className="circle" aria-label="Save">
+                  <button type="button" className="circle circle--fav" aria-label="Save">
                     <img src="/img/favorite.svg" alt="" />
                   </button>
                 </div>
@@ -69,6 +71,7 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
                   className="add-btn"
                   aria-label="Add"
                   onClick={() => {
+                    console.log("Add to cart click:", p.title);
                     onAddToCart?.(p.title);
                     setAdded(true);
                   }}

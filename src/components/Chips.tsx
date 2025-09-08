@@ -21,8 +21,9 @@ type Props = {
 export default function Chips({ items, onPick, onSelect, className }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [wasDrag, setWasDrag] = useState(false);
+  const startX = useRef(0);
 
-  // bendras drag scroll hook’as (pele + touch)
+  // bendras drag scroll hook’as (paliekam)
   useDragScroll(wrapRef);
 
   // blur hack (kad focus nepaliktų ant chip)
@@ -56,8 +57,17 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
           e.preventDefault();
         }
       }}
-      onPointerDown={() => setWasDrag(false)}
-      onPointerMove={() => setWasDrag(true)}
+      onPointerDown={(e) => {
+        setWasDrag(false);
+        if (e.pointerType !== "mouse") startX.current = e.clientX;
+      }}
+      onPointerMove={(e) => {
+        if (e.pointerType === "mouse") return; // desktop: nelečiam click
+        if (Math.abs(e.clientX - startX.current) > 12) setWasDrag(true);
+      }}
+      onPointerUp={() => {
+        requestAnimationFrame(() => setWasDrag(false));
+      }}
     >
       {items.map((item) => {
         const label = getLabel(item);
@@ -72,7 +82,8 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
             role="listitem"
             disabled={disabled}
             onClick={(e) => {
-              if (wasDrag || disabled) return; // jeigu buvo drag, click nevykdom
+              console.log("Chip click:", { value, wasDrag, disabled });
+              if (wasDrag || disabled) return;
               onPick?.(value);
               onSelect?.(value, item);
               (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });

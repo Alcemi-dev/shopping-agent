@@ -6,21 +6,21 @@ export function useChatScroll(logRef: RefObject<HTMLDivElement | null>, messages
   const [showHeadFade, setShowHeadFade] = useState(false);
   const [showFootFade, setShowFootFade] = useState(false);
 
-  // scroll into last message smoothly
+  // scroll into view kai atsiranda nauja žinutė
   useLayoutEffect(() => {
     const el = logRef.current;
     if (!el || messages.length === 0) return;
 
-    const lastMsgId = messages[messages.length - 1]?.id;
-    if (!lastMsgId) return;
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg) return;
 
-    const lastEl = el.querySelector(`[data-msg-id="${lastMsgId}"]`);
+    const lastEl = el.querySelector(`[data-msg-id="${lastMsg.id}"]`);
     if (lastEl instanceof HTMLElement) {
       lastEl.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [messages.length, logRef]);
+  }, [messages, logRef]); // 👈 priklausomybė nuo viso messages, ne tik length
 
-  // fades (head/foot gradient matomumas)
+  // fade gradientai
   useEffect(() => {
     const el = logRef.current;
     if (!el) return;
