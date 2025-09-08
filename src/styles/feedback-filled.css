@@ -48,7 +48,7 @@
 
 .feedback-filled-dock {
   position: sticky; /* prilimpa prie apačios scrollinant */
-  bottom: env(safe-area-inset-bottom, 1rem);
+  bottom: env(safe-area-inset-bottom, 2rem);
   display: flex;
   justify-content: center;
   width: 100%;
@@ -71,11 +71,6 @@
   box-shadow: 0px 0px 0.55rem 0.25rem #dde3ff;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.feedback-filled-btn:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
 }
 
 /* === Desktop (≥610px) === */
