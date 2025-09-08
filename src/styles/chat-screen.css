@@ -1,5 +1,6 @@
 /* === Chat log (scroll čia) === */
 .chat-log {
+  position: relative;
   flex: 1 1 auto;
   min-height: 0;
   max-height: 100%;
@@ -105,10 +106,11 @@
 }
 
 .chat-head-fade {
-  position: sticky;
+  position: absolute;
   top: 0;
-  height: 44px;
-  margin-top: -44px; /* kad neužstumtų turinio */
+  left: 0;
+  width: 100%;
+  height: 4rem;
   background: linear-gradient(180deg, #020a31 0%, rgba(2, 9, 46, 0) 50%);
   pointer-events: none;
   z-index: 5;
@@ -117,9 +119,12 @@
 /* Desktop override */
 @media (min-width: 610px) {
   .chat-log {
+    position: static;
     width: 44rem;
     margin-left: -7rem;
-    margin-bottom: 10.8rem;
+    margin-bottom: 10.4rem;
+    margin-top: calc(-2 * var(--head-h));
+    padding-top: 6.25rem;
   }
 
   .ai-text {
@@ -158,10 +163,14 @@
   .msg.recommendation-chips .chips-inline {
     padding-left: 7.4rem;
   }
+
   .chat-head-fade {
+    position: absolute;
     z-index: 15;
-    top: -1px;
-    width: 100%;
+    margin-top: -5rem;
+    margin-left: -5rem;
+    top: 0;
+    width: 44rem;
   }
 }
 
