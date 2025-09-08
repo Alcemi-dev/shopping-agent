@@ -2,9 +2,10 @@
 .feedback-filled-wrap {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 50rem;
+  height: 100dvh;
   border-radius: 1.25rem;
   padding: 4rem 1rem;
   padding-bottom: calc(2rem + env(safe-area-inset-bottom)); /* 👈 padaro tarpą apačioj */
@@ -45,10 +46,20 @@
   margin-top: 1rem;
 }
 
-/* === Button === */
+.feedback-filled-dock {
+  position: sticky; /* prilimpa prie apačios scrollinant */
+  bottom: env(safe-area-inset-bottom, 1rem);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  background: transparent; /* gali duoti foną jei reikia */
+  z-index: 10;
+}
+
 .feedback-filled-btn {
-  margin-top: auto; /* 👈 prilipina prie apačios */
   width: 90%;
+
   padding: 0.75rem 2rem;
   background: #fcfcfc;
   color: #02092e;
