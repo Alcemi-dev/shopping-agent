@@ -1,13 +1,14 @@
-// App.tsx
 import { useEffect, useRef, useState } from "react";
 import { Background, AiButton, Modal, InputBubble } from "./components";
 import ExplainScreen from "./screens/ExplainScreen";
 import ChipsScreen from "./screens/ChipsScreen";
 import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
+import FeedbackScreen from "./screens/FeedbackScreen";
+import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
 import type { Msg, Category, View, Collected } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
-import { createMockEngine, sentenceFor } from "./mock/engine"; // ⬅️ nauja
+import { createMockEngine, sentenceFor } from "./mock/engine";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -16,22 +17,21 @@ export default function App() {
   const [category, setCategory] = useState<Category | null>(null);
   const [showSubchips, setShowSubchips] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
-  const [, setCollected] = useState<Collected>({}); // state machine memory
+  const [collected, setCollected] = useState<Collected>({});
   const [cartCount, setCartCount] = useState(0);
+  const [hasUnread, setHasUnread] = useState(false);
 
   const dockRef = useRef<HTMLDivElement>(null);
 
-  // ⬇️ Inicijuojam mock engine vieną kartą
   const engineRef = useRef(
     createMockEngine({
       setMessages,
       setCollected,
-      // getProducts: () => MOCK_PRODUCTS, // jei nori perleisti iš išorės
       delayMs: 900,
     })
   );
 
-  /* dock height -> --dock-h (paliekam kaip buvo) */
+  /* dock height */
   useEffect(() => {
     const el = dockRef.current;
     if (!el) return;
@@ -43,7 +43,7 @@ export default function App() {
     return () => ro.disconnect();
   }, []);
 
-  /* mobile keyboard -> html.kb-open (paliekam kaip buvo) */
+  /* mobile keyboard */
   useEffect(() => {
     const root = document.documentElement;
     if (!open) {
@@ -74,32 +74,39 @@ export default function App() {
     };
   }, [open]);
 
-  /* actions */
-  const reset = () => {
-    setView("chips");
-    setQuery("");
-    setCategory(null);
-    setShowSubchips(false);
-    setMessages([]);
-    setCollected({});
-  };
+  /* NOTIFICATION BADGE LOGIC */
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (last && last.role === "assistant" && !open) {
+      setHasUnread(true);
+    }
+    if (last && last.kind === "feedback") {
+      setView("feedback");
+    }
+  }, [messages, open]);
 
   const handleOpen = () => {
     setOpen(true);
-    setView("explain");
+    setHasUnread(false);
+    if (messages.length === 0) setView("explain");
   };
-  const handleClose = () => {
-    setOpen(false);
-    reset();
+
+  const handleClose = () => setOpen(false);
+
+  /** Reset visos būsenos į pradinę */
+  const resetAll = () => {
+    setView("chips");
+    setCategory(null);
+    setShowSubchips(false);
+    setMessages([]);
+    setQuery("");
+    setCollected({});
+    setCartCount(0);
   };
+
   const handleBack = () => {
-    if (view === "chat" || view === "category") {
-      setView("chips");
-      setCategory(null);
-      setShowSubchips(false);
-      setMessages([]);
-      setQuery("");
-      setCollected({});
+    if (view === "chat" || view === "category" || view === "feedback" || view === "feedback-filled") {
+      resetAll();
       return;
     }
     handleClose();
@@ -109,7 +116,12 @@ export default function App() {
     const cat = v as Category;
     setCategory(cat);
     setMessages([
-      { id: crypto.randomUUID?.() ?? Math.random().toString(), role: "user", kind: "text", text: sentenceFor(cat) },
+      {
+        id: crypto.randomUUID?.() ?? Math.random().toString(),
+        role: "user",
+        kind: "text",
+        text: sentenceFor(cat),
+      },
     ]);
     setShowSubchips(true);
     setView("category");
@@ -121,7 +133,6 @@ export default function App() {
     setView("chat");
   };
 
-  // Pasinaudojam engine siuntimu
   const send = (text: string) => {
     if (text.trim()) {
       engineRef.current.send(text);
@@ -130,12 +141,10 @@ export default function App() {
     }
   };
 
-  // deleguojam engine’ui
   useEffect(() => {
     engineRef.current.handleMessagesEffect(messages);
   }, [messages]);
 
-  // Add-to-cart handler
   const handleAddToCart = (title: string) => {
     console.log("Added:", title);
     setCartCount((c) => c + 1);
@@ -144,7 +153,7 @@ export default function App() {
   return (
     <div className="app-root">
       <Background />
-      {!open && <AiButton onOpen={handleOpen} />}
+      {!open && <AiButton onOpen={handleOpen} hasUnread={hasUnread} />}
 
       <Modal
         open={open}
@@ -184,7 +193,24 @@ export default function App() {
           />
         </Modal.Screen>
 
-        {view !== "explain" && (
+        <Modal.Screen show={view === "feedback"}>
+          <FeedbackScreen
+            onSubmit={(rating, comment) => {
+              console.log("Feedback submitted:", rating, comment);
+              setView("feedback-filled");
+            }}
+          />
+        </Modal.Screen>
+
+        <Modal.Screen show={view === "feedback-filled"}>
+          <FeedbackFilledScreen
+            onNewSearch={() => {
+              resetAll();
+            }}
+          />
+        </Modal.Screen>
+
+        {view !== "explain" && view !== "feedback" && view !== "feedback-filled" && (
           <div className="input-dock" ref={dockRef}>
             <InputBubble value={query} onChange={setQuery} onSubmit={() => send(query)} placeholder="Ask anything…" />
           </div>

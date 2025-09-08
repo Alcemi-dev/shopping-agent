@@ -1,0 +1,94 @@
+/* === Base wrapper (mobile-first) === */
+.feedback-filled-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100dvh;
+  border-radius: 1.25rem;
+  padding: 4rem 1rem;
+  color: #fcfcfc;
+  text-align: center;
+}
+
+/* === Texts === */
+.feedback-filled-thankyou {
+  margin-top: 9rem;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 2.25rem; /* ~36px */
+  line-height: 120%;
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.feedback-filled-title {
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  font-size: 1.75rem; /* ~28px */
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  margin-top: 0.5rem;
+  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.feedback-filled-sub {
+  font-family: "Satoshi", sans-serif;
+  font-size: 1.25rem; /* ~20px */
+  line-height: 1.3;
+  color: #fcfcfc;
+  margin-top: 1rem;
+}
+
+/* === Button === */
+.feedback-filled-btn {
+  margin-top: auto; /* 👈 prilipina prie apačios */
+  width: 90%;
+  padding: 0.75rem 2rem;
+  background: #fcfcfc;
+  color: #02092e;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 2rem;
+  box-shadow: 0px 0px 0.55rem 0.25rem #dde3ff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.feedback-filled-btn:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+/* === Desktop (≥610px) === */
+@media (min-width: 610px) {
+  .feedback-filled-wrap {
+    gap: 4rem;
+    padding: 5rem;
+    margin-top: 2rem;
+  }
+
+  .feedback-filled-thankyou {
+    font-size: 2.5rem; /* ~40px */
+    margin-top: 0;
+  }
+
+  .feedback-filled-title {
+    font-size: 2rem; /* ~32px */
+  }
+
+  .feedback-filled-sub {
+    font-size: 1.25rem;
+  }
+
+  .feedback-filled-btn {
+    width: 12.5rem; /* 200px */
+    margin-top: 2rem; /* desktop'e nebūtina prilipinti prie apačios */
+  }
+}

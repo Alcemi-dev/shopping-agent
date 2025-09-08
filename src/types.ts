@@ -1,7 +1,5 @@
 // ===== Views =====
-export type View = "explain" | "chips" | "category" | "chat";
-
-// ===== Categories =====
+export type View = "explain" | "chips" | "category" | "chat" | "feedback";
 export type Category =
   | "Consultation"
   | "Order status"

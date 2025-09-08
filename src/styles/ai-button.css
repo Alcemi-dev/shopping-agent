@@ -41,3 +41,21 @@
   width: 18.33px;
   height: 19.24px;
 }
+.ai-fab__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* notification badge */
+.notif-dot {
+  position: absolute;
+  top: -1rem; /* pakoreguok pagal dizainą */
+  right: -1rem; /* pakoreguok pagal dizainą */
+  width: 15px;
+  height: 15px;
+  background: #ff7344;
+  border: 2px solid #fff;
+  border-radius: 50%;
+}

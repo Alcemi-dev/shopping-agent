@@ -9,7 +9,7 @@ type Props = {
   children: ReactNode;
   mode?: "default" | "answer";
   showTitle?: boolean;
-  rightSlot?: ReactNode; // 🛒 papildomai
+  rightSlot?: ReactNode; // 🛒 papildomas slotas header'io dešinėje
 };
 
 /* Sub-komponentas: <Modal.Screen show={...}> */
@@ -26,7 +26,7 @@ export default function Modal({
   children,
   mode = "default",
   showTitle = true,
-  rightSlot, // 🛒 pridėjau čia
+  rightSlot,
 }: Props) {
   const dlgRef = useRef<HTMLDialogElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
@@ -54,7 +54,7 @@ export default function Modal({
     return () => dlg.removeEventListener("cancel", onCancel);
   }, [onClose]);
 
-  // measure header height -> --head-h (used for responsive chat height)
+  // measure header height -> --head-h (responsive chat height)
   useEffect(() => {
     const head = headRef.current;
     if (!head) return;
@@ -94,7 +94,7 @@ export default function Modal({
 
             <div className="head-spacer" />
 
-            {/* 🛒 Cart vieta */}
+            {/* 🛒 Cart / Notification vieta */}
             {rightSlot}
 
             <button className="icon-btn head-close" onClick={onClose}>
@@ -116,7 +116,7 @@ export default function Modal({
           </div>
         </div>
 
-        {/* Čia pridedam host elementą produktų juostai */}
+        {/* Host elementas produktų juostai */}
         <div id="modal-overlays" aria-hidden />
       </div>
     </dialog>
