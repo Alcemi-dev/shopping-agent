@@ -53,6 +53,7 @@
   justify-content: center;
   width: 100%;
   padding: 1rem;
+  padding-bottom: 2rem;
   background: transparent; /* gali duoti foną jei reikia */
   z-index: 10;
 }
@@ -97,5 +98,9 @@
   .feedback-filled-btn {
     width: 12.5rem; /* 200px */
     margin-top: 2rem; /* desktop'e nebūtina prilipinti prie apačios */
+  }
+
+  .feedback-filled-dock {
+    padding-bottom: 10rem;
   }
 }
