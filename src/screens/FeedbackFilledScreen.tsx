@@ -13,9 +13,12 @@ export default function FeedbackFilledScreen({ onNewSearch }: Props) {
         <p className="feedback-filled-sub">What would you like to find next?</p>
       </div>
 
-      <button className="feedback-filled-btn" onClick={onNewSearch}>
-        New search
-      </button>
+      {/* 👇 dock kaip inputui */}
+      <div className="feedback-filled-dock">
+        <button className="feedback-filled-btn" onClick={onNewSearch}>
+          New search
+        </button>
+      </div>
     </div>
   );
 }
