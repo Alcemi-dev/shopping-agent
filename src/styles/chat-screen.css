@@ -1,5 +1,6 @@
 /* === Chat log (scroll čia) === */
 .chat-log {
+  position: relative;
   flex: 1 1 auto;
   min-height: 0;
   max-height: 100%;
@@ -14,6 +15,13 @@
 }
 .chat-log::-webkit-scrollbar {
   display: none;
+}
+
+/* 👇 čia pridedam tarpelį gale */
+.chat-log::after {
+  content: "";
+  display: block;
+  height: 2rem; /* tarpas tarp paskutinės žinutės ir inputo */
 }
 
 /* eilutės */
@@ -51,20 +59,23 @@
   display: block;
   margin: 0;
   max-width: min(var(--bubble-max), 100%);
-
   color: var(--text-on-dark);
   line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+/* rekomendacijų chipai */
 .msg.recommendation-chips .chips-inline {
   margin-left: -2rem;
   padding-left: 2rem;
   margin-right: -2rem;
   padding-right: 2rem;
 }
+
+/* support text be padding-bottom – tarpelį daro ::after */
 .msg.support-text {
-  padding-bottom: 2rem;
+  /* no padding-bottom needed */
 }
 
 /* === LoadingRail animacija === */
@@ -73,7 +84,6 @@
   align-items: center;
   gap: 7px;
   height: 8px;
-  padding-bottom: 3rem;
 }
 .dash {
   width: 24px;
@@ -96,10 +106,11 @@
 }
 
 .chat-head-fade {
-  position: sticky;
+  position: absolute;
   top: 0;
-  height: 44px;
-  margin-top: -44px; /* kad neužstumtų turinio */
+  left: 0;
+  width: 100%;
+  height: 4rem;
   background: linear-gradient(180deg, #020a31 0%, rgba(2, 9, 46, 0) 50%);
   pointer-events: none;
   z-index: 5;
@@ -108,16 +119,18 @@
 /* Desktop override */
 @media (min-width: 610px) {
   .chat-log {
+    position: static;
     width: 44rem;
     margin-left: -7rem;
-    margin-bottom: 10.8rem;
+    margin-bottom: 10.4rem;
+    margin-top: calc(-2 * var(--head-h));
+    padding-top: 6.25rem;
   }
 
   .ai-text {
     padding-left: 5.4rem;
     max-width: 44rem;
     padding-right: 5.4rem;
-    padding-bottom: 2rem;
   }
 
   .msg--user {
@@ -150,10 +163,14 @@
   .msg.recommendation-chips .chips-inline {
     padding-left: 7.4rem;
   }
+
   .chat-head-fade {
+    position: absolute;
     z-index: 15;
-    top: -1px;
-    width: 100%;
+    margin-top: -5rem;
+    margin-left: -5rem;
+    top: 0;
+    width: 44rem;
   }
 }
 

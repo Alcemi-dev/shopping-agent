@@ -1,22 +1,16 @@
 @import "./tokens.css";
 
-/* ==== Vars for explain layout (rem) ==== */
+/* ==== Vars for explain layout ==== */
 :root {
-  /* Col widths (Figma) */
-  --explain-col-w-mobile: 20.875rem; /* 334px */
+  /* Mobile (390px → vw/vh) */
+  --explain-col-w-mobile: 85.6vw; /* 334/390 */
+  --explain-text-w-mobile: 72.3vw; /* 282/390 */
+
+  /* Desktop (rem values, Figma-based) */
   --explain-col-w-desktop: 22rem; /* 440px */
-
-  /* Text column widths (Figma) */
-  --explain-text-w-mobile: 17.625rem; /* 282px = 334 - 32 - 20 */
-  --explain-text-w-desktop: 21.75rem; /* 348px = 400 - 32 - 20 */
-
-  /* Title wrap on desktop */
+  --explain-text-w-desktop: 21.75rem; /* 348px */
   --explain-title-w-desktop: 25rem; /* 400px */
-
-  /* CTA width on desktop */
   --explain-cta-w-desktop: 13.75rem; /* 220px */
-
-  /* Desktop vertical target: H1 top ≈ 132px from top of modal card */
   --explain-h1-top-desktop: 8.25rem; /* 132px */
 }
 
@@ -28,17 +22,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem; /* 48px: H1 → list → CTA */
-  padding: 0 0 1.25rem; /* centrinė kolona be šoninių padding */
+  gap: 6vh; /* vietoje 48px */
+  padding: 0 0 3vh;
 }
 
-/* H1 (naudojam bendrą .modal-title tipografiją, tik ribojam plotį) */
 .modal-card:has(.explain) .modal-title {
   max-width: 100%;
   margin-inline: auto;
-  margin-top: 2rem;
+  margin-top: 5vh;
   text-align: center;
-  font-size: var(--fs-32);
+  font-size: clamp(1.5rem, 5vw, 2rem);
   line-height: 1.2;
   font-weight: 400;
   color: var(--text-on-dark);
@@ -49,54 +42,53 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* 24px */
-  margin-top: 2rem;
+  gap: 3vh;
+  margin-top: 5vh;
   padding: 0;
-  padding-left: 1rem;
+  padding-left: 4vw;
   list-style: none;
 }
 
 .explain-item {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1.25rem; /* 20px: ikona ↔ tekstas */
-  align-items: stretch; /* tekstas valdo eilutės aukštį */
+  gap: 5vw;
+  align-items: stretch;
   border-radius: var(--radius-md);
 }
 
 .explain-icon {
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
-  /* — Ikonėlę pastatom „tarp“ h3 ir p — */
-  align-self: center; /* centras teksto stulpelio atžvilgiu */
+  width: 8vw;
+  height: 8vw;
+  align-self: center;
 }
 .explain-icon img {
   display: block;
-  width: 2rem;
-  height: 2rem;
+  width: 100%;
+  height: 100%;
 }
 
-/* Fiksuojam realų teksto stulpelio plotį (kaip Figma), kad eilutės lūžtų identiškai */
 .explain-text {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* 4px tarp h3 ir p */
+  gap: 1vh;
   max-width: var(--explain-text-w-mobile);
 }
 
 .explain-subtitle {
   margin: 0;
   font-weight: 500;
-  font-size: 1.125rem; /* 18px */
+  font-size: clamp(1rem, 4vw, 1.125rem);
   line-height: 1.3;
   color: var(--text-on-dark);
 }
 .explain-desc {
   margin: 0;
   font-weight: 400;
-  font-size: 1rem; /* 16px */
+  max-width: 20rem;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
   line-height: 1.5;
   color: var(--text-on-dark);
   opacity: 0.92;
@@ -107,52 +99,143 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding-top: 0.5rem;
+  padding-top: 1.5vh;
 }
 .explain-cta {
-  width: 100%; /* MOBILE: pilnas 334px konteineris */
-  min-height: 3rem; /* ~48px */
-  padding: 0.75rem 2rem;
-  border-radius: 2.25rem;
+  width: 100%;
+  min-height: 6vh;
+  padding: 2vh 8vw;
+  border-radius: 5vh;
   border: 0;
   background: var(--surface-page);
   color: var(--modal-bg);
   font-weight: 700;
   line-height: 1.3;
-  box-shadow: 0 0 0.4375rem 0.1875rem #dde3ff;
+  box-shadow: 0 0 0.5rem 0.2rem #dde3ff;
   cursor: pointer;
 }
 
-/* Tik explanation ekrane dugne – papildomas kvėpavimas */
+/* Tik explanation ekrane dugne */
 .modal-card:has(.explain) .modal-body {
-  padding-bottom: 1.25rem;
+  padding-bottom: 3vh;
 }
 .modal-card:has(.explain) .modal-body .explain-cta-wrap {
-  padding-bottom: max(0.5rem, var(--safe-bottom));
+  padding-bottom: max(2vh, var(--safe-bottom));
 }
 
-/* Desktop */
 @media (min-width: 610px) {
-  /* Pastatom koloną taip, kad H1 startas būtų ~132px nuo viršaus */
   .modal-card:has(.explain) .modal-col {
-    margin-top: 1rem;
+    margin-top: 0; /* nebepastumiam */
     gap: 3rem; /* 48px */
+  }
+
+  .explain {
+    max-width: 22rem; /* 440px */
+    gap: 3rem; /* 48px tarp dalių */
+    padding: 0 0 1.25rem;
+  }
+
+  .modal-card:has(.explain) .modal-title {
+    max-width: 25rem; /* 400px */
+    margin-top: 0; /* nebepastumiam į apačią */
+    font-size: 2rem; /* 32px */
+    line-height: 1.2; /* 38px */
   }
 
   .explain-list {
     margin: 0;
+    gap: 1.5rem; /* 24px */
+    padding-left: 1rem; /* 16px */
+  }
+
+  .explain-item {
+    gap: 1.25rem; /* 20px */
+  }
+
+  .explain-icon {
+    width: 2rem; /* 32px */
+    height: 2rem;
+  }
+  .explain-icon img {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .explain-text {
+    max-width: 21.75rem; /* 348px */
+    gap: 0.25rem; /* 4px */
+  }
+
+  .explain-subtitle {
+    font-size: 1.125rem; /* 18px */
+  }
+  .explain-desc {
+    font-size: 1rem; /* 16px */
+    max-width: none;
+  }
+
+  .explain-cta {
+    width: 13.75rem; /* 220px */
+    min-height: 3rem; /* 48px */
+    padding: 0.75rem 2rem;
+    border-radius: 2.25rem;
+  }
+}
+@media (min-width: 610px) {
+  .modal-card:has(.explain) .modal-col {
+    margin-top: 0; /* nebepastumiam */
+    gap: 3rem; /* 48px */
   }
 
   .explain {
-    max-width: var(--explain-col-w-desktop); /* 440px */
+    max-width: 22rem; /* 440px */
+    gap: 3rem; /* 48px tarp dalių */
+    padding: 0 0 1.25rem;
   }
+
   .modal-card:has(.explain) .modal-title {
-    max-width: var(--explain-title-w-desktop); /* 400px */
+    max-width: 25rem; /* 400px */
+    margin-top: 3rem; /* nebepastumiam į apačią */
+    font-size: 2rem; /* 32px */
+    line-height: 1.2; /* 38px */
   }
+
+  .explain-list {
+    margin: 0;
+    gap: 1.5rem; /* 24px */
+    padding-left: 1rem; /* 16px */
+  }
+
+  .explain-item {
+    gap: 1.25rem; /* 20px */
+  }
+
+  .explain-icon {
+    width: 2rem; /* 32px */
+    height: 2rem;
+  }
+  .explain-icon img {
+    width: 2rem;
+    height: 2rem;
+  }
+
   .explain-text {
-    max-width: var(--explain-text-w-desktop); /* 348px */
+    max-width: 21.75rem; /* 348px */
+    gap: 0.25rem; /* 4px */
   }
+
+  .explain-subtitle {
+    font-size: 1.125rem; /* 18px */
+  }
+  .explain-desc {
+    font-size: 1rem; /* 16px */
+    max-width: none;
+  }
+
   .explain-cta {
-    width: var(--explain-cta-w-desktop); /* 220px */
+    width: 13.75rem; /* 220px */
+    min-height: 3rem; /* 48px */
+    padding: 0.75rem 2rem;
+    border-radius: 2.25rem;
   }
 }

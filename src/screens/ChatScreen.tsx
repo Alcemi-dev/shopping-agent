@@ -34,13 +34,15 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
   const { showHeadFade, showFootFade } = useChatScroll(logRef, uniqueMessages);
 
   return (
-    <div className="chat-log" ref={logRef} aria-live="polite">
+    <>
       {showHeadFade && <div className="chat-head-fade" />}
-      {uniqueMessages.map((m) => (
-        <MessageRenderer key={m.id} m={m} onAddToCart={onAddToCart} />
-      ))}
-      {showFootFade && <div className="chat-foot-fade" />}
-      {extra}
-    </div>
+      <div className="chat-log" ref={logRef} aria-live="polite">
+        {uniqueMessages.map((m) => (
+          <MessageRenderer key={m.id} m={m} onAddToCart={onAddToCart} />
+        ))}
+        {showFootFade && <div className="chat-foot-fade" />}
+        {extra}
+      </div>
+    </>
   );
 }
