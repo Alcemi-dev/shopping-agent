@@ -1,36 +1,13 @@
+// App.tsx
 import { useEffect, useRef, useState } from "react";
 import { Background, AiButton, Modal, InputBubble } from "./components";
 import ExplainScreen from "./screens/ExplainScreen";
 import ChipsScreen from "./screens/ChipsScreen";
 import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
-import { MOCK_PRODUCTS } from "./data/products";
 import type { Msg, Category, View, Collected } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
-
-/* ================== MODULE-LEVEL ================== */
-const processedLoaderIds = new Set<string>();
-const pendingQueries = new Map<string, string>();
-
-/* helper */
-const uid = () => Math.random().toString(36).slice(2);
-
-function sentenceFor(c: Category) {
-  switch (c) {
-    case "Consultation":
-      return "I’d like a consultation.";
-    case "Order status":
-      return "I’m looking for my order status.";
-    case "Shipping & delivery":
-      return "I’m looking for information about Shipping & delivery.";
-    case "Returns":
-      return "I need help with returns.";
-    case "Product Information":
-      return "I’m looking for product information.";
-    case "Payment":
-      return "I have a question about payments.";
-  }
-}
+import { createMockEngine, sentenceFor } from "./mock/engine"; // ⬅️ nauja
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -40,13 +17,21 @@ export default function App() {
   const [showSubchips, setShowSubchips] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [, setCollected] = useState<Collected>({}); // state machine memory
-
-  // 🛒 Cart state
   const [cartCount, setCartCount] = useState(0);
 
   const dockRef = useRef<HTMLDivElement>(null);
 
-  /* dock height -> --dock-h */
+  // ⬇️ Inicijuojam mock engine vieną kartą
+  const engineRef = useRef(
+    createMockEngine({
+      setMessages,
+      setCollected,
+      // getProducts: () => MOCK_PRODUCTS, // jei nori perleisti iš išorės
+      delayMs: 900,
+    })
+  );
+
+  /* dock height -> --dock-h (paliekam kaip buvo) */
   useEffect(() => {
     const el = dockRef.current;
     if (!el) return;
@@ -58,7 +43,7 @@ export default function App() {
     return () => ro.disconnect();
   }, []);
 
-  /* mobile keyboard -> html.kb-open */
+  /* mobile keyboard -> html.kb-open (paliekam kaip buvo) */
   useEffect(() => {
     const root = document.documentElement;
     if (!open) {
@@ -123,7 +108,9 @@ export default function App() {
   const pickTopChip = (v: string) => {
     const cat = v as Category;
     setCategory(cat);
-    setMessages([{ id: uid(), role: "user", kind: "text", text: sentenceFor(cat) }]);
+    setMessages([
+      { id: crypto.randomUUID?.() ?? Math.random().toString(), role: "user", kind: "text", text: sentenceFor(cat) },
+    ]);
     setShowSubchips(true);
     setView("category");
   };
@@ -134,173 +121,21 @@ export default function App() {
     setView("chat");
   };
 
-  // === SEND (užregistruoja query) ===
+  // Pasinaudojam engine siuntimu
   const send = (text: string) => {
-    const q = text.trim();
-    if (!q) return;
-
-    const userMsg: Msg = { id: uid(), role: "user", kind: "text", text: q };
-    const loaderId = uid();
-
-    setMessages((prev) => {
-      const last = prev[prev.length - 1];
-      if (last?.kind === "loading") return prev;
-      return [...prev, userMsg, { id: loaderId, role: "system", kind: "loading" } as Msg];
-    });
-
-    pendingQueries.set(loaderId, q);
-    setQuery("");
-  };
-  // === STATE MACHINE EFFECT ===
-  useEffect(() => {
-    let loader: Msg | undefined;
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const m = messages[i];
-      if (m.kind === "loading") {
-        loader = m;
-        break;
-      }
-    }
-    if (!loader) return;
-    if (processedLoaderIds.has(loader.id)) return;
-
-    processedLoaderIds.add(loader.id);
-    const q = pendingQueries.get(loader.id) ?? "";
-
-    const t = setTimeout(() => {
-      pendingQueries.delete(loader!.id);
-
-      setCollected((current) => {
-        // 1) ask skinType
-        if (!current.skinType) {
-          const msgId = loader!.id + "-skin";
-          setMessages((prev) =>
-            prev
-              .filter((m) => m.id !== loader!.id)
-              .concat([
-                {
-                  id: msgId,
-                  role: "assistant",
-                  kind: "text",
-                  text: "What’s your skin type? (oily, dry, normal…)",
-                } as Msg,
-              ])
-          );
-          return { ...current, skinType: "pending" };
-        }
-
-        // 2) ask budget
-        if (current.skinType === "pending") {
-          const msgId = loader!.id + "-budget";
-          setMessages((prev) =>
-            prev
-              .filter((m) => m.id !== loader!.id)
-              .concat([
-                {
-                  id: msgId,
-                  role: "assistant",
-                  kind: "text",
-                  text: "Great! What’s your budget range?",
-                } as Msg,
-              ])
-          );
-          return { ...current, skinType: q.toLowerCase() };
-        }
-
-        // 3) pasirinkimas pagal tekstą
-        if (!current.budget) {
-          const newState = { ...current, budget: q.toLowerCase() };
-          const scenario = q.toLowerCase().includes("none")
-            ? "none"
-            : q.toLowerCase().includes("many")
-            ? "many"
-            : "one";
-
-          if (scenario === "one") {
-            const msgId = loader!.id + "-one";
-            setMessages((prev) =>
-              prev
-                .filter((m) => m.id !== loader!.id)
-                .concat([
-                  {
-                    id: msgId,
-                    role: "assistant",
-                    kind: "products",
-                    products: [MOCK_PRODUCTS[0]],
-                    header:
-                      "Based on your skin type and other indications, this is the best match for your needs in our store:",
-                  } as Msg,
-                ])
-            );
-          } else if (scenario === "many") {
-            const msgId = loader!.id + "-many";
-            setMessages((prev) =>
-              prev
-                .filter((m) => m.id !== loader!.id)
-                .concat([
-                  {
-                    id: msgId,
-                    role: "assistant",
-                    kind: "products",
-                    products: MOCK_PRODUCTS,
-                    header:
-                      "I couldn’t find anything for your exact request, but here are the closest matches that our customers love:",
-                    footer: "Do you need any further help?",
-                  } as Msg,
-                ])
-            );
-          } else {
-            const noResultsId = loader!.id + "-none";
-            const actionsId = loader!.id + "-actions";
-            const supportId = loader!.id + "-support";
-
-            setMessages((prev) =>
-              prev
-                .filter((m) => m.id !== loader!.id)
-                .concat([
-                  {
-                    id: noResultsId,
-                    role: "assistant",
-                    kind: "text",
-                    text: `No results found for ${q}. I suggest checking these items:`,
-                    extraClass: "no-results",
-                  } as Msg,
-                  {
-                    id: actionsId,
-                    role: "assistant",
-                    kind: "actions",
-                    actions: [
-                      { label: "Recommendation 1", value: "rec1" },
-                      { label: "Recommendation 2", value: "rec2" },
-                    ],
-                    extraClass: "recommendation-chips",
-                  } as Msg,
-                  {
-                    id: supportId,
-                    role: "assistant",
-                    kind: "text",
-                    text: "If you need immediate help, call us (+3706 465 8132) or send us an email (info@shop.lt). Would you like me to help you draft and send an email to our customer support manager?",
-                    extraClass: "support-text",
-                  } as Msg,
-                ])
-            );
-          }
-          return newState;
-        }
-        return current;
-      });
-    }, 900);
-
-    return () => clearTimeout(t);
-  }, [messages]);
-  const submit = () => {
-    if (query.trim()) {
-      send(query);
+    if (text.trim()) {
+      engineRef.current.send(text);
       if (view !== "chat") setView("chat");
+      setQuery("");
     }
   };
 
-  // 🛒 Add-to-cart handler
+  // deleguojam engine’ui
+  useEffect(() => {
+    engineRef.current.handleMessagesEffect(messages);
+  }, [messages]);
+
+  // Add-to-cart handler
   const handleAddToCart = (title: string) => {
     console.log("Added:", title);
     setCartCount((c) => c + 1);
@@ -309,7 +144,6 @@ export default function App() {
   return (
     <div className="app-root">
       <Background />
-
       {!open && <AiButton onOpen={handleOpen} />}
 
       <Modal
@@ -352,7 +186,7 @@ export default function App() {
 
         {view !== "explain" && (
           <div className="input-dock" ref={dockRef}>
-            <InputBubble value={query} onChange={setQuery} onSubmit={submit} placeholder="Ask anything…" />
+            <InputBubble value={query} onChange={setQuery} onSubmit={() => send(query)} placeholder="Ask anything…" />
           </div>
         )}
       </Modal>

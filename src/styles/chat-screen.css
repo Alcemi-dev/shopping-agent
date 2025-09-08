@@ -73,6 +73,7 @@
   align-items: center;
   gap: 7px;
   height: 8px;
+  padding-bottom: 3rem;
 }
 .dash {
   width: 24px;
@@ -99,7 +100,7 @@
   top: 0;
   height: 44px;
   margin-top: -44px; /* kad neužstumtų turinio */
-  background: linear-gradient(180deg, #02092e 0%, rgba(2, 9, 46, 0) 50%);
+  background: linear-gradient(180deg, #020a31 0%, rgba(2, 9, 46, 0) 50%);
   pointer-events: none;
   z-index: 5;
 }
@@ -114,6 +115,9 @@
 
   .ai-text {
     padding-left: 5.4rem;
+    max-width: 44rem;
+    padding-right: 5.4rem;
+    padding-bottom: 2rem;
   }
 
   .msg--user {
@@ -145,6 +149,11 @@
   }
   .msg.recommendation-chips .chips-inline {
     padding-left: 7.4rem;
+  }
+  .chat-head-fade {
+    z-index: 15;
+    top: -1px;
+    width: 100%;
   }
 }
 

@@ -15,22 +15,20 @@
   --chat-bottom-pad: 1.75rem;
 }
 
-/* dialog */
-.modal-root {
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-}
+/* ==========================================================================
+   1. Dialog Root
+   ========================================================================== */
 .modal-root:not([open]) {
   display: none;
 }
 .modal-root[open] {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100svh;
+  min-width: 100vw;
+  min-height: 100svh;
+  border: none;
   z-index: var(--z-modal);
+  background: none;
 }
 @supports (height: 100dvh) {
   .modal-root[open] {
@@ -38,11 +36,13 @@
   }
 }
 .modal-root::backdrop {
-  background: var(--backdrop);
+  background: rgba(0, 0, 0, 0.45);
   opacity: 1;
 }
 
-/* card */
+/* ==========================================================================
+   2. Modal Card
+   ========================================================================== */
 .modal-card {
   position: fixed;
   inset: 0;
@@ -59,7 +59,9 @@
   }
 }
 
-/* container */
+/* ==========================================================================
+   3. Container
+   ========================================================================== */
 .modal-ctr {
   position: relative;
   z-index: 1;
@@ -70,16 +72,19 @@
   min-height: 0;
 }
 
-/* header */
+/* ==========================================================================
+   4. Header
+   ========================================================================== */
 .modal-head {
   position: sticky;
   top: 0;
-  z-index: 5; /* kad būtų virš chat log’o */
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: 1.5rem;
-  padding: 1rem var(--gutter) 1rem;
+  padding: 1rem var(--gutter);
+  flex-shrink: 0;
 }
 .icon-btn {
   appearance: none;
@@ -117,7 +122,9 @@
   flex: 1 1 auto;
 }
 
-/* title */
+/* ==========================================================================
+   5. Title
+   ========================================================================== */
 .modal-title {
   margin: 0;
   margin-top: clamp(6rem, 22vh, 12rem);
@@ -135,7 +142,9 @@
   display: inline;
 }
 
-/* body */
+/* ==========================================================================
+   6. Body
+   ========================================================================== */
 .modal-col {
   width: 100%;
   min-height: 0;
@@ -155,7 +164,9 @@
   overflow: hidden;
 }
 
-/* suggestions */
+/* ==========================================================================
+   7. Suggestions
+   ========================================================================== */
 .suggestions {
   margin: 0;
   padding-block: 0.375rem;
@@ -167,12 +178,14 @@
   flex: 0 0 auto;
 }
 
-/* input dock */
+/* ==========================================================================
+   8. Input Dock
+   ========================================================================== */
 .input-dock {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 32px;
+  bottom: 2rem;
   z-index: 10;
   display: flex;
   justify-content: center;
@@ -183,12 +196,16 @@
   pointer-events: auto;
 }
 
-/* footer */
+/* ==========================================================================
+   9. Footer
+   ========================================================================== */
 .modal-footer {
   display: none;
 }
 
-/* category screen basics */
+/* ==========================================================================
+   10. Category Screen
+   ========================================================================== */
 .category-screen {
   display: flex;
   flex-direction: column;
@@ -201,7 +218,7 @@
   box-sizing: border-box;
   background: #dee3ff;
   color: #0a1344;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   padding: 1rem;
   border: 1px solid #fcfcfc;
   max-width: clamp(17.625rem, 70vw, 23.75rem);
@@ -212,23 +229,27 @@
   margin-left: auto;
 }
 
-/* chat log */
+/* ==========================================================================
+   11. Chat Log
+   ========================================================================== */
 .chat-log {
   flex: 1 1 auto;
   min-height: 0;
-  max-height: 520px;
+  max-height: 32.5rem;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
   scroll-behavior: smooth;
-  padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed) + var(--safe-bottom));
+  padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed));
   margin-bottom: 7rem;
 }
 .chat-log::-webkit-scrollbar {
   display: none;
 }
 
-/* messages */
+/* ==========================================================================
+   12. Messages
+   ========================================================================== */
 .msg {
   width: 100%;
   display: flex;
@@ -243,14 +264,12 @@
 .msg--ai {
   justify-content: flex-start;
 }
-
-/* bubbles */
 .msg-bubble {
   display: inline-block;
   width: fit-content;
   max-width: min(var(--bubble-max), 90%);
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   background: #dee3ff;
   color: #0a1344;
   border: 1px solid rgba(252, 252, 252, 0.85);
@@ -266,17 +285,19 @@
   overflow-wrap: anywhere;
 }
 
-/* loading */
+/* ==========================================================================
+   13. Loading
+   ========================================================================== */
 .loading-rail {
   display: flex;
   align-items: center;
-  gap: 7px;
-  height: 8px;
+  gap: 0.4375rem;
+  height: 0.5rem;
 }
 .dash {
-  width: 24px;
-  height: 8px;
-  border-radius: 20px;
+  width: 1.5rem;
+  height: 0.5rem;
+  border-radius: 1.25rem;
   transition: background 0.25s, box-shadow 0.25s;
 }
 .dash--1 {
@@ -284,14 +305,16 @@
 }
 .dash--2 {
   background: linear-gradient(90deg, #fff 0%, #0e248b 100%);
-  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0.5rem 0.125rem rgba(255, 255, 255, 0.6);
 }
 .dash--3 {
   background: linear-gradient(90deg, #fff 100%, #0e248b 100%);
-  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0.5rem 0.125rem rgba(255, 255, 255, 0.6);
 }
 
-/* keyboard tweaks */
+/* ==========================================================================
+   14. Keyboard Tweaks
+   ========================================================================== */
 html.kb-open .modal-root[open] .modal-head {
   padding: 0.375rem var(--gutter) 0.25rem !important;
 }
@@ -304,10 +327,12 @@ html.kb-open .modal-root[open] .suggestions {
   margin-top: 0.375rem !important;
 }
 html.kb-open .modal-root[open] .chat-log {
-  padding-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open) + var(--safe-bottom)) !important;
+  padding-bottom: calc(0.75rem + var(--dock-h) + var(--dock-gap-open)) !important;
 }
 
-/* desktop */
+/* ==========================================================================
+   15. Desktop Overrides
+   ========================================================================== */
 @media (min-width: 610px) {
   :root {
     --chat-w: 30rem;
@@ -324,7 +349,7 @@ html.kb-open .modal-root[open] .chat-log {
     transform: translate(-50%, -50%);
     width: clamp(32.5rem, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
     height: min(var(--modal-h-desktop), var(--modal-max-h));
-    border: 1px solid var(--outline);
+    border: 0.0625rem solid var(--outline);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-elev-1);
     background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center/cover no-repeat;
@@ -335,9 +360,6 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .modal-head {
     padding: 1.125rem 1.5rem;
-  }
-  .head-back {
-    display: inline-grid !important;
   }
   .modal-head .head-logo-mobile {
     display: none !important;
@@ -380,11 +402,7 @@ html.kb-open .modal-root[open] .chat-log {
     padding: 0;
   }
   .input-dock {
-    left: 0;
-    right: 0;
-    bottom: 45.85px;
-    display: flex;
-    justify-content: center;
+    bottom: 2.875rem;
     z-index: 2;
     pointer-events: none;
     padding: 0;
@@ -394,7 +412,7 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .chat-log {
     width: var(--chat-w);
-    height: calc(min(var(--modal-h-desktop), var(--modal-max-h)) - var(--head-h, 88px) - 6rem);
+    height: calc(min(var(--modal-h-desktop), var(--modal-max-h)) - var(--head-h, 5.5rem) - 6rem);
     margin: 0 auto;
     scrollbar-width: none;
     padding-left: 0;
@@ -406,166 +424,66 @@ html.kb-open .modal-root[open] .chat-log {
   .msg-bubble {
     max-width: var(--bubble-max);
   }
-}
-
-/* overlays host */
-#modal-overlays {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-#modal-overlays .products-wrap,
-#modal-overlays .products-strip,
-#modal-overlays .products-scroll,
-#modal-overlays .product-card,
-#modal-overlays .reactions,
-#modal-overlays .add-btn {
-  pointer-events: auto; /* 👈 tikras turinys gauna paspaudimus */
-}
-
-/* Tik desktopui, kad neišliptų iš mobile */
-@media (min-width: 610px) {
-  .modal-ctr,
-  .modal-body {
-    overflow: visible !important; /* neleisti nukirpti vaikų */
+  .modal-footer {
+    display: block;
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
   }
-
-  .products-wrap,
-  .products-strip {
-    overflow: visible !important;
+  .modal-footer .powered-by {
+    height: 1.75rem;
+    width: auto;
+    opacity: 0.85;
+    display: block;
   }
-
-  .products-scroll {
-    overflow-x: auto;
-    overflow-y: visible;
-    position: relative;
-    z-index: 10; /* virš kitų sluoksnių */
-  }
-
-  .product-card {
-    z-index: 20;
+  .modal-card:has(.explain) {
+    background: var(--surface-modal) url("/img/background-gradient-explain.svg") center/cover no-repeat;
   }
 }
-/* Cart – bazė (mobile) */
+
+/* ==========================================================================
+   16. Cart
+   ========================================================================== */
 .cart-indicator {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px; /* tarpas tarp ikonos ir teksto */
-  padding: 2px 3px;
-  height: 28px;
+  gap: 0.5rem;
+  padding: 0.125rem 0.1875rem;
+  height: 1.75rem;
 }
-
-/* Ikonos wrapas */
 .cart-indicator .cart-icon-wrap {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
-
 .cart-indicator .cart-icon-wrap img {
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   display: block;
 }
-
-/* Tekstas "Cart" */
 .cart-indicator .cart-label {
   font-family: "Satoshi", sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 150%;
   color: #f7f7f7;
 }
-
-/* Badge (skaičiukas) → prilipęs prie ikonos */
 .cart-indicator .badge {
   position: absolute;
-  bottom: -2px;
-  right: -4px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
+  bottom: -0.125rem;
+  right: -0.25rem;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.25rem;
   background: #dee3ff;
   color: #02092e;
   font-family: "Satoshi", sans-serif;
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
-  line-height: 16px;
+  line-height: 1rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* --- Mobile: Cart per vidurį header’io --- */
-.modal-head {
-  display: flex;
-  justify-content: center; /* centre */
-  align-items: center;
-}
-
-.modal-head .head-spacer {
-  display: none; /* kad nepaliktų tuščios vietos */
-}
-
-.modal-head .cart-indicator {
-  margin: 0 auto;
-}
-
-/* --- Desktop: Cart dešinėje --- */
-@media (min-width: 610px) {
-  .modal-head {
-    justify-content: space-between;
-  }
-
-  .modal-head .head-spacer {
-    display: block;
-    flex: 1;
-  }
-
-  .modal-head .cart-indicator {
-    margin-left: auto; /* pritraukiam prie close */
-    padding-right: 30px;
-  }
-}
-
-/* --- Mobile: default – space-between (kai nėra cart) --- */
-.modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* --- Mobile: kai yra cart-indicator, centruojam jį --- */
-@media (max-width: 609px) {
-  .modal-head:has(.cart-indicator) {
-    justify-content: center; /* cart centre */
-  }
-
-  .modal-head:has(.cart-indicator) .head-spacer {
-    display: none;
-  }
-
-  .modal-head .cart-indicator {
-    margin: 0 auto;
-  }
-}
-
-/* --- Desktop: Cart dešinėje --- */
-@media (min-width: 610px) {
-  .modal-head {
-    justify-content: space-between;
-  }
-
-  .modal-head .head-spacer {
-    display: block;
-    flex: 1;
-  }
-
-  .modal-head .cart-indicator {
-    margin-left: auto;
-    padding-right: 30px;
-  }
 }

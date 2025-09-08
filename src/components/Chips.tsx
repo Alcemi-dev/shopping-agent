@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDragScroll } from "../hooks/useDragScroll";
 
 /** Galima paduoti tiesiog string'ą arba struktūrą su label/value */
 export type ChipItem = string | { label: string; value: string; disabled?: boolean };
@@ -12,21 +13,20 @@ function getValue(it: ChipItem) {
 
 type Props = {
   items: ChipItem[];
-  /** SENAS API: palikta suderinamumui (nelaikoma privaloma) */
-  onPick?: (val: string) => void;
-  /** NAUJAS API: patogesnis „no products/actions“ naudojimui */
-  onSelect?: (val: string, item: ChipItem) => void;
-  /** (optional) papildomos klasės, jei kada prireiktų kitur */
+  onPick?: (val: string) => void; // SENAS API
+  onSelect?: (val: string, item: ChipItem) => void; // NAUJAS API
   className?: string;
 };
 
 export default function Chips({ items, onPick, onSelect, className }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
-
-  const dragging = useRef(false);
+  const [wasDrag, setWasDrag] = useState(false);
   const startX = useRef(0);
-  const startScroll = useRef(0);
 
+  // bendras drag scroll hook’as (paliekam)
+  useDragScroll(wrapRef);
+
+  // blur hack (kad focus nepaliktų ant chip)
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
       const w = wrapRef.current;
@@ -58,35 +58,15 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
         }
       }}
       onPointerDown={(e) => {
-        if (e.pointerType === "mouse") return;
-        const el = wrapRef.current;
-        if (!el) return;
-        dragging.current = false;
-        startX.current = e.clientX;
-        startScroll.current = el.scrollLeft;
-        (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-        el.classList.add("is-dragging");
+        setWasDrag(false);
+        if (e.pointerType !== "mouse") startX.current = e.clientX;
       }}
       onPointerMove={(e) => {
-        if (e.pointerType === "mouse") return;
-        const el = wrapRef.current;
-        if (!el || !el.classList.contains("is-dragging")) return;
-        const dx = e.clientX - startX.current;
-        if (Math.abs(dx) > 12) dragging.current = true;
-        el.scrollLeft = startScroll.current - dx;
-        e.preventDefault();
+        if (e.pointerType === "mouse") return; // desktop: nelečiam click
+        if (Math.abs(e.clientX - startX.current) > 12) setWasDrag(true);
       }}
-      onPointerUp={(e) => {
-        if (e.pointerType === "mouse") return;
-        wrapRef.current?.classList.remove("is-dragging");
-        (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
-        requestAnimationFrame(() => (dragging.current = false));
-      }}
-      onPointerCancel={(e) => {
-        if (e.pointerType === "mouse") return;
-        wrapRef.current?.classList.remove("is-dragging");
-        (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
-        dragging.current = false;
+      onPointerUp={() => {
+        requestAnimationFrame(() => setWasDrag(false));
       }}
     >
       {items.map((item) => {
@@ -102,10 +82,9 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
             role="listitem"
             disabled={disabled}
             onClick={(e) => {
-              if (dragging.current || disabled) return;
-              // palaikome SENĄ API
+              console.log("Chip click:", { value, wasDrag, disabled });
+              if (wasDrag || disabled) return;
               onPick?.(value);
-              // ir NAUJĄ API
               onSelect?.(value, item);
               (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });
             }}

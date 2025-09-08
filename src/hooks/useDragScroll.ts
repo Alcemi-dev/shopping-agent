@@ -1,47 +1,70 @@
 import { useEffect } from "react";
-import type { RefObject } from "react";
 
-export function useDragScroll(ref: RefObject<HTMLElement | null>) {
+export function useDragScroll<T extends HTMLElement>(ref: React.RefObject<T | null>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    let isDown = false;
+    let dragging = false;
     let startX = 0;
-    let scrollLeft = 0;
+    let startScrollLeft = 0;
 
-    const down = (e: MouseEvent) => {
-      isDown = true;
-      startX = e.pageX;
-      scrollLeft = el.scrollLeft;
-      el.style.cursor = "grabbing";
-      console.log(">>> mousedown", startX, scrollLeft);
+    const cancelDrag = (e?: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove("is-dragging");
+      if (e) (el as HTMLElement).releasePointerCapture?.(e.pointerId);
     };
 
-    const up = () => {
-      if (!isDown) return;
-      isDown = false;
-      el.style.cursor = "grab";
-      console.log(">>> mouseup");
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+
+      dragging = false;
+      startX = e.clientX;
+      startScrollLeft = el.scrollLeft;
     };
 
-    const move = (e: MouseEvent) => {
-      if (!isDown) return;
-      const walk = e.pageX - startX;
-      el.scrollLeft = scrollLeft - walk;
-      console.log(">>> mousemove", e.pageX, "scrollLeft:", el.scrollLeft);
+    const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+
+      const dx = e.clientX - startX;
+      if (!dragging && Math.abs(dx) > 10) {
+        dragging = true;
+        el.classList.add("is-dragging");
+        (el as HTMLElement).setPointerCapture?.(e.pointerId);
+      }
+      if (dragging) {
+        el.scrollLeft = startScrollLeft - dx;
+        e.preventDefault();
+      }
     };
 
-    el.addEventListener("mousedown", down);
-    window.addEventListener("mouseup", up);
-    window.addEventListener("mousemove", move);
+    const onPointerUp = (e: PointerEvent) => cancelDrag(e);
+    const onPointerCancel = (e: PointerEvent) => cancelDrag(e);
 
-    el.style.cursor = "grab";
+    const onVisibility = () => cancelDrag();
+    const onBlur = () => cancelDrag();
+
+    el.addEventListener("pointerdown", onPointerDown);
+    el.addEventListener("pointermove", onPointerMove);
+    el.addEventListener("pointerup", onPointerUp);
+    el.addEventListener("pointercancel", onPointerCancel);
+
+    document.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("blur", onBlur);
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", onVisibility);
 
     return () => {
-      el.removeEventListener("mousedown", down);
-      window.removeEventListener("mouseup", up);
-      window.removeEventListener("mousemove", move);
+      el.removeEventListener("pointerdown", onPointerDown);
+      el.removeEventListener("pointermove", onPointerMove);
+      el.removeEventListener("pointerup", onPointerUp);
+      el.removeEventListener("pointercancel", onPointerCancel);
+
+      document.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("blur", onBlur);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onVisibility);
     };
-  }, [ref]);
+  }, [ref.current]);
 }
