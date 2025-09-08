@@ -73,11 +73,6 @@
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.feedback-filled-btn:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
-}
-
 /* === Desktop (≥610px) === */
 @media (min-width: 610px) {
   .feedback-filled-wrap {
