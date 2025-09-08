@@ -17,7 +17,7 @@ export default function App() {
   const [category, setCategory] = useState<Category | null>(null);
   const [showSubchips, setShowSubchips] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
-  const [collected, setCollected] = useState<Collected>({});
+  const [, setCollected] = useState<Collected>({});
   const [cartCount, setCartCount] = useState(0);
   const [hasUnread, setHasUnread] = useState(false);
 

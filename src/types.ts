@@ -1,5 +1,5 @@
 // ===== Views =====
-export type View = "explain" | "chips" | "category" | "chat" | "feedback";
+export type View = "explain" | "chips" | "category" | "chat" | "feedback" | "feedback-filled";
 export type Category =
   | "Consultation"
   | "Order status"
@@ -55,7 +55,7 @@ export type ActionsMsg = {
 };
 
 // Union
-export type Msg = UserMsg | AssistantTextMsg | LoadingMsg | ProductsMsg | ActionsMsg;
+export type Msg = UserMsg | AssistantTextMsg | LoadingMsg | ProductsMsg | ActionsMsg | FeedbackMsg;
 
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
@@ -80,4 +80,10 @@ export const SUBCHIPS: Record<Category, string[]> = {
   Returns: ["Start a return", "Return policy", "Refund timing", "Exchange item", "Return label"],
   "Product Information": ["Ingredients", "How to use", "Allergies & safety", "Stock availability", "Sizes & variants"],
   Payment: ["Payment methods", "Installments", "Promo codes", "Billing issues", "Tax & VAT"],
+};
+
+export type FeedbackMsg = {
+  id: string;
+  role: "assistant";
+  kind: "feedback";
 };
