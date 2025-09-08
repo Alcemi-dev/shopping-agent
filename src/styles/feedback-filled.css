@@ -48,7 +48,7 @@
 
 .feedback-filled-dock {
   position: sticky; /* prilimpa prie apačios scrollinant */
-  bottom: env(safe-area-inset-bottom, 1rem);
+  bottom: env(safe-area-inset-bottom, 2rem);
   display: flex;
   justify-content: center;
   width: 100%;
