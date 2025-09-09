@@ -32,8 +32,6 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
   }, [messages]);
 
   const { showHeadFade, showFootFade } = useChatScroll(logRef, uniqueMessages);
-
-  // 👇 PRIDĖTA: leisti scroll iš bet kur modal'e
   useEffect(() => {
     const host = document.querySelector(".modal-card") as HTMLElement | null;
     const log = logRef.current;
@@ -41,37 +39,28 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
 
     let startY = 0;
     let lastY = 0;
-    let vLock = false;
+    let active = false;
 
     const onStart = (e: TouchEvent) => {
-      const t = e.touches[0];
-      startY = lastY = t.clientY;
-      vLock = false;
+      if (log.contains(e.target as Node)) return; // jei spaudžia chat'ą — nieko
+      startY = lastY = e.touches[0].clientY;
+      active = true;
     };
 
     const onMove = (e: TouchEvent) => {
-      if (!log) return;
-      const t = e.touches[0];
-      const dy = t.clientY - lastY;
-
-      if (!vLock && Math.abs(t.clientY - startY) > 8) {
-        vLock = true; // užrakinam vertikaliam scroll
-      }
-
-      if (vLock) {
-        e.preventDefault();
-        log.scrollTop -= dy;
-      }
-
-      lastY = t.clientY;
+      if (!active) return;
+      const y = e.touches[0].clientY;
+      const dy = y - lastY;
+      log.scrollBy({ top: -dy }); // 👈 forwardinam judesį į chat-log
+      lastY = y;
     };
 
     const onEnd = () => {
-      vLock = false;
+      active = false; // naršyklė pati suteikia inerciją
     };
 
-    host.addEventListener("touchstart", onStart, { passive: false });
-    host.addEventListener("touchmove", onMove, { passive: false });
+    host.addEventListener("touchstart", onStart, { passive: true });
+    host.addEventListener("touchmove", onMove, { passive: true });
     host.addEventListener("touchend", onEnd, { passive: true });
     host.addEventListener("touchcancel", onEnd, { passive: true });
 
