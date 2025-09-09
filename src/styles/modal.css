@@ -409,3 +409,8 @@ html.kb-open .modal-root[open] .chat-log {
   align-items: center;
   justify-content: center;
 }
+@supports (padding: max(0px)) {
+  .modal-head {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+}
