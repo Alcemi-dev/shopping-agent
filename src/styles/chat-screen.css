@@ -210,7 +210,7 @@
     top: 0;
     left: 50%; /* centruojam */
     transform: translateX(-50%);
-    width: 35rem; /* toks pats kaip .chat-log */
+    width: 30rem; /* toks pats kaip .chat-log */
     height: 4rem; /* išlaikom fade aukštį */
     background: linear-gradient(180deg, #020a31 0%, rgba(2, 9, 46, 0) 50%);
     pointer-events: none;
