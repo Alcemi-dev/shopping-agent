@@ -17,16 +17,12 @@ export function useDragScroll<T extends HTMLElement>(ref: React.RefObject<T | nu
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      if (e.pointerType === "mouse") return;
-
       dragging = false;
       startX = e.clientX;
       startScrollLeft = el.scrollLeft;
     };
 
     const onPointerMove = (e: PointerEvent) => {
-      if (e.pointerType === "mouse") return;
-
       const dx = e.clientX - startX;
       if (!dragging && Math.abs(dx) > 10) {
         dragging = true;

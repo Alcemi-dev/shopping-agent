@@ -53,21 +53,41 @@
   box-shadow: 0 0 0 2px #fff, /* imituoja baltą borderį */ 0 0 0 6px var(--ring-focus, #3654ff);
 }
 
-/* ===== Horizontalus rail (už modalo) — paliekam kaip buvo ===== */
+/* Default: mobile chips = stack kaip desktop */
 .chips-inline {
   display: flex;
-  gap: var(--space-4, 1rem);
-  overflow-x: auto;
-  padding: var(--space-2, 0.5rem) var(--space-1, 0.25rem);
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  flex-wrap: nowrap; /* mobile: viena eilutė su horizontaliu scroll */
-  white-space: nowrap;
+  flex-wrap: wrap; /* leidžia wrap’inti */
+  margin: 0 auto;
+  justify-content: center;
+  gap: 0.75rem;
+  overflow: visible; /* jokių scroll */
+  padding: 0 2rem;
+  white-space: normal;
 }
-.chips-inline::-webkit-scrollbar {
-  display: none;
+.subquestion {
+  padding-top: 2rem;
 }
 
+/* Subquestion variantas: perrašo į kairę */
+.chips-inline.category-chips {
+  justify-content: flex-start; /* 👈 kairėje */
+  padding: 0;
+  padding-top: 1rem;
+}
+
+/* Kai mobile atidaryta keyboard → karuselė */
+html.kb-open .chips-inline {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-2, 0.5rem) var(--space-1, 0.25rem);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+html.kb-open .chips-inline::-webkit-scrollbar {
+  display: none;
+}
 /* Mobile/touch: kai chip togglintas, rodyk ring net ir be focus */
 @media (hover: none) and (pointer: coarse) {
   .chip[aria-pressed="true"] {
@@ -90,5 +110,12 @@
     white-space: normal;
     gap: 1rem; /* ~16px */
     padding: 0;
+  }
+
+  /* Subquestion variantas: perrašo į kairę */
+  .chips-inline.category-chips {
+    justify-content: flex-start; /* 👈 kairėje */
+    padding: 0 5.4rem;
+    padding-top: 1rem;
   }
 }

@@ -59,6 +59,8 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
         else if (q.includes("many")) scenario = "many";
         else if (q.includes("one")) scenario = "one";
         else if (q.includes("feedback")) scenario = "feedback";
+        else if (q.includes("connection")) scenario = "connection";
+        else if (q.includes("error")) scenario = "error"; // 👈 nauja logika
         else scenario = "default";
 
         if (scenario === "one") {
@@ -136,7 +138,34 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                 {
                   id: msgId,
                   role: "assistant",
-                  kind: "feedback", // 👈 special kind, kad App žinotų rodyti FeedbackScreen
+                  kind: "feedback",
+                } as Msg,
+              ])
+          );
+        } else if (scenario === "connection") {
+          const msgId = loader!.id + "-connection";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "connection-lost",
+                } as Msg,
+              ])
+          );
+        } else if (scenario === "error") {
+          const msgId = loader!.id + "-error";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: msgId,
+                  role: "assistant",
+                  kind: "error",
+                  text: "This is an error message that will be displayed when there's an error.",
                 } as Msg,
               ])
           );
@@ -155,7 +184,9 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                     "- type 'one' → one product\n" +
                     "- type 'many' → many products\n" +
                     "- type 'none' → no results + recommendations\n" +
-                    "- type 'feedback' → feedback screen",
+                    "- type 'feedback' → feedback screen\n" +
+                    "- type 'connection' → connection lost screen\n" +
+                    "- type 'error' → error message",
                 } as Msg,
               ])
           );

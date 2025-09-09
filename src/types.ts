@@ -1,11 +1,12 @@
 // ===== Views =====
-export type View = "explain" | "chips" | "category" | "chat" | "feedback" | "feedback-filled";
+export type View = "explain" | "chips" | "category" | "chat" | "feedback" | "feedback-filled" | "connection-lost";
+
 export type Category =
+  | "Product information"
   | "Consultation"
   | "Order status"
   | "Shipping & delivery"
   | "Returns"
-  | "Product Information"
   | "Payment";
 
 // ===== Collected State (state machine memory) =====
@@ -54,20 +55,48 @@ export type ActionsMsg = {
   extraClass?: string;
 };
 
-// Union
-export type Msg = UserMsg | AssistantTextMsg | LoadingMsg | ProductsMsg | ActionsMsg | FeedbackMsg;
+export type FeedbackMsg = {
+  id: string;
+  role: "assistant";
+  kind: "feedback";
+};
+
+export type ConnectionLostMsg = {
+  id: string;
+  role: "assistant";
+  kind: "connection-lost";
+};
+
+export type ErrorMsg = {
+  id: string;
+  role: "assistant";
+  kind: "error";
+  text: string;
+};
+
+// ===== Union =====
+export type Msg =
+  | UserMsg
+  | AssistantTextMsg
+  | LoadingMsg
+  | ProductsMsg
+  | ActionsMsg
+  | FeedbackMsg
+  | ConnectionLostMsg
+  | ErrorMsg;
 
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
-  "Payment",
-  "Returns",
+  "Product information",
   "Consultation",
   "Order status",
-  "Product Information",
   "Shipping & delivery",
+  "Returns",
+  "Payment",
 ];
 
 export const SUBCHIPS: Record<Category, string[]> = {
+  "Product information": ["Ingredients", "How to use", "Allergies & safety", "Stock availability", "Sizes & variants"],
   Consultation: ["Book a call", "Skin type quiz", "Routine advice", "Shade matching", "Best-sellers"],
   "Order status": ["Track order", "Change address", "Cancel order", "Invoice copy", "Late delivery"],
   "Shipping & delivery": [
@@ -78,12 +107,5 @@ export const SUBCHIPS: Record<Category, string[]> = {
     "International shipping",
   ],
   Returns: ["Start a return", "Return policy", "Refund timing", "Exchange item", "Return label"],
-  "Product Information": ["Ingredients", "How to use", "Allergies & safety", "Stock availability", "Sizes & variants"],
   Payment: ["Payment methods", "Installments", "Promo codes", "Billing issues", "Tax & VAT"],
-};
-
-export type FeedbackMsg = {
-  id: string;
-  role: "assistant";
-  kind: "feedback";
 };

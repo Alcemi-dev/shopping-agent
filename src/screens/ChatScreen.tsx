@@ -40,9 +40,9 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
         {uniqueMessages.map((m) => (
           <MessageRenderer key={m.id} m={m} onAddToCart={onAddToCart} />
         ))}
-        {showFootFade && <div className="chat-foot-fade" />}
-        {extra}
       </div>
+      {showFootFade && <div className="chat-foot-fade" />}
+      {extra}
     </>
   );
 }

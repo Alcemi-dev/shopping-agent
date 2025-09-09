@@ -3,6 +3,34 @@ import "../styles/products-strip.css";
 import type { Product } from "../screens/ChatScreen";
 import { useDragScroll } from "../hooks/useDragScroll";
 
+// 👇 Hookas
+function useProductsResize(productsRef: React.RefObject<HTMLElement | null>) {
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const input = document.querySelector(".input-wrap.input-bubble") as HTMLElement | null;
+    if (!productsRef.current || !input) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        // jeigu nebemato pilnai → susiaurinam
+        setIsNarrow(!entry.isIntersecting);
+      },
+      {
+        root: document.querySelector(".chat-log"), // 👈 scroll konteineris
+        threshold: 0.9,
+      }
+    );
+
+    observer.observe(productsRef.current);
+
+    return () => observer.disconnect();
+  }, [productsRef]);
+
+  return isNarrow;
+}
+
 type Props = {
   products: Product[];
   header?: string;
@@ -16,6 +44,8 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
 
+  const isNarrow = useProductsResize(scrollRef); // 👈 prijungtas hook’as
+
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
@@ -27,7 +57,7 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
   const showFooter = !single && !!footer;
 
   return (
-    <div className="products-wrap">
+    <div className={`products-wrap ${isNarrow ? "is-narrow" : ""}`}>
       {header && (
         <div className="products-contain">
           <p className="products-header">{header}</p>
@@ -51,12 +81,7 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
                     aria-label="Dislike"
                     aria-pressed={isMuted}
                     onClick={() => {
-                      console.log("Dislike click:", { key, isMuted });
-                      setMuted((m) => {
-                        const next = { ...m, [key]: !m[key] };
-                        console.log("Muted state updated:", next);
-                        return next;
-                      });
+                      setMuted((m) => ({ ...m, [key]: !m[key] }));
                     }}
                   >
                     <img src="/img/dislike.svg" alt="" />
@@ -71,7 +96,6 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
                   className="add-btn"
                   aria-label="Add"
                   onClick={() => {
-                    console.log("Add to cart click:", p.title);
                     onAddToCart?.(p.title);
                     setAdded(true);
                   }}

@@ -28,6 +28,16 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Prop
     );
   }
 
+  // ASSISTANT error
+  if (m.role === "assistant" && m.kind === "error") {
+    return (
+      <div data-msg-id={m.id} className="msg msg--ai error-bubble">
+        <img src="/img/error.svg" alt="Error" className="error-icon" />
+        <p className="ai-text error-text">{m.text}</p>
+      </div>
+    );
+  }
+
   // Products
   if (m.kind === "products") {
     return (
@@ -47,7 +57,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Prop
             const chosen = m.actions.find((a) => a.label === label);
             if (chosen) {
               console.log("User selected:", chosen.value);
-              onActionSelect?.(chosen.value); // 👈 kviečiam viršutinę logiką
+              onActionSelect?.(chosen.value);
             }
           }}
         />
