@@ -23,6 +23,10 @@
   height: 2rem; /* tarpas tarp paskutinės žinutės ir inputo */
 }
 
+.chat-log .msg:first-child {
+  padding-top: 1rem; /* arba kiek tau reikia */
+}
+
 /* eilutės */
 .msg {
   width: 100%;
@@ -172,6 +176,9 @@
   }
   .modal-ctr {
     padding-bottom: 0;
+  }
+  .chat-log .msg:first-child {
+    padding-top: 0rem; /* arba kiek tau reikia */
   }
 
   .loading-rail {
