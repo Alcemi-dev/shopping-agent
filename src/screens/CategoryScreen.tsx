@@ -10,7 +10,7 @@ export default function CategoryScreen({ items, onPick }: Props) {
     <>
       <p className="subquestion">What kind of information are you looking for?</p>
       <div className="chips-block">
-        <Chips items={items} onPick={onPick} />
+        <Chips items={items} className="category-chips" onPick={onPick} />
       </div>
     </>
   );

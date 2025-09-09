@@ -49,7 +49,7 @@
   width: 100vw;
   height: 100svh;
   display: flex;
-  overflow: hidden;
+  overflow: visible;
   color: var(--text-on-dark);
   background: var(--surface-modal) url("/img/background-gradient-mobile.svg") center/cover no-repeat;
 }
@@ -127,7 +127,8 @@
    5. Title
    ========================================================================== */
 .modal-title {
-  margin: 0;
+  margin: 0 auto;
+  width: 70%;
   margin-top: clamp(6rem, 22vh, 12rem);
   text-align: center;
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
@@ -164,7 +165,7 @@
   min-height: 0;
   height: 100dvh;
   flex: 1 1 auto;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ==========================================================================
@@ -233,89 +234,6 @@
 }
 
 /* ==========================================================================
-   11. Chat Log
-   ========================================================================== */
-.chat-log {
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 32.5rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-  padding: 0 var(--gutter) calc(var(--chat-bottom-pad) + var(--dock-h) + var(--dock-gap-closed));
-  margin-bottom: 7rem;
-}
-.chat-log::-webkit-scrollbar {
-  display: none;
-}
-
-/* ==========================================================================
-   12. Messages
-   ========================================================================== */
-.msg {
-  width: 100%;
-  display: flex;
-  margin: 0;
-}
-.msg + .msg {
-  margin-top: var(--msg-gap);
-}
-.msg--user {
-  justify-content: flex-end;
-}
-.msg--ai {
-  justify-content: flex-start;
-}
-.msg-bubble {
-  display: inline-block;
-  width: fit-content;
-  max-width: min(var(--bubble-max), 90%);
-  padding: 1rem;
-  border-radius: 0.625rem;
-  background: #dee3ff;
-  color: #0a1344;
-  border: 1px solid rgba(252, 252, 252, 0.85);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.ai-text {
-  margin: 0;
-  max-width: min(var(--bubble-max), 90%);
-  color: var(--text-on-dark);
-  line-height: 1.5;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-/* ==========================================================================
-   13. Loading
-   ========================================================================== */
-.loading-rail {
-  display: flex;
-  align-items: center;
-  gap: 0.4375rem;
-  height: 0.5rem;
-}
-.dash {
-  width: 1.5rem;
-  height: 0.5rem;
-  border-radius: 1.25rem;
-  transition: background 0.25s, box-shadow 0.25s;
-}
-.dash--1 {
-  background: rgba(255, 255, 255, 0.3);
-}
-.dash--2 {
-  background: linear-gradient(90deg, #fff 0%, #0e248b 100%);
-  box-shadow: 0 0 0.5rem 0.125rem rgba(255, 255, 255, 0.6);
-}
-.dash--3 {
-  background: linear-gradient(90deg, #fff 100%, #0e248b 100%);
-  box-shadow: 0 0 0.5rem 0.125rem rgba(255, 255, 255, 0.6);
-}
-
-/* ==========================================================================
    14. Keyboard Tweaks
    ========================================================================== */
 html.kb-open .modal-root[open] .modal-head {
@@ -369,6 +287,7 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .modal-title {
     margin-top: clamp(6rem, 16vh, 10rem);
+    width: 80%;
     font-size: 1.875rem;
   }
   .break--desktop {

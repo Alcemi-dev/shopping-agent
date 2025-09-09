@@ -6,6 +6,7 @@ import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
 import FeedbackScreen from "./screens/FeedbackScreen";
 import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
+import ConnectionLostScreen from "./screens/ConnectionLostScreen"; // 👈 pridėtas
 import type { Msg, Category, View, Collected } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
 import { createMockEngine, sentenceFor } from "./mock/engine";
@@ -83,6 +84,9 @@ export default function App() {
     if (last && last.kind === "feedback") {
       setView("feedback");
     }
+    if (last && last.kind === "connection-lost") {
+      setView("connection-lost"); // 👈 triggeris connection lost
+    }
   }, [messages, open]);
 
   const handleOpen = () => {
@@ -105,7 +109,13 @@ export default function App() {
   };
 
   const handleBack = () => {
-    if (view === "chat" || view === "category" || view === "feedback" || view === "feedback-filled") {
+    if (
+      view === "chat" ||
+      view === "category" ||
+      view === "feedback" ||
+      view === "feedback-filled" ||
+      view === "connection-lost" // 👈 connection lost irgi resetinamas
+    ) {
       resetAll();
       return;
     }
@@ -203,18 +213,21 @@ export default function App() {
         </Modal.Screen>
 
         <Modal.Screen show={view === "feedback-filled"}>
-          <FeedbackFilledScreen
-            onNewSearch={() => {
-              resetAll();
-            }}
-          />
+          <FeedbackFilledScreen onNewSearch={() => resetAll()} />
         </Modal.Screen>
 
-        {view !== "explain" && view !== "feedback" && view !== "feedback-filled" && (
-          <div className="input-dock" ref={dockRef}>
-            <InputBubble value={query} onChange={setQuery} onSubmit={() => send(query)} placeholder="Ask anything…" />
-          </div>
-        )}
+        <Modal.Screen show={view === "connection-lost"}>
+          <ConnectionLostScreen />
+        </Modal.Screen>
+
+        {view !== "explain" &&
+          view !== "feedback" &&
+          view !== "feedback-filled" &&
+          view !== "connection-lost" && ( // 👈 input dock nesimato connection lost
+            <div className="input-dock" ref={dockRef}>
+              <InputBubble value={query} onChange={setQuery} onSubmit={() => send(query)} placeholder="Ask anything…" />
+            </div>
+          )}
       </Modal>
     </div>
   );
