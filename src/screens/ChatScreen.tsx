@@ -32,43 +32,33 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
   }, [messages]);
 
   const { showHeadFade, showFootFade } = useChatScroll(logRef, uniqueMessages);
+
+  // 👇 PRIDĖTA: forward’inti touch iš viso modal į chat-log
   useEffect(() => {
     const host = document.querySelector(".modal-card") as HTMLElement | null;
     const log = logRef.current;
     if (!host || !log) return;
-
-    let startY = 0;
-    let lastY = 0;
-    let active = false;
-
-    const onStart = (e: TouchEvent) => {
-      if (log.contains(e.target as Node)) return; // jei spaudžia chat'ą — nieko
-      startY = lastY = e.touches[0].clientY;
-      active = true;
+    const forwardTouch = (e: TouchEvent) => {
+      if (!log.contains(e.target as Node)) {
+        log.dispatchEvent(
+          new TouchEvent(e.type, {
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+      }
     };
 
-    const onMove = (e: TouchEvent) => {
-      if (!active) return;
-      const y = e.touches[0].clientY;
-      const dy = y - lastY;
-      log.scrollBy({ top: -dy }); // 👈 forwardinam judesį į chat-log
-      lastY = y;
-    };
-
-    const onEnd = () => {
-      active = false; // naršyklė pati suteikia inerciją
-    };
-
-    host.addEventListener("touchstart", onStart, { passive: true });
-    host.addEventListener("touchmove", onMove, { passive: true });
-    host.addEventListener("touchend", onEnd, { passive: true });
-    host.addEventListener("touchcancel", onEnd, { passive: true });
+    host.addEventListener("touchstart", forwardTouch, { passive: true });
+    host.addEventListener("touchmove", forwardTouch, { passive: true });
+    host.addEventListener("touchend", forwardTouch, { passive: true });
+    host.addEventListener("touchcancel", forwardTouch, { passive: true });
 
     return () => {
-      host.removeEventListener("touchstart", onStart);
-      host.removeEventListener("touchmove", onMove);
-      host.removeEventListener("touchend", onEnd);
-      host.removeEventListener("touchcancel", onEnd);
+      host.removeEventListener("touchstart", forwardTouch);
+      host.removeEventListener("touchmove", forwardTouch);
+      host.removeEventListener("touchend", forwardTouch);
+      host.removeEventListener("touchcancel", forwardTouch);
     };
   }, []);
 
