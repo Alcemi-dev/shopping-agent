@@ -6,7 +6,9 @@ import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
 import FeedbackScreen from "./screens/FeedbackScreen";
 import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
-import ConnectionLostScreen from "./screens/ConnectionLostScreen"; // 👈 pridėtas
+import ConnectionLostScreen from "./screens/ConnectionLostScreen";
+import VoiceScreen from "./screens/VoiceScreen"; // overlay
+import VoiceChatScreen from "./screens/VoiceChatScreen"; // 👈 naujas
 import type { Msg, Category, View, Collected } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
 import { createMockEngine, sentenceFor } from "./mock/engine";
@@ -85,7 +87,7 @@ export default function App() {
       setView("feedback");
     }
     if (last && last.kind === "connection-lost") {
-      setView("connection-lost"); // 👈 triggeris connection lost
+      setView("connection-lost");
     }
   }, [messages, open]);
 
@@ -114,7 +116,9 @@ export default function App() {
       view === "category" ||
       view === "feedback" ||
       view === "feedback-filled" ||
-      view === "connection-lost" // 👈 connection lost irgi resetinamas
+      view === "connection-lost" ||
+      view === "voice" ||
+      view === "voicechat"
     ) {
       resetAll();
       return;
@@ -169,8 +173,14 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        modalTitle={view === "explain" ? "How to use Quick Search" : "Hello, what are you\nlooking for today?"}
-        showTitle={view !== "category" && messages.length === 0}
+        modalTitle={
+          view === "explain"
+            ? "How to use Quick Search"
+            : view === "chips" || view === "voice"
+            ? "Hello, what are you\nlooking for today?"
+            : undefined
+        }
+        showTitle={view === "explain" || view === "chips"}
         rightSlot={
           cartCount > 0 && (
             <div className="cart-indicator">
@@ -203,6 +213,22 @@ export default function App() {
           />
         </Modal.Screen>
 
+        <Modal.Screen show={view === "voice"}>
+          <VoiceScreen
+            onBack={() => setView("chips")}
+            onPickChip={pickTopChip}
+            onVoiceResult={(text) => {
+              // vietoj perėjimo tiesiai į Chat → eik į VoiceChat
+              console.log("Voice result:", text);
+              setView("voicechat");
+            }}
+          />
+        </Modal.Screen>
+
+        <Modal.Screen show={view === "voicechat"}>
+          <VoiceChatScreen onBack={() => setView("chips")} onKeyboard={() => setView("chat")} />
+        </Modal.Screen>
+
         <Modal.Screen show={view === "feedback"}>
           <FeedbackScreen
             onSubmit={(rating, comment) => {
@@ -223,9 +249,17 @@ export default function App() {
         {view !== "explain" &&
           view !== "feedback" &&
           view !== "feedback-filled" &&
-          view !== "connection-lost" && ( // 👈 input dock nesimato connection lost
+          view !== "connection-lost" &&
+          view !== "voice" &&
+          view !== "voicechat" && (
             <div className="input-dock" ref={dockRef}>
-              <InputBubble value={query} onChange={setQuery} onSubmit={() => send(query)} placeholder="Ask anything…" />
+              <InputBubble
+                value={query}
+                onChange={setQuery}
+                onSubmit={() => send(query)}
+                onVoice={() => setView("voice")}
+                placeholder="Ask anything…"
+              />
             </div>
           )}
       </Modal>

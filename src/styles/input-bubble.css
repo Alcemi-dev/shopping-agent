@@ -1,22 +1,20 @@
-/* InputBubble — mobile-first, top-only LIGHT overlay, be bottom glow */
+/* InputBubble — mobile-first, stacked mic virš send */
 
 /* === Bazinis konteineris (MOBILE) === */
 .input-wrap.input-bubble {
-  /* Išdėstymas */
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 32px;
-  align-items: end;
-  gap: 12px;
+  grid-template-columns: 1fr auto; /* textarea + actions */
+  grid-template-rows: auto auto; /* viršus ir apačia */
+  gap: 8px 12px;
+  align-items: stretch;
 
-  /* Dydžiai */
   width: 100%;
   min-height: 96px;
   max-height: 168px;
   margin: 0 auto;
   padding: 16px;
 
-  /* Vizualas */
   background: var(--surface-bubble, #fff);
   border: 1px solid var(--outline, #d9d9d9);
   border-radius: var(--radius-md, 12px);
@@ -33,6 +31,8 @@
 
 /* === Teksto sritis === */
 .input-wrap.input-bubble .input-field {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3; /* textarea eina per abi eiles */
   box-sizing: border-box;
   background: transparent;
   border: 0;
@@ -44,18 +44,17 @@
   max-height: 136px;
 
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
-  font-size: var(--fs-16, 1rem); /* iOS nezoomins */
+  font-size: var(--fs-16, 1rem);
   line-height: var(--lh-relaxed, 1.5);
   color: #444e85;
 
   overflow-x: hidden;
-  overflow-y: hidden; /* autoresize keičia į auto kai reikia */
+  overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 .input-wrap.input-bubble .input-field::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  display: none;
 }
 
 .input-wrap.input-bubble .input-field::placeholder {
@@ -67,7 +66,7 @@
   color: #0a1444;
 }
 
-/* === Voice/send mygtukas === */
+/* === Bendras stilius action mygtukams === */
 .input-wrap.input-bubble .input-action {
   appearance: none;
   border: none;
@@ -75,36 +74,67 @@
   height: 32px;
   padding: 0;
 
-  position: absolute;
-  right: 16px;
-  bottom: 16px; /* kaip Figma */
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border-radius: 50%;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  z-index: 3;
+  background: none;
+  position: static;
+}
+
+.input-wrap.input-bubble .input-action img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Voice mic specialiai (viršuje dešinėje) */
+.voice-action {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  justify-self: end;
+
   background: linear-gradient(180deg, #0a186a, #142fd0);
   box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
   transition: transform 0.08s ease, box-shadow 0.12s ease;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  z-index: 3; /* virš overlay */
 }
-.input-wrap.input-bubble .input-action:hover {
+.voice-action:hover {
   box-shadow: 0 0 14px rgba(20, 47, 208, 0.45);
 }
-.input-wrap.input-bubble .input-action:active {
+.voice-action:active {
   transform: none;
 }
-.input-wrap.input-bubble .input-action svg {
-  width: 30px;
-  height: 30px;
+.voice-action img {
+  opacity: 0.9;
+  transition: opacity 0.2s;
 }
-.input-wrap.input-bubble .input-action svg rect {
-  display: none;
+.voice-action:hover img {
+  opacity: 1;
 }
 
-/* === Focus ring (vienodas su senąja versija) === */
+/* Send mygtukas (apačioje dešinėje) */
+.input-wrap.input-bubble .input-action[type="submit"] {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  justify-self: end;
+
+  background: linear-gradient(180deg, #0a186a, #142fd0);
+  box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+.input-wrap.input-bubble .input-action[type="submit"]:hover {
+  box-shadow: 0 0 14px rgba(20, 47, 208, 0.45);
+}
+.input-wrap.input-bubble .input-action[type="submit"]:active {
+  transform: none;
+}
+
+/* === Focus ring === */
 .input-wrap.input-bubble:focus-within {
   border-width: 2px;
   border-color: #ffffff;
@@ -120,7 +150,7 @@
   right: 0;
   top: 0;
   height: var(--fade-h);
-  z-index: 2; /* virš teksto (z:1), po mygtuko (z:3) */
+  z-index: 2;
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
   background: linear-gradient(
@@ -143,7 +173,8 @@
     width: 480px;
     min-height: 120px;
     max-height: 200px;
-    grid-template-columns: 1fr 44px;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
     padding: 16px;
   }
   .input-wrap.input-bubble .input-field {

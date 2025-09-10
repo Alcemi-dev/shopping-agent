@@ -1,5 +1,14 @@
 // ===== Views =====
-export type View = "explain" | "chips" | "category" | "chat" | "feedback" | "feedback-filled" | "connection-lost";
+export type View =
+  | "explain"
+  | "chips"
+  | "category"
+  | "chat"
+  | "feedback"
+  | "feedback-filled"
+  | "connection-lost"
+  | "voice"
+  | "voicechat";
 
 export type Category =
   | "Product information"

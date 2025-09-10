@@ -1,5 +1,5 @@
 import type { Msg } from "../types";
-import { MOCK_PRODUCTS } from "../data/products";
+import { MOCK_PRODUCTS } from "./products";
 
 type Category = import("../types").Category;
 type Collected = import("../types").Collected;

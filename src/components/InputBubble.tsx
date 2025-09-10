@@ -4,11 +4,11 @@ type Props = {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
+  onVoice?: () => void; // 👈 pridėjau
   placeholder?: string;
 };
-
 const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
-  ({ value, onChange, onSubmit, placeholder = "Ask anything…" }, ref) => {
+  ({ value, onChange, onSubmit, onVoice, placeholder = "Ask anything…" }, ref) => {
     const taRef = useRef<HTMLTextAreaElement>(null);
     const roRef = useRef<ResizeObserver | null>(null);
     const MAX_H = 136;
@@ -113,7 +113,9 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
             }
           }}
         />
-
+        <button type="button" className="input-action voice-action" aria-label="Start voice input" onClick={onVoice}>
+          <img src="/img/voice.svg" alt="Voice" width={32} height={32} />
+        </button>
         <button type="submit" className="input-action" aria-label="Send message">
           <img src="/img/send-button.svg" alt="" width={32} height={32} />
         </button>
