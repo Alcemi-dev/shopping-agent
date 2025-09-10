@@ -1,5 +1,5 @@
 // hooks/useSpeechToText.ts
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type Mode = "idle" | "listening" | "error";
 
