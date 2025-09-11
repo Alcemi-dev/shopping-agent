@@ -25,10 +25,19 @@ const FAKE_ANSWERS = [
 export default function VoiceChatScreen({ onBack, onKeyboard }: Props) {
   const [qas, setQas] = useState<QA[]>([{ question: QUESTIONS[0] }]);
   const [step, setStep] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 610);
 
-  const { mode, text, startListening } = useSpeechToText();
+  const { mode, text, toggleListening } = useSpeechToText();
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // resize listener mobile/desktop
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 610px)");
+    const update = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   // kai gaunam tekstą → įrašom kaip atsakymą ir pereinam prie kito klausimo
   useEffect(() => {
@@ -49,7 +58,7 @@ export default function VoiceChatScreen({ onBack, onKeyboard }: Props) {
     }
   }, [text]);
 
-  // auto scroll į apačią, kai pridedamas naujas Q/A
+  // auto scroll į apačią
   useEffect(() => {
     const el = scrollRef.current;
     if (el) {
@@ -87,8 +96,18 @@ export default function VoiceChatScreen({ onBack, onKeyboard }: Props) {
 
       {/* Footer mic */}
       <footer className="vc-footer">
-        <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={startListening}>
-          <img src="/img/voice-chat-sphere-mobile.svg" alt="Mic" />
+        <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={toggleListening}>
+          <img
+            src={
+              mode === "listening"
+                ? isMobile
+                  ? "/img/voice-chat-sphere-mobile.svg"
+                  : "/img/voice-chat-sphere-desktop.svg"
+                : isMobile
+                ? "/img/voice-sphere-mobile.svg"
+                : "/img/voice-sphere-desktop.svg"
+            }
+          />
         </button>
         {mode === "listening" && <p className="vc-status">Listening…</p>}
         {mode === "error" && <p className="vc-status">Couldn’t hear you</p>}

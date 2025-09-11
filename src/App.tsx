@@ -215,10 +215,13 @@ export default function App() {
 
         <Modal.Screen show={view === "voice"}>
           <VoiceScreen
-            onBack={() => setView("chips")}
+            onBack={() => {
+              resetAll();
+              setView("chips");
+            }}
             onPickChip={pickTopChip}
-            onVoiceResult={(text) => {
-              // vietoj perėjimo tiesiai į Chat → eik į VoiceChat
+            onVoiceResult={(text: string) => {
+              // 👈 pridėjom tipą
               console.log("Voice result:", text);
               setView("voicechat");
             }}

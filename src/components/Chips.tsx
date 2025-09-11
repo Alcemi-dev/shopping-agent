@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, forwardRef } from "react";
 import { useDragScroll } from "../hooks/useDragScroll";
 
-/** Galima paduoti tiesiog string'ą arba struktūrą su label/value */
 export type ChipItem = string | { label: string; value: string; disabled?: boolean };
 
 function getLabel(it: ChipItem) {
@@ -13,20 +12,17 @@ function getValue(it: ChipItem) {
 
 type Props = {
   items: ChipItem[];
-  onPick?: (val: string) => void; // SENAS API
-  onSelect?: (val: string, item: ChipItem) => void; // NAUJAS API
+  onPick?: (val: string) => void;
+  onSelect?: (val: string, item: ChipItem) => void;
   className?: string;
 };
 
-export default function Chips({ items, onPick, onSelect, className }: Props) {
+const Chips = forwardRef<HTMLDivElement, Props>(({ items, onPick, onSelect, className }, ref) => {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [wasDrag, setWasDrag] = useState(false);
-  const startX = useRef(0);
 
-  // bendras drag scroll hook’as (paliekam)
+  // drag hook
   useDragScroll(wrapRef);
 
-  // blur hack (kad focus nepaliktų ant chip)
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
       const w = wrapRef.current;
@@ -41,33 +37,14 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
 
   return (
     <div
-      ref={wrapRef}
+      ref={(node) => {
+        wrapRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as any).current = node;
+      }}
       className={`chips-inline${className ? ` ${className}` : ""}`}
       role="list"
       tabIndex={0}
-      onKeyDown={(e) => {
-        const el = wrapRef.current;
-        if (!el) return;
-        if (e.key === "ArrowRight") {
-          el.scrollBy({ left: 120, behavior: "smooth" });
-          e.preventDefault();
-        }
-        if (e.key === "ArrowLeft") {
-          el.scrollBy({ left: -120, behavior: "smooth" });
-          e.preventDefault();
-        }
-      }}
-      onPointerDown={(e) => {
-        setWasDrag(false);
-        if (e.pointerType !== "mouse") startX.current = e.clientX;
-      }}
-      onPointerMove={(e) => {
-        if (e.pointerType === "mouse") return; // desktop: nelečiam click
-        if (Math.abs(e.clientX - startX.current) > 12) setWasDrag(true);
-      }}
-      onPointerUp={() => {
-        requestAnimationFrame(() => setWasDrag(false));
-      }}
     >
       {items.map((item) => {
         const label = getLabel(item);
@@ -82,8 +59,7 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
             role="listitem"
             disabled={disabled}
             onClick={(e) => {
-              console.log("Chip click:", { value, wasDrag, disabled });
-              if (wasDrag || disabled) return;
+              if (disabled) return;
               onPick?.(value);
               onSelect?.(value, item);
               (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true });
@@ -95,4 +71,6 @@ export default function Chips({ items, onPick, onSelect, className }: Props) {
       })}
     </div>
   );
-}
+});
+
+export default Chips;

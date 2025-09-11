@@ -1,13 +1,12 @@
-/* InputBubble — mobile-first, stacked mic virš send */
+/* InputBubble — mobile-first, stacked mic ir send apačioje */
 
 /* === Bazinis konteineris (MOBILE) === */
 .input-wrap.input-bubble {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto; /* textarea + actions */
-  grid-template-rows: auto auto; /* viršus ir apačia */
-  gap: 8px 12px;
-  align-items: stretch;
+  gap: 12px;
+  align-items: end; /* 👈 mygtukai visada apačioje */
 
   width: 100%;
   min-height: 96px;
@@ -23,7 +22,7 @@
   z-index: 100;
 }
 
-/* Senus pseudo-glow išjungiame, jei dar kur nors likę */
+/* Senus pseudo-glow išjungiame */
 .input-wrap.input-bubble::before,
 .input-wrap.input-bubble::after {
   content: none !important;
@@ -32,7 +31,6 @@
 /* === Teksto sritis === */
 .input-wrap.input-bubble .input-field {
   grid-column: 1 / 2;
-  grid-row: 1 / 3; /* textarea eina per abi eiles */
   box-sizing: border-box;
   background: transparent;
   border: 0;
@@ -84,7 +82,6 @@
   outline: none;
   z-index: 3;
   background: none;
-  position: static;
 }
 
 .input-wrap.input-bubble .input-action img {
@@ -93,12 +90,17 @@
   object-fit: contain;
 }
 
-/* Voice mic specialiai (viršuje dešinėje) */
-.voice-action {
+/* === Button group (voice + send) === */
+.button-group {
   grid-column: 2 / 3;
-  grid-row: 1 / 2;
-  justify-self: end;
+  display: flex;
+  flex-direction: column; /* vienas po kitu */
+  gap: 0px;
+  justify-content: flex-end; /* glaudžiasi apačioje */
+}
 
+/* Voice mic */
+.voice-action {
   background: linear-gradient(180deg, #0a186a, #142fd0);
   box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
   transition: transform 0.08s ease, box-shadow 0.12s ease;
@@ -110,19 +112,14 @@
   transform: none;
 }
 .voice-action img {
-  opacity: 0.9;
   transition: opacity 0.2s;
 }
 .voice-action:hover img {
   opacity: 1;
 }
 
-/* Send mygtukas (apačioje dešinėje) */
+/* Send mygtukas */
 .input-wrap.input-bubble .input-action[type="submit"] {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  justify-self: end;
-
   background: linear-gradient(180deg, #0a186a, #142fd0);
   box-shadow: 0 0 10px rgba(20, 47, 208, 0.35);
   transition: transform 0.08s ease, box-shadow 0.12s ease;
@@ -174,7 +171,6 @@
     min-height: 120px;
     max-height: 200px;
     grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
     padding: 16px;
   }
   .input-wrap.input-bubble .input-field {
