@@ -298,12 +298,10 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .modal-col {
     width: 100%;
-    max-width: 30rem;
     margin: 0 auto;
     gap: 3rem;
   }
   .modal-body {
-    max-width: 44rem;
     margin: 0 auto;
     align-items: center;
     gap: 1.25rem;

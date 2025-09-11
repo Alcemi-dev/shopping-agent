@@ -113,13 +113,14 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
             }
           }}
         />
-        <button type="button" className="input-action voice-action" aria-label="Start voice input" onClick={onVoice}>
-          <img src="/img/voice.svg" alt="Voice" width={32} height={32} />
-        </button>
-        <button type="submit" className="input-action" aria-label="Send message">
-          <img src="/img/send-button.svg" alt="" width={32} height={32} />
-        </button>
-
+        <div className="button-group">
+          <button type="button" className="input-action voice-action" aria-label="Start voice input" onClick={onVoice}>
+            <img src="/img/voice.svg" alt="Voice" width={32} height={32} />
+          </button>
+          <button type="submit" className="input-action" aria-label="Send message">
+            <img src="/img/send-button.svg" alt="" width={32} height={32} />
+          </button>
+        </div>
         {/* Gradient overlay */}
         <div className="input-fade-top" aria-hidden="true" />
       </form>

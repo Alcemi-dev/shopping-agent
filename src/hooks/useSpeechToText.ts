@@ -1,23 +1,34 @@
-// hooks/useSpeechToText.ts
 import { useRef, useState } from "react";
 
 type Mode = "idle" | "listening" | "error";
 
+// 👇 papildom global window, kad TS žinotų
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 export function useSpeechToText() {
   const [mode, setMode] = useState<Mode>("idle");
   const [text, setText] = useState<string>("");
+
   const recognitionRef = useRef<any>(null);
-
-  // Ilgas testinis fallback sakinys
   const fallbackText =
-    "I’m looking for a daily moisturizer that is lightweight, absorbs quickly without leaving my skin greasy, provides hydration throughout the whole day, and is gentle enough for sensitive skin that sometimes gets irritated by stronger products.";
+    "I’m looking for a daily moisturizer that is lightweight, absorbs quickly without leaving my skin greasy, provides hydration throughout the whole day, and is gentle enough for sensitive skin.";
 
-  const startListening = () => {
-    setMode("listening");
-    setText("");
+  const toggleListening = () => {
+    if (mode === "listening") {
+      // sustabdom
+      recognitionRef.current?.stop();
+      recognitionRef.current = null;
+      setMode("idle");
+      return;
+    }
 
     try {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
         throw new Error("Speech API not supported");
@@ -31,7 +42,7 @@ export function useSpeechToText() {
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         setText(transcript);
-        setMode("idle");
+        setMode("idle"); // kai gauta – baigiam klausymą
       };
 
       recognition.onerror = () => {
@@ -39,32 +50,29 @@ export function useSpeechToText() {
       };
 
       recognition.onend = () => {
-        // jei nieko nepasakyta → fallback
-        if (!text) {
-          setText(fallbackText);
-          setMode("idle");
+        // jei buvo klausymo režime, bet negavom teksto → fallback
+        if (mode === ("listening" as Mode) && !text) {
+          setTimeout(() => {
+            setText(fallbackText);
+            setMode("idle");
+          }, 1000);
         }
+        recognitionRef.current = null;
       };
 
       recognition.start();
       recognitionRef.current = recognition;
+
+      setText("");
+      setMode("listening"); // 👈 dabar iškart įjungi pulsavimą
     } catch (err) {
       console.warn("Speech recognition error:", err);
-      // jei nepalaiko → fallback po 3s
       setTimeout(() => {
-        if (!text) {
-          setText(fallbackText);
-          setMode("idle");
-        }
-      }, 3000);
+        setText(fallbackText);
+        setMode("idle");
+      }, 1000);
     }
   };
 
-  const stopListening = () => {
-    recognitionRef.current?.stop();
-    recognitionRef.current = null;
-    setMode("idle");
-  };
-
-  return { mode, text, startListening, stopListening };
+  return { mode, text, toggleListening };
 }
