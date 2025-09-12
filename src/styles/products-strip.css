@@ -449,6 +449,8 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
+    overflow: visible;
+    flex-wrap: nowrap;
     transform: scale(0.76); /* temporary fix for size*/
     transform-origin: center bottom;
     margin-top: -5rem;
