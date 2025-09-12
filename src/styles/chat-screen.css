@@ -118,6 +118,7 @@
   background: linear-gradient(180deg, #020a31 0%, rgba(2, 9, 46, 0) 50%);
   pointer-events: none;
   z-index: 5;
+  margin-top: -1px;
 }
 
 .chat-foot-fade {
