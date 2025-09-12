@@ -299,83 +299,119 @@
   font-size: 1rem; /* 16px */
 }
 
-/* === 7) Success block ===================================================== */
-
-.success-block {
+/* === 7) Notification toast (success) ==================================== */
+.notification-toast {
+  position: fixed; /* 👈 floating, not inline */
+  top: 4rem; /* distance from top of chat container */
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.75rem; /* 12px */
   padding: 0.75rem 1rem; /* 12px 16px */
-  height: 4.5rem; /* 72px */
-  background: rgba(252, 252, 252, 0.1);
-  backdrop-filter: blur(15px);
   border-radius: 0.5rem; /* 8px */
-  margin-top: 0.75rem; /* 12px */
-  width: 100%;
+  backdrop-filter: blur(15px);
+  background: #afbafb; /* figma */
+  color: #0e218e;
+  width: auto;
+  max-width: 90%;
+  min-width: 300px;
+  min-height: 4.5rem; /* 72px */
   box-sizing: border-box;
+  z-index: 200; /* above chat */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+  animation: fadeIn 0.3s ease;
 }
 
-.success-block .checkmark {
-  width: 1.5rem; /* 24px */
-  height: 1.5rem; /* 24px */
+/* Checkmark */
+.notification-toast .checkmark {
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.success-block .success-col {
+/* Content column */
+.notification-toast .success-col {
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  gap: 0.25rem; /* 4px */
+  gap: 0.25rem;
   min-width: 0;
 }
 
-.success-block .product-line {
+/* Product line */
+.notification-toast .product-line {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Inter", sans-serif;
-  font-size: 0.875rem; /* 14px */
-  line-height: 1.5;
-  color: #fcfcfc;
-  font-weight: 600;
-  width: 100%;
+  font-family: "Satoshi", sans-serif;
+  font-size: 0.875rem;
+  line-height: 150%;
+  font-weight: 700;
+  color: #0e218e;
 }
-.success-block .product-line .product-name {
+.notification-toast .product-line .product-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.success-block .product-line .product-qty {
+.notification-toast .product-line .product-qty {
   font-weight: 400;
-  margin-left: 0.5rem; /* 8px */
+  margin-left: 0.5rem;
 }
 
-.success-block .added {
-  font-size: 0.8125rem; /* 13px */
+/* Subtext */
+.notification-toast .added {
+  font-size: 0.8125rem;
   font-weight: 400;
-  color: #fcfcfc;
+  opacity: 0.85;
+  color: #0e218e;
+}
+
+/* View cart button (link style) */
+.notification-toast .view-cart {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0e218e;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.notification-toast .view-cart:hover {
   opacity: 0.85;
 }
 
-.success-block .view-cart {
+/* Close button */
+.notification-toast .close-btn {
   flex-shrink: 0;
-  border: 1px solid #fcfcfc;
-  border-radius: 2.1875rem; /* 35px ~ */
-  padding: 0.5rem 1rem; /* 8px 16px */
-  font-size: 0.875rem; /* 14px */
-  font-weight: 600;
-  color: #fcfcfc;
-  background: transparent;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  padding: 0;
 }
-.success-block .view-cart:hover {
-  background: #fcfcfc;
-  color: #02092e;
+.notification-toast .close-btn img {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.products-cta .cta-q-secondary {
+  margin-top: 1rem;
 }
 
 /* === 8) Overlay/Pointer events fix ======================================= */
@@ -542,6 +578,14 @@
     margin-top: 1rem;
     font-size: 0.9rem;
     margin-bottom: -1rem;
+  }
+
+  .notification-toast {
+    top: 0rem;
+    max-width: 26.125rem; /* 418px */
+    margin: 2rem auto 0;
+    height: 95px; /* figma desktop height */
+    padding: 12px;
   }
 }
 

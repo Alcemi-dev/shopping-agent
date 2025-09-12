@@ -109,7 +109,6 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                   kind: "products",
                   products: products(),
                   header: "Based on your request we have found a lot of products matching your description:",
-                  footer: "Tap 'Show more' to explore additional products.",
                   visibleCount: 3,
                   showMore: true,
                 } as Msg,

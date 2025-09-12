@@ -7,9 +7,9 @@ type Props = {
   products: Product[];
   header?: string;
   footer?: string;
-  visibleCount?: number; // kiek produktų rodyti vienoje eilėje
-  showMore?: boolean; // ar rodyti "show more" mygtuką
-  onAddToCart?: (title: string, delta: number) => void;
+  visibleCount?: number;
+  showMore?: boolean;
+  onAddToCart?: (title: string, qty: number) => void;
 };
 
 export function ProductsStripMessage({
@@ -24,51 +24,77 @@ export function ProductsStripMessage({
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [groups, setGroups] = useState<Product[][]>([products.slice(0, visibleCount)]);
   const [added, setAdded] = useState(false);
-
-  const prevQuantities = useRef<Record<string, number>>({}); // 👈 saugom seną kiekį
+  const [dismissed, setDismissed] = useState(false);
+  const [ctaDismissed, setCtaDismissed] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
 
+  const single = products.length === 1;
+  const many = products.length > 1 && !showMore; // 👈 "many" scenarijus
+  const more = !!showMore; // 👈 "more" scenarijus
+  const hasSelected = Object.values(quantities).some((q) => q > 0);
+
+  // scrollinam į apačią kai atsiranda CTA arba keičiasi grupės
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer, groups, added]);
-
-  const single = products.length === 1;
-
-  // Tikras krepšelio keitimo kvietimas – tik kai quantities pasikeičia
-  useEffect(() => {
-    for (const id of Object.keys(quantities)) {
-      const prev = prevQuantities.current[id] ?? 0;
-      const next = quantities[id] ?? 0;
-
-      if (next > prev) {
-        const product = products.find((p) => String(p.id) === id);
-        if (product) onAddToCart?.(product.title, +1);
-      } else if (next < prev) {
-        const product = products.find((p) => String(p.id) === id);
-        if (product) onAddToCart?.(product.title, -1);
-      }
-    }
-
-    prevQuantities.current = { ...quantities };
-  }, [quantities, products, onAddToCart]);
+  }, [products, header, footer, groups, added, hasSelected, ctaDismissed]);
 
   const changeQty = (id: string, delta: number) => {
     setQuantities((prev) => {
       const current = prev[id] ?? 0;
       const next = Math.max(0, current + delta);
 
-      if (single && delta > 0) {
-        setAdded(true); // CTA success tik ant single
+      // jei vartotojas pasirenka bent vieną qty → vėl rodome CTA
+      if (next > current) {
+        setCtaDismissed(false);
       }
 
       return { ...prev, [id]: next };
     });
   };
+
+  const handleAddAllToCart = () => {
+    if (single) {
+      const product = products[0];
+      if (product) {
+        onAddToCart?.(product.title, 1);
+        setQuantities({ [String(product.id)]: 1 }); // 👈 qty į 1
+      }
+    } else {
+      for (const [id, qty] of Object.entries(quantities)) {
+        if (qty > 0) {
+          const product = products.find((p) => String(p.id) === id);
+          if (product) {
+            onAddToCart?.(product.title, qty);
+          }
+        }
+      }
+    }
+    setAdded(true);
+    setDismissed(false);
+    setCtaDismissed(true); // CTA dingsta, rodom assistance tekstą
+  };
+
+  const handleNotNow = () => {
+    setQuantities({});
+    setCtaDismissed(true);
+  };
+
+  const handleClearSelection = () => {
+    setQuantities({}); // 👈 tik išvalo, CTA lieka
+  };
+
+  // auto-dismiss toast po 5s
+  useEffect(() => {
+    if (added && !dismissed) {
+      const t = setTimeout(() => setDismissed(true), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [added, dismissed]);
 
   const handleShowMore = () => {
     const alreadyShown = groups.flat().length;
@@ -86,7 +112,7 @@ export function ProductsStripMessage({
         </div>
       )}
 
-      {/* Grupės po 3 */}
+      {/* product groups */}
       {groups.map((group, gIdx) => (
         <div
           key={gIdx}
@@ -156,48 +182,78 @@ export function ProductsStripMessage({
       ))}
 
       <div className="products-contain">
-        {/* CTA jei single product */}
-        {single &&
-          (!added ? (
-            <div className="products-cta">
-              <p className="cta-q">Add this to your cart?</p>
-              <div className="cta-buttons">
-                <button className="btn-primary" onClick={() => changeQty(String(products[0].id), +1)}>
-                  Add to cart
-                </button>
-                <button className="btn-secondary">Not now</button>
-              </div>
-            </div>
-          ) : (
-            <div className="success-block">
-              <div className="checkmark">
-                <img src="/img/check.svg" alt="✓" />
-              </div>
-              <div className="success-col">
-                <div className="product-line">
-                  <span className="product-name">{products[0].title}</span>
-                  <span className="product-qty">x1</span>
-                </div>
-                <span className="added">Added to cart</span>
-              </div>
-              <button className="view-cart">View cart</button>
-            </div>
-          ))}
-
-        {/* Show more mygtukas su tekstu */}
-        {!single && showMore && groups.flat().length < products.length && (
-          <>
-            <p className="products-header products-header-more">
-              Showing Top {groups.flat().length} best matching results:
-            </p>
-            <button className="show-more-btn" onClick={handleShowMore}>
-              Show more options
-            </button>
-          </>
+        {/* More scenarijus – visada rodom virš Show more */}
+        {more && (
+          <p className="products-header products-header-more">
+            Showing Top {groups.flat().length} best matching results:
+          </p>
         )}
 
-        {footer && <p className="products-followup">{footer}</p>}
+        {/* Show more button */}
+        {!single && showMore && groups.flat().length < products.length && (
+          <button className="show-more-btn" onClick={handleShowMore}>
+            Show more options
+          </button>
+        )}
+
+        {/* CTA kai yra tik viena prekė */}
+        {single && !ctaDismissed && (
+          <div className="products-cta">
+            <p className="cta-q">Add this to your cart?</p>
+            <div className="cta-buttons">
+              <button className="btn-primary" onClick={handleAddAllToCart}>
+                Add to cart
+              </button>
+              <button className="btn-secondary" onClick={handleNotNow}>
+                Not now
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* CTA kai yra daug prekių */}
+        {!single && hasSelected && !ctaDismissed && (
+          <div className="products-cta">
+            <p className="cta-q cta-q-secondary">Add selected items to your cart?</p>
+            <div className="cta-buttons">
+              <button className="btn-primary" onClick={handleAddAllToCart}>
+                Add to cart
+              </button>
+              <button className="btn-secondary" onClick={handleClearSelection}>
+                Clear selection
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Many scenarijus – footer rodom tik kai CTA nerodomas */}
+        {many && !hasSelected && !ctaDismissed && <p className="products-followup">Do you need any further help?</p>}
+
+        {/* Tekstas "Do you need any further assistance?" tik po CTA uždarymo */}
+        {ctaDismissed && <p className="products-followup">Do you need any further assistance?</p>}
       </div>
+
+      {/* Toast notification */}
+      {added && !dismissed && (
+        <div className="notification-toast">
+          <div className="checkmark">
+            <img src="/img/check.svg" alt="✓" />
+          </div>
+          <div className="success-col">
+            <div className="product-line">
+              <span className="product-name">
+                {products.find((p) => quantities[String(p.id)] > 0)?.title ?? products[0].title}
+              </span>
+              <span className="product-qty">×{Object.values(quantities).reduce((a, b) => a + b, 0)}</span>
+            </div>
+            <span className="added">Added to cart successfully</span>
+            <button className="view-cart">View cart</button>
+          </div>
+          <button className="close-btn" onClick={() => setDismissed(true)}>
+            <img src="/img/popup-close.svg" alt="Close" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
