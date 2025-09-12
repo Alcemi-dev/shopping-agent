@@ -7,10 +7,11 @@ type Props = {
   m: Msg;
   onAddToCart?: (title: string, delta: number) => void;
   onActionSelect?: (value: string) => void;
-  onRetry?: () => void; // 👈 naujas callback
+  onRetry?: () => void;
+  onShowToast?: (payload: { title: string; qty: number }) => void; // 👈 pridėjom
 };
 
-export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetry }: Props) {
+export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetry, onShowToast }: Props) {
   // USER text
   if (m.role === "user" && m.kind === "text") {
     return (
@@ -57,6 +58,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetr
           visibleCount={m.visibleCount}
           showMore={m.showMore}
           onAddToCart={onAddToCart}
+          onShowToast={onShowToast} // 👈 forwardinam
         />
       </div>
     );

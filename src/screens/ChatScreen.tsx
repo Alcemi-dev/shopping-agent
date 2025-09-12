@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import "../styles/chat-screen.css";
 import type { Msg } from "../types";
 import MessageRenderer from "../components/MessageRenderer";
@@ -22,6 +22,8 @@ type ChatScreenProps = {
 
 export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
+
+  const [toast, setToast] = useState<{ title: string; qty: number } | null>(null);
 
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
@@ -66,6 +68,14 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
     };
   }, []);
 
+  // auto-hide toast
+  useEffect(() => {
+    if (toast) {
+      const t = setTimeout(() => setToast(null), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [toast]);
+
   return (
     <>
       {showHeadFade && <div className="chat-head-fade" />}
@@ -75,12 +85,33 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
             key={m.id}
             m={m}
             onAddToCart={onAddToCart}
+            onShowToast={(payload) => setToast(payload)} // 👈 naujas callback
             onRetry={lastUser ? () => onRetry?.(lastUser.text) : undefined}
           />
         ))}
         {extra}
       </div>
       {showFootFade && <div className="chat-foot-fade" />}
+
+      {/* 👇 globalus toast */}
+      {toast && (
+        <div className="notification-toast">
+          <div className="checkmark">
+            <img src="/img/check.svg" alt="✓" />
+          </div>
+          <div className="success-col">
+            <div className="product-line">
+              <span className="product-name">{toast.title}</span>
+              <span className="product-qty">×{toast.qty}</span>
+            </div>
+            <span className="added">Added to cart successfully</span>
+            <button className="view-cart">View cart</button>
+          </div>
+          <button className="close-btn" onClick={() => setToast(null)}>
+            <img src="/img/popup-close.svg" alt="Close" />
+          </button>
+        </div>
+      )}
     </>
   );
 }
