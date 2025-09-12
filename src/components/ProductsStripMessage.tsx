@@ -3,132 +3,143 @@ import "../styles/products-strip.css";
 import type { Product } from "../screens/ChatScreen";
 import { useDragScroll } from "../hooks/useDragScroll";
 
-// 👇 Hookas
-function useProductsResize(productsRef: React.RefObject<HTMLElement | null>) {
-  const [isNarrow, setIsNarrow] = useState(false);
-
-  useEffect(() => {
-    const input = document.querySelector(".input-wrap.input-bubble") as HTMLElement | null;
-    if (!productsRef.current || !input) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        // jeigu nebemato pilnai → susiaurinam
-        setIsNarrow(!entry.isIntersecting);
-      },
-      {
-        root: document.querySelector(".chat-log"), // 👈 scroll konteineris
-        threshold: 0.9,
-      }
-    );
-
-    observer.observe(productsRef.current);
-
-    return () => observer.disconnect();
-  }, [productsRef]);
-
-  return isNarrow;
-}
-
 type Props = {
   products: Product[];
   header?: string;
   footer?: string;
-  onAddToCart?: (title: string) => void;
+  visibleCount?: number; // kiek produktų rodyti vienoje eilėje
+  showMore?: boolean; // ar rodyti "show more" mygtuką
+  onAddToCart?: (title: string, delta: number) => void;
 };
 
-export function ProductsStripMessage({ products, header, footer, onAddToCart }: Props) {
+export function ProductsStripMessage({
+  products,
+  header,
+  footer,
+  visibleCount = 3,
+  showMore = false,
+  onAddToCart,
+}: Props) {
   const [muted, setMuted] = useState<Record<string, boolean>>({});
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [groups, setGroups] = useState<Product[][]>([products.slice(0, visibleCount)]); // 👈 pirmoji grupė
   const [added, setAdded] = useState(false);
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
-
-  const isNarrow = useProductsResize(scrollRef); // 👈 prijungtas hook’as
 
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer, added]);
+  }, [products, header, footer, groups, quantities, added]);
 
   const single = products.length === 1;
-  const showFooter = !single && !!footer;
+
+  const changeQty = (id: string, delta: number, title: string) => {
+    setQuantities((prev) => {
+      const current = prev[id] ?? 0;
+      const next = Math.max(0, current + delta);
+
+      if (delta > 0) onAddToCart?.(title, +1);
+      if (delta < 0 && current > 0) onAddToCart?.(title, -1);
+
+      if (single && delta > 0) {
+        setAdded(true);
+      }
+
+      return { ...prev, [id]: next };
+    });
+  };
+
+  const handleShowMore = () => {
+    const alreadyShown = groups.flat().length;
+    const next = products.slice(alreadyShown, alreadyShown + visibleCount);
+    if (next.length > 0) {
+      setGroups((prev) => [...prev, next]);
+    }
+  };
 
   return (
-    <div className={`products-wrap ${isNarrow ? "is-narrow" : ""}`}>
+    <div className="products-wrap">
       {header && (
         <div className="products-contain">
           <p className="products-header">{header}</p>
         </div>
       )}
 
-      <div className={`products-scroll${single ? " is-single" : " is-multiple"}`} ref={scrollRef} role="list">
-        {products.map((p) => {
-          const key = String(p.id);
-          const isMuted = !!muted[key];
+      {/* Renderuojam visas grupes */}
+      {groups.map((group, gIdx) => (
+        <div
+          key={gIdx}
+          className={`products-scroll${single ? " is-single" : " is-multiple"}`}
+          ref={scrollRef}
+          role="list"
+        >
+          {group.map((p) => {
+            const key = String(p.id);
+            const isMuted = !!muted[key];
+            const qty = quantities[key] ?? 0;
 
-          return (
-            <article key={key} className={`product-card${isMuted ? " is-muted" : ""}`} aria-label={p.title}>
-              <div className="image-wrap">
-                <img className="product-img" src={p.img} alt={p.title} />
+            return (
+              <article key={key} className={`product-card${isMuted ? " is-muted" : ""}`} aria-label={p.title}>
+                <div className="image-wrap">
+                  <img className="product-img" src={p.img} alt={p.title} />
 
-                <div className="reactions">
-                  <button
-                    type="button"
-                    className="circle circle--dislike"
-                    aria-label="Dislike"
-                    aria-pressed={isMuted}
-                    onClick={() => {
-                      setMuted((m) => ({ ...m, [key]: !m[key] }));
-                    }}
-                  >
-                    <img src="/img/dislike.svg" alt="" />
-                  </button>
-                  <button type="button" className="circle circle--fav" aria-label="Save">
-                    <img src="/img/favorite.svg" alt="" />
-                  </button>
-                </div>
+                  <div className="reactions">
+                    <button
+                      type="button"
+                      className="circle circle--dislike"
+                      aria-label="Dislike"
+                      aria-pressed={isMuted}
+                      onClick={() => setMuted((m) => ({ ...m, [key]: !m[key] }))}
+                    >
+                      <img src="/img/dislike.svg" alt="" />
+                    </button>
+                    <button type="button" className="circle circle--fav" aria-label="Save">
+                      <img src="/img/favorite.svg" alt="" />
+                    </button>
+                  </div>
 
-                <button
-                  type="button"
-                  className="add-btn"
-                  aria-label="Add"
-                  onClick={() => {
-                    onAddToCart?.(p.title);
-                    setAdded(true);
-                  }}
-                >
-                  <img src="/img/add.svg" alt="" />
-                </button>
-              </div>
-
-              <div className="content">
-                <div className="price-row">
-                  {p.price != null ? (
-                    <span className="price">{typeof p.price === "number" ? `${p.price} €` : p.price}</span>
+                  {qty > 0 ? (
+                    <div className="qty-panel">
+                      <button onClick={() => changeQty(key, -1, p.title)}>-</button>
+                      <span>{qty}</span>
+                      <button onClick={() => changeQty(key, +1, p.title)}>+</button>
+                    </div>
                   ) : (
-                    <span className="price">120 €</span>
+                    <button className="add-btn" onClick={() => changeQty(key, +1, p.title)}>
+                      <img src="/img/add.svg" alt="" />
+                    </button>
                   )}
-                  <span className="reviews">
-                    <img src="/img/star.svg" alt="" />
-                    <span>{p.rating ?? 4.8}</span>
-                    <a className="reviews-count" href="#" onClick={(e) => e.preventDefault()}>
-                      ({p.reviews ?? 20})
-                    </a>
-                  </span>
                 </div>
-                <h4 className="title" title={p.title}>
-                  {p.title}
-                </h4>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+
+                <div className="content">
+                  <div className="price-row">
+                    {p.price != null ? (
+                      <span className="price">{typeof p.price === "number" ? `${p.price} €` : p.price}</span>
+                    ) : (
+                      <span className="price">120 €</span>
+                    )}
+                    <span className="reviews">
+                      <img src="/img/star.svg" alt="" />
+                      <span>{p.rating ?? 4.8}</span>
+                      <a className="reviews-count" href="#" onClick={(e) => e.preventDefault()}>
+                        ({p.reviews ?? 20})
+                      </a>
+                    </span>
+                  </div>
+                  <h4 className="title">{p.title}</h4>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ))}
 
       <div className="products-contain">
+        {/* CTA jei single product */}
         {single &&
           (!added ? (
             <div className="products-cta">
@@ -136,10 +147,7 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
               <div className="cta-buttons">
                 <button
                   className="btn-primary"
-                  onClick={() => {
-                    onAddToCart?.(products[0].title);
-                    setAdded(true);
-                  }}
+                  onClick={() => changeQty(String(products[0].id), +1, products[0].title)}
                 >
                   Add to cart
                 </button>
@@ -162,7 +170,14 @@ export function ProductsStripMessage({ products, header, footer, onAddToCart }: 
             </div>
           ))}
 
-        {showFooter && <p className="products-followup">{footer}</p>}
+        {/* Show more mygtukas tik jei liko dar produktų */}
+        {!single && showMore && groups.flat().length < products.length && (
+          <button className="show-more-btn" onClick={handleShowMore}>
+            Show more options
+          </button>
+        )}
+
+        {footer && <p className="products-followup">{footer}</p>}
       </div>
     </div>
   );

@@ -154,43 +154,39 @@
   white-space: pre-wrap;
 }
 
+.show-more-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  border: 1px solid #fcfcfc;
+  border-radius: 35px;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  color: #fcfcfc;
+  background: transparent;
+  cursor: pointer;
+  margin-top: 1rem;
+}
 /* Desktop override */
 @media (min-width: 610px) {
   .chat-log {
     position: static;
-    width: 44rem;
+    width: 30rem;
     margin-bottom: 10rem;
     margin-top: calc(-2 * var(--head-h));
     padding-top: 6.25rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 
-  .ai-text {
-    padding-left: 5.4rem;
-    max-width: 44rem;
-    padding-right: 5.4rem;
-  }
-
-  .msg--user {
-    padding-right: 5.4rem;
-  }
   .modal-ctr {
     padding-bottom: 0;
   }
   .chat-log .msg:first-child {
     padding-top: 0rem; /* arba kiek tau reikia */
-  }
-
-  .loading-rail {
-    padding-left: 5.4rem;
-  }
-
-  .subquestion {
-    padding-left: 5.4rem;
-  }
-
-  .chips-inline {
-    padding-left: 5.4rem;
-    justify-content: left;
   }
 
   .products-header {
@@ -199,9 +195,6 @@
 
   .products-followup {
     padding-top: 1rem;
-  }
-  .msg.recommendation-chips .chips-inline {
-    padding-left: 7.4rem;
   }
 
   .chat-head-fade {

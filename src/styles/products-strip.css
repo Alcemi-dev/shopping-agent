@@ -149,7 +149,7 @@
   width: 2rem; /* 32px */
   height: 2rem; /* 32px */
   border-radius: 50%;
-  background: rgba(252, 252, 252, 0.8);
+  background: rgba(252, 252, 252, 1);
   border: none;
   display: flex;
   align-items: center;
@@ -404,6 +404,41 @@
   pointer-events: auto !important;
 }
 
+.qty-panel {
+  position: absolute;
+  right: 8px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  width: 104px;
+  height: 32px;
+  background: #fcfcfc;
+
+  border-radius: 36px;
+  z-index: 2;
+}
+.qty-panel button {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  font-weight: bold;
+  color: #02092e;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.qty-panel span {
+  font-family: "Satoshi", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #02092e;
+  text-align: center;
+  min-width: 20px;
+}
+
 /* === 9) Desktop overrides (≥ 610px) ====================================== */
 
 @media (min-width: 610px) {
@@ -414,6 +449,8 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
+    overflow: visible;
+    flex-wrap: nowrap;
     transform: scale(0.76); /* temporary fix for size*/
     transform-origin: center bottom;
     margin-top: -5rem;
