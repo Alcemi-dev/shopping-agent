@@ -320,7 +320,7 @@
   box-sizing: border-box;
   z-index: 9999; /* above chat */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-
+  isolation: isolate;
   animation: fadeIn 0.3s ease;
 }
 
@@ -412,6 +412,17 @@
 
 .products-cta .cta-q-secondary {
   margin-top: 1rem;
+}
+
+.chat-head-fade,
+.chat-foot-fade,
+.products-strip {
+  z-index: 1; /* žemai, tik fonui */
+}
+
+.notification-toast {
+  z-index: 9999 !important; /* visada virš visko */
+  position: fixed;
 }
 
 /* === 8) Overlay/Pointer events fix ======================================= */
