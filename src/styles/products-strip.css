@@ -439,6 +439,10 @@
   min-width: 20px;
 }
 
+.products-header-more {
+  margin-top: 1rem;
+}
+
 /* === 9) Desktop overrides (≥ 610px) ====================================== */
 
 @media (min-width: 610px) {
@@ -532,6 +536,12 @@
   .product-card .add-btn {
     z-index: 100;
     pointer-events: auto;
+  }
+
+  .products-header-more {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: -1rem;
   }
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Background, AiButton, Modal, InputBubble } from "./components";
 import ExplainScreen from "./screens/ExplainScreen";
-import ChipsScreen from "./screens/ChipsScreen";
+import ChipsScreen from "./screens/MainScreen";
 import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
 import FeedbackScreen from "./screens/FeedbackScreen";
@@ -164,6 +164,27 @@ export default function App() {
     setCartCount((c) => Math.max(0, c + delta));
   };
 
+  const handleRetry = (lastUser: string) => {
+    setMessages((prev) => {
+      // 1) surandam paskutinį user + error id
+      const lastUserMsg = [...prev].reverse().find((m) => m.role === "user" && m.kind === "text");
+      const lastErrorMsg = [...prev].reverse().find((m) => m.role === "assistant" && m.kind === "error");
+
+      // 2) išfiltruojam juos lauk
+      let filtered = prev;
+      if (lastUserMsg) filtered = filtered.filter((m) => m.id !== lastUserMsg.id);
+      if (lastErrorMsg) filtered = filtered.filter((m) => m.id !== lastErrorMsg.id);
+
+      return filtered;
+    });
+
+    // 3) siųsti user tekstą iš naujo
+    if (lastUser.trim()) {
+      engineRef.current.send(lastUser);
+      if (view !== "chat") setView("chat");
+      setQuery("");
+    }
+  };
   return (
     <div className="app-root">
       <Background />
@@ -201,10 +222,11 @@ export default function App() {
           <ChipsScreen items={CHIP_ITEMS} onPick={pickTopChip} />
         </Modal.Screen>
 
-        <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
+        <Modal.Screen show={view === "category" || view === "chat"}>
           <ChatScreen
             messages={messages}
             onAddToCart={handleChangeCart}
+            onRetry={handleRetry}
             extra={
               view === "category" &&
               category &&

@@ -14,10 +14,9 @@
   margin: 0 auto;
   padding: 16px;
 
-  background: var(--surface-bubble, #fff);
-  border: 1px solid var(--outline, #d9d9d9);
+  background: var(--surface-bubble);
+  border: 1.5px solid #fff;
   border-radius: var(--radius-md, 12px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   z-index: 100;
 }

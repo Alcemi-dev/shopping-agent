@@ -10,6 +10,7 @@
   scrollbar-width: none;
   scroll-behavior: auto;
   padding: 0 var(--gutter) 0;
+  padding-bottom: 2rem;
   margin-bottom: 7.5rem;
 }
 .chat-log::-webkit-scrollbar {
@@ -154,6 +155,36 @@
   white-space: pre-wrap;
 }
 
+.retry-btn {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  gap: 8px;
+
+  width: 110px;
+  min-width: 110px;
+  height: 40px;
+
+  border: 1px solid #ffc0c0;
+  border-radius: 20px;
+  background: transparent;
+
+  font-family: "Satoshi", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: 0.03em;
+  color: #ffc0c0;
+
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
 .show-more-btn {
   display: flex;
   justify-content: center;
@@ -215,11 +246,11 @@
   .chat-foot-fade {
     position: absolute;
     bottom: 1.7rem;
-    margin-bottom: 7.6rem;
-    width: 30rem;
+    margin-bottom: 7.2rem;
+    width: 29.9rem;
     background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 80%);
     pointer-events: none;
-    z-index: 5;
+    z-index: 0;
   }
 
   .error-bubble {

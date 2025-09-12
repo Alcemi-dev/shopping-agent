@@ -17,9 +17,10 @@ type ChatScreenProps = {
   messages: Msg[];
   extra?: React.ReactNode;
   onAddToCart?: (title: string, delta: number) => void; // 🛒 callback
+  onRetry?: (lastUser: string) => void; // 👈 naujas callback
 };
 
-export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenProps) {
+export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
 
   const uniqueMessages = useMemo(() => {
@@ -32,6 +33,9 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
   }, [messages]);
 
   const { showHeadFade, showFootFade } = useChatScroll(logRef, uniqueMessages);
+
+  // Surandam paskutinį user message
+  const lastUser = [...messages].reverse().find((m) => m.role === "user" && m.kind === "text");
 
   // 👇 PRIDĖTA: forward’inti touch iš viso modal į chat-log
   useEffect(() => {
@@ -67,7 +71,12 @@ export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenP
       {showHeadFade && <div className="chat-head-fade" />}
       <div className="chat-log" ref={logRef} aria-live="polite">
         {uniqueMessages.map((m) => (
-          <MessageRenderer key={m.id} m={m} onAddToCart={onAddToCart} />
+          <MessageRenderer
+            key={m.id}
+            m={m}
+            onAddToCart={onAddToCart}
+            onRetry={lastUser ? () => onRetry?.(lastUser.text) : undefined}
+          />
         ))}
         {extra}
       </div>

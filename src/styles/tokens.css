@@ -67,7 +67,7 @@
   /* Surfaces */
   --surface-page: var(--color-bg);
   --surface-modal: #02092e; /* gili mėlyna modalui */
-  --surface-bubble: #ffffff; /* balta burbulei */
+  --surface-bubble: #dee3ff; /* balta burbulei */
 
   /* Text + outline */
   --text-on-dark: #fcfcfc; /* tekstas ant modal */

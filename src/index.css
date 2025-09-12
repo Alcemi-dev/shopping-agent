@@ -54,3 +54,8 @@ input:focus,
 textarea:focus {
   -webkit-tap-highlight-color: transparent;
 }
+/* Panaikinam automatinį focus ring visiems elementams modale */
+.modal-card *:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
