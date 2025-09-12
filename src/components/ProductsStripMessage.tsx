@@ -62,7 +62,7 @@ export function ProductsStripMessage({
       const product = products[0];
       if (product) {
         onAddToCart?.(product.title, 1);
-        setQuantities({ [String(product.id)]: 1 }); // 👈 qty į 1
+        // ❌ nerašom setQuantities → pliusas išlieka kaip mygtukas
       }
     } else {
       for (const [id, qty] of Object.entries(quantities)) {
@@ -244,7 +244,7 @@ export function ProductsStripMessage({
               <span className="product-name">
                 {products.find((p) => quantities[String(p.id)] > 0)?.title ?? products[0].title}
               </span>
-              <span className="product-qty">×{Object.values(quantities).reduce((a, b) => a + b, 0)}</span>
+              <span className="product-qty">×{single ? 1 : Object.values(quantities).reduce((a, b) => a + b, 0)}</span>
             </div>
             <span className="added">Added to cart successfully</span>
             <button className="view-cart">View cart</button>

@@ -318,7 +318,7 @@
   min-width: 300px;
   min-height: 4.5rem; /* 72px */
   box-sizing: border-box;
-  z-index: 200; /* above chat */
+  z-index: 9999; /* above chat */
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 
   animation: fadeIn 0.3s ease;
