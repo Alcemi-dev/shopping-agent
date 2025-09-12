@@ -58,19 +58,19 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
         if (q.includes("none")) scenario = "none";
         else if (q.includes("many")) scenario = "many";
         else if (q.includes("one")) scenario = "one";
+        else if (q.includes("more")) scenario = "more";
         else if (q.includes("feedback")) scenario = "feedback";
         else if (q.includes("connection")) scenario = "connection";
-        else if (q.includes("error")) scenario = "error"; // 👈 nauja logika
+        else if (q.includes("error")) scenario = "error";
         else scenario = "default";
 
         if (scenario === "one") {
-          const msgId = loader!.id + "-one";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
               .concat([
                 {
-                  id: msgId,
+                  id: loader!.id + "-one",
                   role: "assistant",
                   kind: "products",
                   products: [products()[0]],
@@ -79,7 +79,26 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
               ])
           );
         } else if (scenario === "many") {
-          const msgId = loader!.id + "-many";
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: loader!.id + "-many",
+                  role: "assistant",
+                  kind: "products",
+                  products: products(),
+                  header: "We found multiple products that match your request. Here they are:",
+                  footer: "Do you need any further help?",
+                  visibleCount: 3, // 👈 rodom tik 3
+                  showMore: false, // 👈 jokių mygtukų
+                } as Msg,
+              ])
+          );
+        } else if (scenario === "more") {
+          console.log("ENGINE more scenario"); // 👈 debug
+
+          const msgId = loader!.id + "-more";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
@@ -88,30 +107,28 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                   id: msgId,
                   role: "assistant",
                   kind: "products",
-                  products: products(),
-                  header: "We found multiple products that match your request. Here they are:",
-                  footer: "Do you need any further help?",
+                  products: products(), // 👈 visas sąrašas
+                  header: "Showing some of the best matching results:",
+                  footer: "Tap 'Show more' to explore additional products.",
+                  visibleCount: 3, // 👈 labai svarbu: pradžioj tik 3
+                  showMore: true,
                 } as Msg,
               ])
           );
         } else if (scenario === "none") {
-          const noResultsId = loader!.id + "-none";
-          const actionsId = loader!.id + "-actions";
-          const supportId = loader!.id + "-support";
-
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
               .concat([
                 {
-                  id: noResultsId,
+                  id: loader!.id + "-none",
                   role: "assistant",
                   kind: "text",
                   text: `No results found for "${q}". I suggest checking these items:`,
                   extraClass: "no-results",
                 } as Msg,
                 {
-                  id: actionsId,
+                  id: loader!.id + "-actions",
                   role: "assistant",
                   kind: "actions",
                   actions: [
@@ -121,7 +138,7 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                   extraClass: "recommendation-chips",
                 } as Msg,
                 {
-                  id: supportId,
+                  id: loader!.id + "-support",
                   role: "assistant",
                   kind: "text",
                   text: "If you need immediate help, call us (+3706 465 8132) or send us an email (info@shop.lt).",
@@ -130,39 +147,24 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
               ])
           );
         } else if (scenario === "feedback") {
-          const msgId = loader!.id + "-feedback";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
-              .concat([
-                {
-                  id: msgId,
-                  role: "assistant",
-                  kind: "feedback",
-                } as Msg,
-              ])
+              .concat([{ id: loader!.id + "-feedback", role: "assistant", kind: "feedback" } as Msg])
           );
         } else if (scenario === "connection") {
-          const msgId = loader!.id + "-connection";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
-              .concat([
-                {
-                  id: msgId,
-                  role: "assistant",
-                  kind: "connection-lost",
-                } as Msg,
-              ])
+              .concat([{ id: loader!.id + "-connection", role: "assistant", kind: "connection-lost" } as Msg])
           );
         } else if (scenario === "error") {
-          const msgId = loader!.id + "-error";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
               .concat([
                 {
-                  id: msgId,
+                  id: loader!.id + "-error",
                   role: "assistant",
                   kind: "error",
                   text: "This is an error message that will be displayed when there's an error.",
@@ -170,19 +172,19 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
               ])
           );
         } else {
-          const msgId = loader!.id + "-default";
           setMessages((prev) =>
             prev
               .filter((m) => m.id !== loader!.id)
               .concat([
                 {
-                  id: msgId,
+                  id: loader!.id + "-default",
                   role: "assistant",
                   kind: "text",
                   text:
                     "This is a default text message, to test different outcomes use the following keywords listed below:\n" +
                     "- type 'one' → one product\n" +
                     "- type 'many' → many products\n" +
+                    "- type 'more' → products with Show more button\n" +
                     "- type 'none' → no results + recommendations\n" +
                     "- type 'feedback' → feedback screen\n" +
                     "- type 'connection' → connection lost screen\n" +

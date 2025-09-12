@@ -5,8 +5,8 @@ import type { Msg } from "../types";
 
 type Props = {
   m: Msg;
-  onAddToCart?: (title: string) => void;
-  onActionSelect?: (value: string) => void; // 👈 pridėta
+  onAddToCart?: (title: string, delta: number) => void;
+  onActionSelect?: (value: string) => void; // 👈 pridėti
 };
 
 export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Props) {
@@ -40,13 +40,27 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Prop
 
   // Products
   if (m.kind === "products") {
+    console.log("Rendering products message", {
+      id: m.id,
+      header: m.header,
+      footer: m.footer,
+      visibleCount: (m as any).visibleCount, // 👈 debug
+      products: m.products.length,
+    });
+
     return (
       <div data-msg-id={m.id} className="msg msg--ai">
-        <ProductsStripMessage products={m.products} header={m.header} footer={m.footer} onAddToCart={onAddToCart} />
+        <ProductsStripMessage
+          products={m.products}
+          header={m.header}
+          footer={m.footer}
+          visibleCount={m.visibleCount} // 👈 perduodam
+          showMore={m.showMore} // 👈 perduodam
+          onAddToCart={onAddToCart}
+        />
       </div>
     );
   }
-
   // Actions (chips)
   if (m.kind === "actions") {
     return (
@@ -56,7 +70,6 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Prop
           onSelect={(label) => {
             const chosen = m.actions.find((a) => a.label === label);
             if (chosen) {
-              console.log("User selected:", chosen.value);
               onActionSelect?.(chosen.value);
             }
           }}

@@ -16,7 +16,7 @@ export type Product = {
 type ChatScreenProps = {
   messages: Msg[];
   extra?: React.ReactNode;
-  onAddToCart?: (title: string) => void; // 🛒 callback
+  onAddToCart?: (title: string, delta: number) => void; // 🛒 callback
 };
 
 export default function ChatScreen({ messages, extra, onAddToCart }: ChatScreenProps) {

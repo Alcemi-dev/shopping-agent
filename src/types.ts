@@ -51,9 +51,12 @@ export type ProductsMsg = {
   id: string;
   role: "assistant";
   kind: "products";
-  products: { id: string; title: string; img: string }[];
+  products: Product[];
   header?: string;
   footer?: string;
+  /** kiek produktų šiuo metu rodyti (naudojama "show more" logikai) */
+  visibleCount?: number;
+  showMore?: boolean;
 };
 
 export type ActionsMsg = {
@@ -93,6 +96,16 @@ export type Msg =
   | FeedbackMsg
   | ConnectionLostMsg
   | ErrorMsg;
+
+// ===== Product model =====
+export type Product = {
+  id: string;
+  title: string;
+  img: string;
+  price?: number | string;
+  rating?: number;
+  reviews?: number;
+};
 
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [

@@ -159,9 +159,9 @@ export default function App() {
     engineRef.current.handleMessagesEffect(messages);
   }, [messages]);
 
-  const handleAddToCart = (title: string) => {
-    console.log("Added:", title);
-    setCartCount((c) => c + 1);
+  const handleChangeCart = (_title: string, delta: number) => {
+    // _title panaikinam, nes nenaudojamas
+    setCartCount((c) => Math.max(0, c + delta));
   };
 
   return (
@@ -204,7 +204,7 @@ export default function App() {
         <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
           <ChatScreen
             messages={messages}
-            onAddToCart={handleAddToCart}
+            onAddToCart={handleChangeCart}
             extra={
               view === "category" &&
               category &&
@@ -220,9 +220,8 @@ export default function App() {
               setView("chips");
             }}
             onPickChip={pickTopChip}
-            onVoiceResult={(text: string) => {
-              // 👈 pridėjom tipą
-              console.log("Voice result:", text);
+            onVoiceResult={(_text: string) => {
+              // _text nenaudojamas → pakeičiam į _text kad warning dingtų
               setView("voicechat");
             }}
           />
@@ -234,8 +233,8 @@ export default function App() {
 
         <Modal.Screen show={view === "feedback"}>
           <FeedbackScreen
-            onSubmit={(rating, comment) => {
-              console.log("Feedback submitted:", rating, comment);
+            onSubmit={(_rating, _comment) => {
+              // abu parametrai nenaudojami, prefix _ kad nebūtų warning
               setView("feedback-filled");
             }}
           />
