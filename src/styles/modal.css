@@ -84,8 +84,21 @@
   justify-content: space-between;
   min-height: 1.5rem;
   padding: 1rem var(--gutter);
-  padding-bottom: 1rem;
   flex-shrink: 0;
+
+  background: #020a31;
+}
+
+/* Gradient overlay apačioje */
+.modal-head::after {
+  content: "";
+  position: absolute;
+  bottom: -1rem; /* nusileidžia žemiau head’o */
+  left: 0;
+  width: 100%;
+  height: 1rem; /* perėjimo aukštis */
+  background: linear-gradient(to bottom, #020a31 0%, rgba(2, 10, 49, 0) 100%);
+  pointer-events: none; /* kad netrukdytų clickams */
 }
 .icon-btn {
   appearance: none;
@@ -281,6 +294,10 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .modal-head {
     padding: 1.125rem 1.5rem;
+    background: none;
+  }
+  .modal-head::after {
+    background: none;
   }
   .modal-head .head-logo-mobile {
     display: none !important;
