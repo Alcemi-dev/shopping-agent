@@ -10,6 +10,7 @@
   scrollbar-width: none;
   scroll-behavior: auto;
   padding: 0 var(--gutter) 0;
+  padding-bottom: 2rem;
   margin-bottom: 7.5rem;
 }
 .chat-log::-webkit-scrollbar {
@@ -215,11 +216,11 @@
   .chat-foot-fade {
     position: absolute;
     bottom: 1.7rem;
-    margin-bottom: 7.6rem;
-    width: 30rem;
+    margin-bottom: 7.2rem;
+    width: 29.9rem;
     background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 80%);
     pointer-events: none;
-    z-index: 5;
+    z-index: 0;
   }
 
   .error-bubble {

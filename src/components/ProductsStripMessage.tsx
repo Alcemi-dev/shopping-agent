@@ -22,8 +22,10 @@ export function ProductsStripMessage({
 }: Props) {
   const [muted, setMuted] = useState<Record<string, boolean>>({});
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [groups, setGroups] = useState<Product[][]>([products.slice(0, visibleCount)]); // 👈 pirmoji grupė
+  const [groups, setGroups] = useState<Product[][]>([products.slice(0, visibleCount)]);
   const [added, setAdded] = useState(false);
+
+  const prevQuantities = useRef<Record<string, number>>({}); // 👈 saugom seną kiekį
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
@@ -33,20 +35,35 @@ export function ProductsStripMessage({
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer, groups, quantities, added]);
+  }, [products, header, footer, groups, added]);
 
   const single = products.length === 1;
 
-  const changeQty = (id: string, delta: number, title: string) => {
+  // Tikras krepšelio keitimo kvietimas – tik kai quantities pasikeičia
+  useEffect(() => {
+    for (const id of Object.keys(quantities)) {
+      const prev = prevQuantities.current[id] ?? 0;
+      const next = quantities[id] ?? 0;
+
+      if (next > prev) {
+        const product = products.find((p) => String(p.id) === id);
+        if (product) onAddToCart?.(product.title, +1);
+      } else if (next < prev) {
+        const product = products.find((p) => String(p.id) === id);
+        if (product) onAddToCart?.(product.title, -1);
+      }
+    }
+
+    prevQuantities.current = { ...quantities };
+  }, [quantities, products, onAddToCart]);
+
+  const changeQty = (id: string, delta: number) => {
     setQuantities((prev) => {
       const current = prev[id] ?? 0;
       const next = Math.max(0, current + delta);
 
-      if (delta > 0) onAddToCart?.(title, +1);
-      if (delta < 0 && current > 0) onAddToCart?.(title, -1);
-
       if (single && delta > 0) {
-        setAdded(true);
+        setAdded(true); // CTA success tik ant single
       }
 
       return { ...prev, [id]: next };
@@ -69,7 +86,7 @@ export function ProductsStripMessage({
         </div>
       )}
 
-      {/* Renderuojam visas grupes */}
+      {/* Grupės po 3 */}
       {groups.map((group, gIdx) => (
         <div
           key={gIdx}
@@ -104,12 +121,12 @@ export function ProductsStripMessage({
 
                   {qty > 0 ? (
                     <div className="qty-panel">
-                      <button onClick={() => changeQty(key, -1, p.title)}>-</button>
+                      <button onClick={() => changeQty(key, -1)}>-</button>
                       <span>{qty}</span>
-                      <button onClick={() => changeQty(key, +1, p.title)}>+</button>
+                      <button onClick={() => changeQty(key, +1)}>+</button>
                     </div>
                   ) : (
-                    <button className="add-btn" onClick={() => changeQty(key, +1, p.title)}>
+                    <button className="add-btn" onClick={() => changeQty(key, +1)}>
                       <img src="/img/add.svg" alt="" />
                     </button>
                   )}
@@ -145,10 +162,7 @@ export function ProductsStripMessage({
             <div className="products-cta">
               <p className="cta-q">Add this to your cart?</p>
               <div className="cta-buttons">
-                <button
-                  className="btn-primary"
-                  onClick={() => changeQty(String(products[0].id), +1, products[0].title)}
-                >
+                <button className="btn-primary" onClick={() => changeQty(String(products[0].id), +1)}>
                   Add to cart
                 </button>
                 <button className="btn-secondary">Not now</button>
@@ -170,11 +184,16 @@ export function ProductsStripMessage({
             </div>
           ))}
 
-        {/* Show more mygtukas tik jei liko dar produktų */}
+        {/* Show more mygtukas su tekstu */}
         {!single && showMore && groups.flat().length < products.length && (
-          <button className="show-more-btn" onClick={handleShowMore}>
-            Show more options
-          </button>
+          <>
+            <p className="products-header products-header-more">
+              Showing Top {groups.flat().length} best matching results:
+            </p>
+            <button className="show-more-btn" onClick={handleShowMore}>
+              Show more options
+            </button>
+          </>
         )}
 
         {footer && <p className="products-followup">{footer}</p>}

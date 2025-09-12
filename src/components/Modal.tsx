@@ -12,7 +12,6 @@ type Props = {
   rightSlot?: ReactNode; // 🛒 papildomas slotas header'io dešinėje
 };
 
-/* Sub-komponentas: <Modal.Screen show={...}> */
 function ModalScreen({ show, children }: { show: boolean; children: ReactNode }) {
   if (!show) return null;
   return <>{children}</>;
@@ -31,7 +30,7 @@ export default function Modal({
   const dlgRef = useRef<HTMLDialogElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
 
-  // atidarymas/uždarymas per showModal/close
+  // atidarymas/uždarymas
   useEffect(() => {
     const dlg = dlgRef.current;
     if (!dlg) return;
@@ -54,7 +53,7 @@ export default function Modal({
     return () => dlg.removeEventListener("cancel", onCancel);
   }, [onClose]);
 
-  // measure header height -> --head-h (responsive chat height)
+  // measure header height -> --head-h
   useEffect(() => {
     const head = headRef.current;
     if (!head) return;
@@ -67,20 +66,13 @@ export default function Modal({
     return () => ro.disconnect();
   }, []);
 
-  // accessibility props
   const labelProps =
     mode === "answer"
       ? { "aria-label": typeof modalTitle === "string" ? modalTitle : undefined }
       : { "aria-labelledby": "modal-title" };
 
   return (
-    <dialog
-      id="ai-modal"
-      ref={dlgRef}
-      className="modal-root"
-      {...labelProps}
-      onClick={onClose} // click ant backdrop
-    >
+    <dialog id="ai-modal" ref={dlgRef} className="modal-root" {...labelProps} onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-ctr">
           <div className="modal-head" role="toolbar" aria-label="AI modal navigation" ref={headRef}>
@@ -94,7 +86,9 @@ export default function Modal({
 
             <div className="head-spacer" />
 
-            {/* 🛒 Cart / Notification vieta */}
+            {/* 611–790px: Powered by mobile logo headeryje */}
+            <img className="powered-by powered-by--head" src="/img/logo-mobile.svg" alt="Powered by Alcemi" />
+
             {rightSlot}
 
             <button className="icon-btn head-close" onClick={onClose}>
@@ -111,12 +105,12 @@ export default function Modal({
             <div className="modal-body">{children}</div>
           </div>
 
+          {/* ≥790px: Powered by desktop logo footeryje */}
           <div className="modal-footer">
-            <img className="powered-by" src="/img/logo-desktop.svg" alt="Powered by Alcemi" />
+            <img className="powered-by powered-by--footer" src="/img/logo-desktop.svg" alt="Powered by Alcemi" />
           </div>
         </div>
 
-        {/* Host elementas produktų juostai */}
         <div id="modal-overlays" aria-hidden />
       </div>
     </dialog>

@@ -412,3 +412,35 @@ html.kb-open .modal-root[open] .chat-log {
     padding-top: max(0.75rem, env(safe-area-inset-top));
   }
 }
+
+/* default: nerodom */
+.powered-by--head,
+.powered-by--footer {
+  display: none;
+}
+
+/* 611–790px → rodom headeryje mobile logo KAIRĖJE */
+@media (min-width: 611px) and (max-width: 790px) {
+  .powered-by--head {
+    display: block;
+    order: -1; /* nustumia į pradžią flex konteineryje */
+    margin-right: auto;
+    height: 1.5rem;
+    opacity: 0.85;
+  }
+  .modal-footer {
+    display: none;
+  }
+}
+
+/* ≥790px → rodom footeryje desktop logo */
+@media (min-width: 791px) {
+  .powered-by--footer {
+    display: block;
+    height: 1.75rem;
+    opacity: 0.85;
+  }
+  .powered-by--head {
+    display: none;
+  }
+}

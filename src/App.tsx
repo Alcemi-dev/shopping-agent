@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Background, AiButton, Modal, InputBubble } from "./components";
 import ExplainScreen from "./screens/ExplainScreen";
-import ChipsScreen from "./screens/ChipsScreen";
+import ChipsScreen from "./screens/MainScreen";
 import CategoryScreen from "./screens/CategoryScreen";
 import ChatScreen from "./screens/ChatScreen";
 import FeedbackScreen from "./screens/FeedbackScreen";
@@ -201,7 +201,7 @@ export default function App() {
           <ChipsScreen items={CHIP_ITEMS} onPick={pickTopChip} />
         </Modal.Screen>
 
-        <Modal.Screen show={view === "chips" || view === "category" || view === "chat"}>
+        <Modal.Screen show={view === "category" || view === "chat"}>
           <ChatScreen
             messages={messages}
             onAddToCart={handleChangeCart}

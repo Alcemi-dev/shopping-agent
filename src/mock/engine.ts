@@ -96,7 +96,7 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
               ])
           );
         } else if (scenario === "more") {
-          console.log("ENGINE more scenario"); // 👈 debug
+          console.log("ENGINE more scenario");
 
           const msgId = loader!.id + "-more";
           setMessages((prev) =>
@@ -107,10 +107,10 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                   id: msgId,
                   role: "assistant",
                   kind: "products",
-                  products: products(), // 👈 visas sąrašas
-                  header: "Showing some of the best matching results:",
+                  products: products(),
+                  header: "Based on your request we have found a lot of products matching your description:",
                   footer: "Tap 'Show more' to explore additional products.",
-                  visibleCount: 3, // 👈 labai svarbu: pradžioj tik 3
+                  visibleCount: 3,
                   showMore: true,
                 } as Msg,
               ])

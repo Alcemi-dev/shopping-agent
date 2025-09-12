@@ -115,7 +115,7 @@ html.kb-open .chips-inline::-webkit-scrollbar {
   /* Subquestion variantas: perrašo į kairę */
   .chips-inline.category-chips {
     justify-content: flex-start; /* 👈 kairėje */
-    padding: 0 5.4rem;
+    padding-left: 0.1rem;
     padding-top: 1rem;
   }
 }
