@@ -6,10 +6,11 @@ import type { Msg } from "../types";
 type Props = {
   m: Msg;
   onAddToCart?: (title: string, delta: number) => void;
-  onActionSelect?: (value: string) => void; // 👈 pridėti
+  onActionSelect?: (value: string) => void;
+  onRetry?: () => void; // 👈 naujas callback
 };
 
-export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Props) {
+export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetry }: Props) {
   // USER text
   if (m.role === "user" && m.kind === "text") {
     return (
@@ -33,34 +34,34 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect }: Prop
     return (
       <div data-msg-id={m.id} className="msg msg--ai error-bubble">
         <img src="/img/error.svg" alt="Error" className="error-icon" />
-        <p className="ai-text error-text">{m.text}</p>
+        <div>
+          <p className="ai-text error-text">{m.text}</p>
+          {onRetry && (
+            <button className="retry-btn" onClick={onRetry}>
+              Retry
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 
   // Products
   if (m.kind === "products") {
-    console.log("Rendering products message", {
-      id: m.id,
-      header: m.header,
-      footer: m.footer,
-      visibleCount: (m as any).visibleCount, // 👈 debug
-      products: m.products.length,
-    });
-
     return (
       <div data-msg-id={m.id} className="msg msg--ai">
         <ProductsStripMessage
           products={m.products}
           header={m.header}
           footer={m.footer}
-          visibleCount={m.visibleCount} // 👈 perduodam
-          showMore={m.showMore} // 👈 perduodam
+          visibleCount={m.visibleCount}
+          showMore={m.showMore}
           onAddToCart={onAddToCart}
         />
       </div>
     );
   }
+
   // Actions (chips)
   if (m.kind === "actions") {
     return (

@@ -155,6 +155,36 @@
   white-space: pre-wrap;
 }
 
+.retry-btn {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 28px;
+  gap: 8px;
+
+  width: 110px;
+  min-width: 110px;
+  height: 40px;
+
+  border: 1px solid #ffc0c0;
+  border-radius: 20px;
+  background: transparent;
+
+  font-family: "Satoshi", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: 0.03em;
+  color: #ffc0c0;
+
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
 .show-more-btn {
   display: flex;
   justify-content: center;
