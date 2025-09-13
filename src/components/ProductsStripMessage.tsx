@@ -68,7 +68,7 @@ export function ProductsStripMessage({
       const product = products[0];
       if (product) {
         const qty = quantities[product.id] ?? 0;
-        const finalQty = qty > 0 ? qty : 1; // jei qty nepasirinktas → 1
+        const finalQty = qty > 0 ? qty : 1;
         onAddToCart?.(product.title, finalQty);
         onShowToast?.({
           items: [{ title: product.title, qty: finalQty }],
@@ -84,7 +84,7 @@ export function ProductsStripMessage({
           if (product) {
             onAddToCart?.(product.title, qty);
             totalAdded += qty;
-            lastProduct = { title: product.title, qty }; // 👈 paskutinį overwrite’ins
+            lastProduct = { title: product.title, qty };
           }
         }
       }
@@ -158,11 +158,11 @@ export function ProductsStripMessage({
                   {qty > 0 ? (
                     <div className={`qty-panel${isMuted ? " is-disabled" : ""}`}>
                       <button disabled={isMuted} onClick={() => changeQty(key, -1)}>
-                        -
+                        <img src="/img/remove.svg" alt="Remove" className="icon-remove" />
                       </button>
                       <span>{qty}</span>
                       <button disabled={isMuted} onClick={() => changeQty(key, +1)}>
-                        +
+                        <img src="/img/add.svg" alt="Add" className="icon-add" />
                       </button>
                     </div>
                   ) : (
@@ -171,7 +171,7 @@ export function ProductsStripMessage({
                       onClick={() => changeQty(key, +1)}
                       disabled={isMuted}
                     >
-                      <img src="/img/add.svg" alt="" />
+                      <img src="/img/add.svg" alt="Add" className="icon-add" />
                     </button>
                   )}
                 </div>

@@ -56,6 +56,7 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
       setCollected((current) => {
         let scenario: string;
         if (q.includes("none")) scenario = "none";
+        else if (q.includes("alternative")) scenario = "alternative";
         else if (q.includes("many")) scenario = "many";
         else if (q.includes("one")) scenario = "one";
         else if (q.includes("more")) scenario = "more";
@@ -90,14 +91,29 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                   products: products(),
                   header: "We found multiple products that match your request. Here they are:",
                   footer: "Do you need any further help?",
-                  visibleCount: 3, // 👈 rodom tik 3
-                  showMore: false, // 👈 jokių mygtukų
+                  visibleCount: 3, // rodom tik 3
+                  showMore: false,
+                } as Msg,
+              ])
+          );
+        } else if (scenario === "alternative") {
+          setMessages((prev) =>
+            prev
+              .filter((m) => m.id !== loader!.id)
+              .concat([
+                {
+                  id: loader!.id + "-alternative",
+                  role: "assistant",
+                  kind: "products",
+                  products: products().slice(3, 6), // p4–p6
+                  header: `I couldn’t find anything for "${q}", but here are the closest matches that our customers love:`,
+                  footer: "Do you need any further help?",
+                  visibleCount: 3,
+                  showMore: false,
                 } as Msg,
               ])
           );
         } else if (scenario === "more") {
-          console.log("ENGINE more scenario");
-
           const msgId = loader!.id + "-more";
           setMessages((prev) =>
             prev
@@ -185,6 +201,7 @@ export function createMockEngine({ setMessages, setCollected, getProducts, delay
                     "- type 'many' → many products\n" +
                     "- type 'more' → products with Show more button\n" +
                     "- type 'none' → no results + recommendations\n" +
+                    "- type 'alternative' → alternative UI (3 different products)\n" +
                     "- type 'feedback' → feedback screen\n" +
                     "- type 'connection' → connection lost screen\n" +
                     "- type 'error' → error message",
