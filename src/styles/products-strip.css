@@ -296,6 +296,11 @@
   z-index: 0;
 }
 
+.qty-panel .icon-add,
+.icon-remove {
+  margin-bottom: -2px;
+}
+
 /* === 6) Follow-up tekstas (multi products) =============================== */
 
 .products-followup {
@@ -460,37 +465,50 @@
 
 .qty-panel {
   position: absolute;
-  right: 8px;
-  bottom: 10px;
+  right: 0.5rem;
+  bottom: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  width: 104px;
-  height: 32px;
+  justify-content: space-between;
+  gap: 0.5rem; /* 8px */
+  padding: 0 0.5rem; /* horizontali erdvė */
+  height: 2rem; /* 32px */
+  min-width: 5.5rem; /* užtenka qty + du btn */
   background: #fcfcfc;
-
   border-radius: 36px;
   z-index: 2;
+  box-sizing: border-box;
 }
+
 .qty-panel button {
-  width: 18px;
-  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem; /* 24px */
+  height: 1.5rem; /* 24px */
   border: none;
   background: transparent;
-  font-size: 20px;
-  font-weight: bold;
-  color: #02092e;
   cursor: pointer;
-  margin-bottom: 10px;
+  padding: 0;
 }
+
+.qty-panel button img.icon-add {
+  margin-top: -2px;
+  margin-right: -8px;
+}
+
+.qty-panel button img.icon-remove {
+  margin-top: -2px;
+  margin-right: 4px;
+}
+
 .qty-panel span {
   font-family: "Satoshi", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 0.9rem;
+  line-height: 1;
   color: #02092e;
   text-align: center;
-  min-width: 20px;
+  min-width: 1.5rem; /* 24px */
 }
 
 .products-header-more {
