@@ -6,6 +6,7 @@
   background-repeat: no-repeat;
   background-position: center top;
   background-size: 100% 100%;
+  background-size: cover;
 }
 
 @media (min-width: 609px) {
