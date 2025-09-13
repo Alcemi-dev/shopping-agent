@@ -18,7 +18,7 @@
   border: 1.5px solid #fff;
   border-radius: var(--radius-md, 12px);
   overflow: hidden;
-  z-index: 100;
+  z-index: 200;
 }
 
 /* Senus pseudo-glow išjungiame */

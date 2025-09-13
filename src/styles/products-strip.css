@@ -136,9 +136,14 @@
   transition: opacity 0.2s ease;
 }
 
-/* Hover – paryškėja */
-.product-card .reactions .circle:hover {
+/* Hover – paryškėja tik jei kortelė nėra muted */
+.product-card:not(.is-muted) .reactions .circle:hover {
   opacity: 1;
+}
+
+/* Jei kortelė muted → hover nedaro nieko */
+.product-card.is-muted .reactions .circle:hover {
+  opacity: 0.45; /* paliekam pritemdytą */
 }
 
 /* Add button (bottom-right) */
@@ -220,6 +225,7 @@
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] {
   opacity: 1;
   background: rgba(252, 252, 252, 1);
+  cursor: pointer;
   z-index: 20;
 }
 /* === 5) CTA mygtukai (single product) ==================================== */
@@ -243,7 +249,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  max-width: 24rem;
+
   margin-top: 0.75rem; /* 12px */
 }
 
@@ -265,7 +272,7 @@
   border-radius: 2.219rem; /* 35.5px */
   box-shadow: 0 0 5px 2px #dde3ff;
   cursor: pointer;
-  z-index: 1;
+  z-index: 0;
 }
 
 /* Secondary button – Not now */
@@ -286,6 +293,7 @@
   border: 1px solid #fcfcfc;
   border-radius: 2.219rem; /* 35.5px */
   cursor: pointer;
+  z-index: 0;
 }
 
 /* === 6) Follow-up tekstas (multi products) =============================== */
@@ -301,24 +309,23 @@
 
 /* === 7) Notification toast (success) ==================================== */
 .notification-toast {
-  position: fixed; /* 👈 floating, not inline */
-  top: 4rem; /* distance from top of chat container */
+  position: fixed;
+  top: 4rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* 12px */
-  padding: 0.75rem 1rem; /* 12px 16px */
-  border-radius: 0.5rem; /* 8px */
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
   backdrop-filter: blur(15px);
-  background: #afbafb; /* figma */
+  background: #afbafb;
   color: #0e218e;
-  width: auto;
-  max-width: 90%;
-  min-width: 300px;
-  min-height: 4.5rem; /* 72px */
+  width: 90%; /* pagal nutylėjimą mobilui */
+  max-width: 418px; /* bet niekada daugiau nei 418px */
+  min-height: 4.5rem;
   box-sizing: border-box;
-  z-index: 9999; /* above chat */
+  z-index: 9999;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   isolation: isolate;
   animation: fadeIn 0.3s ease;
@@ -490,6 +497,29 @@
   margin-top: 1rem;
 }
 
+/* Kortelės pritemdymas */
+.product-card.is-muted .product-img,
+.product-card.is-muted .circle--fav,
+.product-card.is-muted .add-btn,
+.product-card.is-muted .qty-panel,
+.product-card.is-muted .content {
+  opacity: 0.45;
+  transition: opacity 0.25s ease;
+}
+
+/* Disabled būsena mygtukams */
+.add-btn.is-disabled,
+.qty-panel.is-disabled {
+  pointer-events: none; /* 👈 nepaspaudžiami */
+}
+
+/* Produktų kortelės elementus apribojam */
+.product-card .reactions,
+.product-card .add-btn,
+.qty-panel {
+  z-index: 0; /* sumažinam, kad neperšoktų inputo */
+}
+
 /* === 9) Desktop overrides (≥ 610px) ====================================== */
 
 @media (min-width: 610px) {
@@ -557,6 +587,7 @@
     margin: 0;
   }
   .products-cta .btn-primary {
+    margin-left: 0.3rem;
     min-width: 13.375rem; /* 214px */
     border-top-right-radius: 0.625rem; /* 10px */
     border-bottom-right-radius: 0.625rem; /* 10px */
@@ -581,7 +612,7 @@
 
   .product-card .reactions,
   .product-card .add-btn {
-    z-index: 100;
+    z-index: 0;
     pointer-events: auto;
   }
 
@@ -593,7 +624,7 @@
 
   .notification-toast {
     top: 0rem;
-    max-width: 26.125rem; /* 418px */
+    width: 418px; /* 418px */
     margin: 2rem auto 0;
     height: 95px; /* figma desktop height */
     padding: 12px;

@@ -275,6 +275,7 @@ html.kb-open .modal-root[open] .chat-log {
     box-shadow: var(--shadow-elev-1);
     background: var(--surface-modal) url("/img/background-gradient-desktop.svg") center/cover no-repeat;
   }
+
   .modal-ctr {
     overflow: hidden;
     padding: 0.3125rem 0;
@@ -424,7 +425,7 @@ html.kb-open .modal-root[open] .chat-log {
 }
 
 /* 611–790px → rodom headeryje mobile logo KAIRĖJE */
-@media (min-width: 611px) and (max-width: 790px) {
+@media (min-width: 610px) and (max-width: 790px) {
   .powered-by--head {
     display: block;
     order: -1; /* nustumia į pradžią flex konteineryje */

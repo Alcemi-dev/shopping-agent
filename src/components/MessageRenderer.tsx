@@ -3,12 +3,17 @@ import { ProductsStripMessage } from "./ProductsStripMessage";
 import LoadingRail from "./LoadingRail";
 import type { Msg } from "../types";
 
+// 👇 bendras toast payload tipas
+export type ToastPayload = {
+  items: { title: string; qty: number }[];
+};
+
 type Props = {
   m: Msg;
   onAddToCart?: (title: string, delta: number) => void;
   onActionSelect?: (value: string) => void;
   onRetry?: () => void;
-  onShowToast?: (payload: { title: string; qty: number }) => void; // 👈 pridėjom
+  onShowToast?: (payload: ToastPayload) => void; // 👈 pakeista į naują tipą
 };
 
 export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetry, onShowToast }: Props) {
@@ -58,7 +63,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetr
           visibleCount={m.visibleCount}
           showMore={m.showMore}
           onAddToCart={onAddToCart}
-          onShowToast={onShowToast} // 👈 forwardinam
+          onShowToast={onShowToast} // 👈 forwardinam nauju tipu
         />
       </div>
     );
