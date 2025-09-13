@@ -10,7 +10,7 @@ type Props = {
   visibleCount?: number;
   showMore?: boolean;
   onAddToCart?: (title: string, qty: number) => void;
-  onShowToast?: (payload: { title: string; qty: number }) => void; // 👈 naujas callback
+  onShowToast?: (payload: { items: { title: string; qty: number }[] }) => void;
 };
 
 export function ProductsStripMessage({
@@ -35,7 +35,6 @@ export function ProductsStripMessage({
   const more = !!showMore;
   const hasSelected = Object.values(quantities).some((q) => q > 0);
 
-  // scrollinam į apačią kai atsiranda CTA arba keičiasi grupės
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
@@ -54,22 +53,46 @@ export function ProductsStripMessage({
     });
   };
 
+  const handleToggleDislike = (id: string) => {
+    setMuted((prev) => {
+      const newMuted = !prev[id];
+      if (newMuted) {
+        setQuantities((q) => ({ ...q, [id]: 0 }));
+      }
+      return { ...prev, [id]: newMuted };
+    });
+  };
+
   const handleAddAllToCart = () => {
     if (single) {
       const product = products[0];
       if (product) {
-        onAddToCart?.(product.title, 1);
-        onShowToast?.({ title: product.title, qty: 1 }); // 👈 siunčiam toast į ChatScreen
+        const qty = quantities[product.id] ?? 0;
+        const finalQty = qty > 0 ? qty : 1; // jei qty nepasirinktas → 1
+        onAddToCart?.(product.title, finalQty);
+        onShowToast?.({
+          items: [{ title: product.title, qty: finalQty }],
+        });
       }
     } else {
+      let totalAdded = 0;
+      let lastProduct: { title: string; qty: number } | null = null;
+
       for (const [id, qty] of Object.entries(quantities)) {
         if (qty > 0) {
           const product = products.find((p) => String(p.id) === id);
           if (product) {
             onAddToCart?.(product.title, qty);
-            onShowToast?.({ title: product.title, qty }); // 👈 siunčiam toast
+            totalAdded += qty;
+            lastProduct = { title: product.title, qty }; // 👈 paskutinį overwrite’ins
           }
         }
+      }
+
+      if (lastProduct && totalAdded > 0) {
+        onShowToast?.({
+          items: [{ title: lastProduct.title, qty: totalAdded }],
+        });
       }
     }
     setCtaDismissed(true);
@@ -123,7 +146,7 @@ export function ProductsStripMessage({
                       className="circle circle--dislike"
                       aria-label="Dislike"
                       aria-pressed={isMuted}
-                      onClick={() => setMuted((m) => ({ ...m, [key]: !m[key] }))}
+                      onClick={() => handleToggleDislike(key)}
                     >
                       <img src="/img/dislike.svg" alt="" />
                     </button>
@@ -133,13 +156,21 @@ export function ProductsStripMessage({
                   </div>
 
                   {qty > 0 ? (
-                    <div className="qty-panel">
-                      <button onClick={() => changeQty(key, -1)}>-</button>
+                    <div className={`qty-panel${isMuted ? " is-disabled" : ""}`}>
+                      <button disabled={isMuted} onClick={() => changeQty(key, -1)}>
+                        -
+                      </button>
                       <span>{qty}</span>
-                      <button onClick={() => changeQty(key, +1)}>+</button>
+                      <button disabled={isMuted} onClick={() => changeQty(key, +1)}>
+                        +
+                      </button>
                     </div>
                   ) : (
-                    <button className="add-btn" onClick={() => changeQty(key, +1)}>
+                    <button
+                      className={`add-btn${isMuted ? " is-disabled" : ""}`}
+                      onClick={() => changeQty(key, +1)}
+                      disabled={isMuted}
+                    >
                       <img src="/img/add.svg" alt="" />
                     </button>
                   )}
