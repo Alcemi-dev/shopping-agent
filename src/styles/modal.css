@@ -129,7 +129,7 @@
 .modal-title {
   margin: 0 auto;
   width: 70%;
-  margin-top: clamp(6rem, 22vh, 12rem);
+  margin-top: clamp(3rem, 15vh, 8rem);
   text-align: center;
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 400;
@@ -143,7 +143,21 @@
 .break--mobile {
   display: inline;
 }
-
+@media (max-height: 620px) {
+  .suggestions .chips-inline {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.75rem;
+    padding-inline: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .suggestions .chips-inline::-webkit-scrollbar {
+    display: none;
+  }
+}
 /* ==========================================================================
    6. Body
    ========================================================================== */
@@ -291,8 +305,7 @@ html.kb-open .modal-root[open] .chat-log {
     display: none !important;
   }
   .modal-title {
-    margin-top: clamp(6rem, 16vh, 10rem);
-    width: 80%;
+    max-width: 24rem;
     font-size: 1.875rem;
   }
   .break--desktop {
