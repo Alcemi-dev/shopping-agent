@@ -105,15 +105,19 @@
 
   padding: 0 2rem 1.5rem; /* stabilus padding */
   z-index: 5; /* kad nepasislėptų */
+
+  gap: 1.25rem;
 }
 .footer-btn {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  line-height: 0;
 }
 .footer-btn img {
-  width: 28px;
-  height: 28px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ===== MIC glow (kai klausosi) ===== */
