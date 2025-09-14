@@ -13,7 +13,7 @@ type Props = {
   onAddToCart?: (title: string, delta: number) => void;
   onActionSelect?: (value: string) => void;
   onRetry?: () => void;
-  onShowToast?: (payload: ToastPayload) => void; // 👈 pakeista į naują tipą
+  onShowToast?: (payload: ToastPayload) => void;
 };
 
 export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetry, onShowToast }: Props) {
@@ -63,7 +63,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetr
           visibleCount={m.visibleCount}
           showMore={m.showMore}
           onAddToCart={onAddToCart}
-          onShowToast={onShowToast} // 👈 forwardinam nauju tipu
+          onShowToast={onShowToast} // 👈 forwardinam
         />
       </div>
     );
