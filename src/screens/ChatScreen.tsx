@@ -32,6 +32,7 @@ type Toast = {
 export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
   const [toastList, setToastList] = useState<Toast[]>([]);
+  const timersRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
@@ -46,7 +47,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
   const lastUser = [...messages].reverse().find((m) => m.role === "user" && m.kind === "text");
 
-  // 👇 handle toast updates
+  // 👇 handle toast updates su resetinimu
   const handleShowToast = (payload: ToastPayload) => {
     payload.items.forEach((item) => {
       setToastList((prev) => {
@@ -58,8 +59,17 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
           next = next.map((t) =>
             t.title === item.title ? { ...t, qty: item.qty, status: item.qty > 0 ? "added" : "removed" } : t
           );
+
+          // 👇 resetinam timerį visada (tiek +, tiek -)
+          if (timersRef.current[item.title]) {
+            clearTimeout(timersRef.current[item.title]);
+          }
+          timersRef.current[item.title] = setTimeout(() => {
+            setToastList((prev) => prev.filter((x) => x.title !== item.title));
+            delete timersRef.current[item.title];
+          }, 5000);
         } else {
-          // prepend naują (apačioje stacko)
+          // naujas toast
           const newToast: Toast = {
             id: Math.random().toString(36),
             title: item.title,
@@ -69,12 +79,9 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
           next = [newToast, ...next];
 
-          // 👇 timeris tik šitam toastui
-          setTimeout(() => {
-            setToastList((prev) => prev.map((x) => (x.id === newToast.id ? { ...x, exiting: true } : x)));
-            setTimeout(() => {
-              setToastList((prev) => prev.filter((x) => x.id !== newToast.id));
-            }, 300);
+          timersRef.current[item.title] = setTimeout(() => {
+            setToastList((prev) => prev.filter((x) => x.id !== newToast.id));
+            delete timersRef.current[item.title];
           }, 5000);
         }
 
@@ -155,6 +162,10 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
             <button
               className="close-btn"
               onClick={() => {
+                if (timersRef.current[t.title]) {
+                  clearTimeout(timersRef.current[t.title]);
+                  delete timersRef.current[t.title];
+                }
                 setToastList((prev) => prev.filter((x) => x.id !== t.id));
               }}
             >
