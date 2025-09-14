@@ -36,14 +36,13 @@ export function ProductsStripMessage({
   const many = products.length > 1 && !showMore;
   const more = !!showMore;
   const alternative = !single && !many && !more && products.length > 1;
-  const hasSelected = Object.values(quantities).some((q) => q > 0);
 
   useEffect(() => {
     const chatLog = document.querySelector(".chat-log") as HTMLElement | null;
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer, groups, hasSelected, ctaDismissed, showFollowup]);
+  }, [products, header, footer, groups, ctaDismissed, showFollowup]);
 
   const changeQty = (id: string, delta: number, product?: Product) => {
     setQuantities((prev) => {
@@ -61,7 +60,7 @@ export function ProductsStripMessage({
         }
       }
 
-      if (next > current) setCtaDismissed(false);
+      // 👇 follow-up tik multi scenarijuose
       if (!single && (many || more || alternative)) {
         setShowFollowup(true);
       }
@@ -75,7 +74,7 @@ export function ProductsStripMessage({
       const newMuted = !prev[id];
       if (newMuted) {
         setQuantities((q) => ({ ...q, [id]: 0 }));
-        setFavorites((f) => ({ ...f, [id]: false })); // 👈 jeigu dislike, nuimam fav
+        setFavorites((f) => ({ ...f, [id]: false }));
       }
       return { ...prev, [id]: newMuted };
     });
@@ -85,7 +84,7 @@ export function ProductsStripMessage({
     setFavorites((prev) => {
       const newFav = !prev[id];
       if (newFav) {
-        setMuted((m) => ({ ...m, [id]: false })); // 👈 jeigu fav, nuimam dislike
+        setMuted((m) => ({ ...m, [id]: false }));
       }
       return { ...prev, [id]: newFav };
     });
@@ -95,17 +94,18 @@ export function ProductsStripMessage({
     if (!single) return;
     const product = products[0];
     if (product) {
-      const qty = quantities[product.id] ?? 0;
-      const finalQty = qty > 0 ? qty : 1;
-      onAddToCart?.(product.title, finalQty);
-      onShowToast?.({ items: [{ title: product.title, qty: finalQty }] });
-      setCtaDismissed(true);
+      onAddToCart?.(product.title, 1); // visada tik 1
+      onShowToast?.({ items: [{ title: product.title, qty: 1 }] });
+      setQuantities({ [product.id]: 1 }); // qty panel → rodo 1
+      setCtaDismissed(true); // CTA dingsta
+      setShowFollowup(true); // follow-up vietoje CTA
     }
   };
 
   const handleNotNow = () => {
     setQuantities({});
     setCtaDismissed(true);
+    setShowFollowup(true); // po „Not now“ taip pat rodome follow-up
   };
 
   const handleShowMore = () => {
@@ -220,6 +220,7 @@ export function ProductsStripMessage({
           </button>
         )}
 
+        {/* CTA tik single, ir tik kol dar nebuvo paspausta */}
         {single && !ctaDismissed && (
           <div className="products-cta">
             <p className="cta-q">Add this to your cart?</p>
@@ -234,7 +235,10 @@ export function ProductsStripMessage({
           </div>
         )}
 
-        {!single && showFollowup && <p className="products-followup">Do you need any further assistance?</p>}
+        {/* follow-up visais kitais atvejais */}
+        {(showFollowup || (single && ctaDismissed)) && (
+          <p className="products-followup">Do you need any further assistance?</p>
+        )}
       </div>
     </div>
   );
