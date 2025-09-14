@@ -207,6 +207,10 @@
   overflow: hidden;
 }
 
+.circle.circle--fav.is-fav {
+  background: #afbafb;
+}
+
 /* Kortelės būsena */
 .product-card.is-muted {
   /* Nebedėk opacity čia */
@@ -311,48 +315,73 @@
   line-height: 1.5;
   font-size: 1rem; /* 16px */
 }
-
-/* === 7) Notification toast (success) ==================================== */
-.notification-toast {
+/* Toast container */
+.toast-stack {
   position: fixed;
-  top: 4rem;
+  top: 4.5rem; /* 👈 reguliuok viso stacko poziciją */
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(15px);
-  background: #afbafb;
-  color: #0e218e;
-  width: 90%; /* pagal nutylėjimą mobilui */
-  max-width: 418px; /* bet niekada daugiau nei 418px */
-  min-height: 4.5rem;
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 90%;
+  padding: 0 1rem;
   z-index: 9999;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  isolation: isolate;
-  animation: fadeIn 0.3s ease;
 }
 
+/* Base toast */
+.notification-toast {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 500px;
+  height: 95px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #afbafb;
+  color: #0e218e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(15px);
+
+  animation: fadeInUp 0.2s ease forwards;
+  transition: transform 0.25s ease, opacity 0.25s ease; /* 👈 tik judėjimui */
+}
+
+/* stacking */
+.toast-stack .notification-toast:nth-child(1) {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  z-index: 3;
+}
+.toast-stack .notification-toast:nth-child(2) {
+  transform: translate(-50%, -10px);
+  opacity: 0.7;
+  z-index: 2;
+}
+.toast-stack .notification-toast:nth-child(3) {
+  transform: translate(-50%, -20px);
+  opacity: 0.4;
+  z-index: 1;
+}
 /* Checkmark */
 .notification-toast .checkmark {
-  width: 1.5rem;
-  height: 1.5rem;
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Content column */
+/* Content */
 .notification-toast .success-col {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 4px;
   flex: 1;
-  gap: 0.25rem;
   min-width: 0;
 }
 
@@ -360,10 +389,8 @@
 .notification-toast .product-line {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   font-family: "Satoshi", sans-serif;
-  font-size: 0.875rem;
-  line-height: 150%;
+  font-size: 14px;
   font-weight: 700;
   color: #0e218e;
 }
@@ -379,49 +406,51 @@
 
 /* Subtext */
 .notification-toast .added {
-  font-size: 0.8125rem;
+  font-size: 14px;
   font-weight: 400;
   opacity: 0.85;
   color: #0e218e;
 }
 
-/* View cart button (link style) */
+/* View cart button */
 .notification-toast .view-cart {
-  align-self: flex-start;
-  margin-top: 0.25rem;
   background: none;
   border: none;
   padding: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-family: "Satoshi", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
   color: #0e218e;
   text-decoration: underline;
-  text-decoration-thickness: 2px;
   text-underline-offset: 2px;
   cursor: pointer;
-}
-.notification-toast .view-cart:hover {
-  opacity: 0.85;
+  align-self: flex-start;
 }
 
-/* Close button */
+/* Close btn */
 .notification-toast .close-btn {
   flex-shrink: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
 }
 .notification-toast .close-btn img {
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 16px;
+  height: 16px;
+  filter: invert(13%) sepia(96%) saturate(4000%) hue-rotate(215deg) brightness(90%) contrast(95%);
 }
 
+.notification-toast.exit {
+  opacity: 0 !important;
+  transform: translate(-50%, -20px) scale(0.95) !important;
+  transition: all 0.3s ease;
+}
 .products-cta .cta-q-secondary {
   margin-top: 1rem;
 }
@@ -431,12 +460,6 @@
 .products-strip {
   z-index: 1; /* žemai, tik fonui */
 }
-
-.notification-toast {
-  z-index: 9999 !important; /* visada virš visko */
-  position: fixed;
-}
-
 /* === 8) Overlay/Pointer events fix ======================================= */
 
 [data-overlay-anchor] {
@@ -643,7 +666,7 @@
   .notification-toast {
     top: 0rem;
     width: 418px; /* 418px */
-    margin: 2rem auto 0;
+    margin: -2rem auto 0;
     height: 95px; /* figma desktop height */
     padding: 12px;
   }

@@ -23,9 +23,11 @@ export function ProductsStripMessage({
   onShowToast,
 }: Props) {
   const [muted, setMuted] = useState<Record<string, boolean>>({});
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [groups, setGroups] = useState<Product[][]>([products.slice(0, visibleCount)]);
   const [ctaDismissed, setCtaDismissed] = useState(false);
+  const [showFollowup, setShowFollowup] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useDragScroll(scrollRef);
@@ -33,6 +35,7 @@ export function ProductsStripMessage({
   const single = products.length === 1;
   const many = products.length > 1 && !showMore;
   const more = !!showMore;
+  const alternative = !single && !many && !more && products.length > 1;
   const hasSelected = Object.values(quantities).some((q) => q > 0);
 
   useEffect(() => {
@@ -40,15 +43,29 @@ export function ProductsStripMessage({
     if (chatLog) {
       chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: "smooth" });
     }
-  }, [products, header, footer, groups, hasSelected, ctaDismissed]);
+  }, [products, header, footer, groups, hasSelected, ctaDismissed, showFollowup]);
 
-  const changeQty = (id: string, delta: number) => {
+  const changeQty = (id: string, delta: number, product?: Product) => {
     setQuantities((prev) => {
       const current = prev[id] ?? 0;
       const next = Math.max(0, current + delta);
-      if (next > current) {
-        setCtaDismissed(false);
+
+      if (product) {
+        if (current === 0 && delta > 0) {
+          onAddToCart?.(product.title, 1);
+          onShowToast?.({ items: [{ title: product.title, qty: 1 }] });
+        } else if (next > 0) {
+          onShowToast?.({ items: [{ title: product.title, qty: next }] });
+        } else if (next === 0) {
+          onShowToast?.({ items: [{ title: product.title, qty: 0 }] });
+        }
       }
+
+      if (next > current) setCtaDismissed(false);
+      if (!single && (many || more || alternative)) {
+        setShowFollowup(true);
+      }
+
       return { ...prev, [id]: next };
     });
   };
@@ -63,48 +80,28 @@ export function ProductsStripMessage({
     });
   };
 
+  const handleToggleFavorite = (id: string) => {
+    setFavorites((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   const handleAddAllToCart = () => {
-    if (single) {
-      const product = products[0];
-      if (product) {
-        const qty = quantities[product.id] ?? 0;
-        const finalQty = qty > 0 ? qty : 1;
-        onAddToCart?.(product.title, finalQty);
-        onShowToast?.({
-          items: [{ title: product.title, qty: finalQty }],
-        });
-      }
-    } else {
-      let totalAdded = 0;
-      let lastProduct: { title: string; qty: number } | null = null;
-
-      for (const [id, qty] of Object.entries(quantities)) {
-        if (qty > 0) {
-          const product = products.find((p) => String(p.id) === id);
-          if (product) {
-            onAddToCart?.(product.title, qty);
-            totalAdded += qty;
-            lastProduct = { title: product.title, qty };
-          }
-        }
-      }
-
-      if (lastProduct && totalAdded > 0) {
-        onShowToast?.({
-          items: [{ title: lastProduct.title, qty: totalAdded }],
-        });
-      }
+    if (!single) return;
+    const product = products[0];
+    if (product) {
+      const qty = quantities[product.id] ?? 0;
+      const finalQty = qty > 0 ? qty : 1;
+      onAddToCart?.(product.title, finalQty);
+      onShowToast?.({ items: [{ title: product.title, qty: finalQty }] });
+      setCtaDismissed(true);
     }
-    setCtaDismissed(true);
   };
 
   const handleNotNow = () => {
     setQuantities({});
     setCtaDismissed(true);
-  };
-
-  const handleClearSelection = () => {
-    setQuantities({});
   };
 
   const handleShowMore = () => {
@@ -133,6 +130,7 @@ export function ProductsStripMessage({
           {group.map((p) => {
             const key = String(p.id);
             const isMuted = !!muted[key];
+            const isFav = !!favorites[key];
             const qty = quantities[key] ?? 0;
 
             return (
@@ -150,25 +148,31 @@ export function ProductsStripMessage({
                     >
                       <img src="/img/dislike.svg" alt="" />
                     </button>
-                    <button type="button" className="circle circle--fav" aria-label="Save">
+                    <button
+                      type="button"
+                      className={`circle circle--fav ${isFav ? "is-fav" : ""}`}
+                      aria-label="Save"
+                      aria-pressed={isFav}
+                      onClick={() => handleToggleFavorite(key)}
+                    >
                       <img src="/img/favorite.svg" alt="" />
                     </button>
                   </div>
 
                   {qty > 0 ? (
                     <div className={`qty-panel${isMuted ? " is-disabled" : ""}`}>
-                      <button disabled={isMuted} onClick={() => changeQty(key, -1)}>
+                      <button disabled={isMuted} onClick={() => changeQty(key, -1, p)}>
                         <img src="/img/remove.svg" alt="Remove" className="icon-remove" />
                       </button>
                       <span>{qty}</span>
-                      <button disabled={isMuted} onClick={() => changeQty(key, +1)}>
+                      <button disabled={isMuted} onClick={() => changeQty(key, +1, p)}>
                         <img src="/img/add.svg" alt="Add" className="icon-add" />
                       </button>
                     </div>
                   ) : (
                     <button
                       className={`add-btn${isMuted ? " is-disabled" : ""}`}
-                      onClick={() => changeQty(key, +1)}
+                      onClick={() => changeQty(key, +1, p)}
                       disabled={isMuted}
                     >
                       <img src="/img/add.svg" alt="Add" className="icon-add" />
@@ -226,22 +230,7 @@ export function ProductsStripMessage({
           </div>
         )}
 
-        {!single && hasSelected && !ctaDismissed && (
-          <div className="products-cta">
-            <p className="cta-q cta-q-secondary">Add selected items to your cart?</p>
-            <div className="cta-buttons">
-              <button className="btn-primary" onClick={handleAddAllToCart}>
-                Add to cart
-              </button>
-              <button className="btn-secondary" onClick={handleClearSelection}>
-                Clear selection
-              </button>
-            </div>
-          </div>
-        )}
-
-        {many && !hasSelected && !ctaDismissed && <p className="products-followup">Do you need any further help?</p>}
-        {ctaDismissed && <p className="products-followup">Do you need any further assistance?</p>}
+        {!single && showFollowup && <p className="products-followup">Do you need any further assistance?</p>}
       </div>
     </div>
   );

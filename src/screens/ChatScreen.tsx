@@ -3,6 +3,7 @@ import "../styles/chat-screen.css";
 import type { Msg } from "../types";
 import MessageRenderer from "../components/MessageRenderer";
 import { useChatScroll } from "../hooks/useChatScroll";
+import type { ToastPayload } from "../components/MessageRenderer";
 
 export type Product = {
   id: string;
@@ -20,10 +21,17 @@ type ChatScreenProps = {
   onRetry?: (lastUser: string) => void;
 };
 
+type Toast = {
+  id: string;
+  title: string;
+  qty: number;
+  status: "added" | "removed";
+  exiting?: boolean;
+};
+
 export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
-
-  const [toast, setToast] = useState<{ items: { title: string; qty: number }[] } | null>(null);
+  const [toastList, setToastList] = useState<Toast[]>([]);
 
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
@@ -38,6 +46,45 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
   const lastUser = [...messages].reverse().find((m) => m.role === "user" && m.kind === "text");
 
+  // 👇 handle toast updates
+  const handleShowToast = (payload: ToastPayload) => {
+    payload.items.forEach((item) => {
+      setToastList((prev) => {
+        let next = [...prev];
+        const existing = next.find((t) => t.title === item.title);
+
+        if (existing) {
+          // update qty/status
+          next = next.map((t) =>
+            t.title === item.title ? { ...t, qty: item.qty, status: item.qty > 0 ? "added" : "removed" } : t
+          );
+        } else {
+          // prepend naują (apačioje stacko)
+          const newToast: Toast = {
+            id: Math.random().toString(36),
+            title: item.title,
+            qty: item.qty,
+            status: item.qty > 0 ? "added" : "removed",
+          };
+
+          next = [newToast, ...next];
+
+          // 👇 timeris tik šitam toastui
+          setTimeout(() => {
+            setToastList((prev) => prev.map((x) => (x.id === newToast.id ? { ...x, exiting: true } : x)));
+            setTimeout(() => {
+              setToastList((prev) => prev.filter((x) => x.id !== newToast.id));
+            }, 300);
+          }, 5000);
+        }
+
+        // max 3 visible
+        return next.slice(0, 3);
+      });
+    });
+  };
+
+  // forward touch events (fix for modal scroll)
   useEffect(() => {
     const host = document.querySelector(".modal-card") as HTMLElement | null;
     const log = logRef.current;
@@ -66,13 +113,6 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
     };
   }, []);
 
-  useEffect(() => {
-    if (toast) {
-      const t = setTimeout(() => setToast(null), 5000);
-      return () => clearTimeout(t);
-    }
-  }, [toast]);
-
   return (
     <>
       {showHeadFade && <div className="chat-head-fade" />}
@@ -82,7 +122,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
             key={m.id}
             m={m}
             onAddToCart={onAddToCart}
-            onShowToast={(payload) => setToast(payload)}
+            onShowToast={handleShowToast}
             onRetry={lastUser ? () => onRetry?.(lastUser.text) : undefined}
           />
         ))}
@@ -90,24 +130,39 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
       </div>
       {showFootFade && <div className="chat-foot-fade" />}
 
-      {toast && (
-        <div className="notification-toast">
-          <div className="checkmark">
-            <img src="/img/check.svg" alt="✓" />
-          </div>
-          <div className="success-col">
-            <div className="product-line">
-              <span className="product-name">{toast.items[0].title}</span>
-              <span className="product-qty">×{toast.items[0].qty}</span>
+      {/* Toast stack */}
+      <div className="toast-stack">
+        {toastList.map((t, i) => (
+          <div key={t.id} className={`notification-toast ${t.exiting ? "exit" : ""}`} style={{ zIndex: 3 - i }}>
+            <div className="checkmark">
+              <img src="/img/check.svg" alt="✓" />
             </div>
-            <span className="added">Added to cart successfully</span>
-            <button className="view-cart">View cart</button>
+            <div className="success-col">
+              <div className="product-line">
+                <span className="product-name">{t.title}</span>
+                {t.status === "added" && <span className="product-qty">×{t.qty}</span>}
+              </div>
+
+              {t.status === "added" ? (
+                <>
+                  <span className="added">Added to cart successfully</span>
+                  <button className="view-cart">View cart</button>
+                </>
+              ) : (
+                <span className="added">Removed from your cart</span>
+              )}
+            </div>
+            <button
+              className="close-btn"
+              onClick={() => {
+                setToastList((prev) => prev.filter((x) => x.id !== t.id));
+              }}
+            >
+              <img src="/img/popup-close.svg" alt="Close" />
+            </button>
           </div>
-          <button className="close-btn" onClick={() => setToast(null)}>
-            <img src="/img/popup-close.svg" alt="Close" />
-          </button>
-        </div>
-      )}
+        ))}
+      </div>
     </>
   );
 }
