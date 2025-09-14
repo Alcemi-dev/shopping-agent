@@ -51,8 +51,27 @@
   display: flex;
   overflow: visible;
   color: var(--text-on-dark);
-  background: var(--surface-modal) url("/img/background-gradient-mobile.svg")
-    center/cover no-repeat;
+  background: var(--surface-modal) center/cover no-repeat;
+  overflow: hidden;
+}
+
+.modal-card picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-card picture img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 @supports (height: 100dvh) {
   .modal-card {
@@ -313,8 +332,7 @@ html.kb-open .modal-root[open] .chat-log {
     border: 0.0625rem solid var(--outline);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-elev-1);
-    background: var(--surface-modal) url("/img/background-gradient-desktop.svg")
-      center/cover no-repeat;
+    background: var(--surface-modal) center/cover no-repeat;
   }
 
   .modal-ctr {
