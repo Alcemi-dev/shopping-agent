@@ -75,16 +75,20 @@ export function ProductsStripMessage({
       const newMuted = !prev[id];
       if (newMuted) {
         setQuantities((q) => ({ ...q, [id]: 0 }));
+        setFavorites((f) => ({ ...f, [id]: false })); // 👈 jeigu dislike, nuimam fav
       }
       return { ...prev, [id]: newMuted };
     });
   };
 
   const handleToggleFavorite = (id: string) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setFavorites((prev) => {
+      const newFav = !prev[id];
+      if (newFav) {
+        setMuted((m) => ({ ...m, [id]: false })); // 👈 jeigu fav, nuimam dislike
+      }
+      return { ...prev, [id]: newFav };
+    });
   };
 
   const handleAddAllToCart = () => {
