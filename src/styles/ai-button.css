@@ -9,17 +9,17 @@
   /* senų Safari fallback (nebūtina, bet saugu) */
   bottom: max(70px, calc(constant(safe-area-inset-bottom, 0) + 20px));
 
-  height: 48px;
-  padding: 10px 16px;
+  height: 3rem;
+  padding: 0.75rem 1rem;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border-radius: 30px;
+  gap: 0.5rem;
+  border-radius: 1.5rem; /* Half of height will give you the pill look */
   border: none;
   background: var(--brand-blue);
   color: #fff;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 1rem;
   box-shadow: 0 0 30px 1px var(--elev-50);
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease;
@@ -37,9 +37,8 @@
 }
 
 .ai-fab__icon img {
-  display: block;
-  width: 18.33px;
-  height: 19.24px;
+  width: 1.375rem;
+  height: 1.375rem;
 }
 .ai-fab__icon {
   position: relative;

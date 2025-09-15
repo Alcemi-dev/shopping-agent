@@ -122,17 +122,22 @@
   justify-content: space-between;
   align-items: center;
 
+
   padding: 0 2rem 1.5rem;
   z-index: 5;
+
+
 }
 .footer-btn {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  line-height: 0;
 }
 .footer-btn img {
-  width: 28px;
-  height: 28px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ===== DESKTOP ===== */

@@ -15,10 +15,14 @@
   padding: 16px;
 
   background: var(--surface-bubble);
-  border: 1.5px solid #fff;
+
+  box-shadow: inset 0 0 0 1px #fff;
+  /* border: 1.5px solid #fff; */
   border-radius: var(--radius-md, 12px);
   overflow: hidden;
   z-index: 200;
+
+  transition: box-shadow 0.6s ease;
 }
 
 /* Senus pseudo-glow išjungiame */
@@ -40,7 +44,15 @@
   min-height: 64px;
   max-height: 136px;
 
-  font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
+  font-family: var(
+    --font-sans,
+    "Satoshi",
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif
+  );
   font-size: var(--fs-16, 1rem);
   line-height: var(--lh-relaxed, 1.5);
   color: #444e85;
@@ -132,9 +144,9 @@
 
 /* === Focus ring === */
 .input-wrap.input-bubble:focus-within {
-  border-width: 2px;
-  border-color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+  /* border-width: 2px; */
+  /* border-color: #ffffff; */
+  box-shadow: inset 0 0 0 2px #fff, 0 0 12px rgba(255, 255, 255, 0.6);
 }
 
 /* === Tik viršutinis šviesus overlay virš teksto === */
