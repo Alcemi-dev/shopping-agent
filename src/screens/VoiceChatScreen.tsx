@@ -1,117 +1,142 @@
-// screens/VoiceChatScreen.tsx
 import { useEffect, useRef, useState } from "react";
 import "../styles/voice-chat.css";
+import { useChatEngine } from "../hooks/useChatEngine";
+import { useChatScroll } from "../hooks/useChatScroll";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 
-type QA = { question: string; answer?: string };
-
-type Props = {
-  onBack: () => void;
+type VoiceChatScreenProps = {
   onKeyboard: () => void;
+  onBack?: () => void;
 };
 
-const QUESTIONS = [
-  "Hello, what are you looking for today?",
-  "Do you have a preference for brand or budget?",
-  "When do you plan to use this product most often?",
+const VOICE_QUESTIONS = [
+  "Question 1: Do you prefer cream or gel?",
+  "Question 2: Any allergies?",
+  "Question 3: Do you shop online or in store?",
 ];
 
-const FAKE_ANSWERS = [
-  "I’m looking for a daily moisturizer that is lightweight, absorbs quickly without leaving my skin greasy, provides hydration throughout the whole day, and is gentle enough for sensitive skin that sometimes gets irritated by stronger products.",
-  "I don’t really care much about the brand, but I’d like to keep it under 30 euros if possible, and still get something with good reviews and trusted quality.",
-  "Mostly in the mornings before I head out, so something that layers well under makeup and won’t feel too heavy throughout the day would be ideal for me.",
-];
+export default function VoiceChatScreen({ onKeyboard }: VoiceChatScreenProps) {
+  const chat = useChatEngine();
+  const logRef = useRef<HTMLDivElement>(null);
+  useChatScroll(logRef, chat.messages);
 
-export default function VoiceChatScreen({ onBack, onKeyboard }: Props) {
-  const [qas, setQas] = useState<QA[]>([{ question: QUESTIONS[0] }]);
-  const [step, setStep] = useState(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 610);
+  const { mode, finalText, interimText, toggleListening } = useSpeechToText();
 
-  const { mode, text, toggleListening } = useSpeechToText();
+  const [stepIndex, setStepIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState("Hello, what are you looking for today?");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showNoInput, setShowNoInput] = useState(false);
+  const [hadListening, setHadListening] = useState(false);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // resize listener mobile/desktop
+  // Kai gaunam galutinį tekstą
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 610px)");
-    const update = () => setIsMobile(mq.matches);
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+    if (!finalText) return;
 
-  // kai gaunam tekstą → įrašom kaip atsakymą ir pereinam prie kito klausimo
-  useEffect(() => {
-    if (text) {
-      setQas((prev) => {
-        const copy = [...prev];
-        copy[step] = { ...copy[step], answer: text };
-        return copy;
+    setShowNoInput(false);
+
+    if (finalText.trim().length === 0) return;
+
+    if (stepIndex < VOICE_QUESTIONS.length) {
+      chat.addMessage({
+        id: `user-${Date.now()}`,
+        role: "user",
+        kind: "text",
+        text: finalText,
       });
 
-      // kitą klausimą + fake atsakymą po trumpo delay
-      setTimeout(() => {
-        if (step + 1 < QUESTIONS.length) {
-          setQas((prev) => [...prev, { question: QUESTIONS[step + 1], answer: FAKE_ANSWERS[step + 1] }]);
-          setStep((s) => s + 1);
-        }
-      }, 1500);
-    }
-  }, [text]);
+      setIsGenerating(true);
+      const timeout = setTimeout(() => {
+        const aiQ = VOICE_QUESTIONS[stepIndex];
+        chat.addMessage({
+          id: `ai-q-${Date.now()}`,
+          role: "assistant",
+          kind: "text",
+          text: aiQ,
+        });
+        setCurrentQuestion(aiQ);
+        setStepIndex((s) => s + 1);
+        setIsGenerating(false);
+      }, 2000);
 
-  // auto scroll į apačią
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (el) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+      return () => clearTimeout(timeout);
+    } else {
+      setIsGenerating(true);
+      chat.sendMessage(finalText);
+      setCurrentQuestion("Processing your request…");
+      setStepIndex(0);
+
+      const timeout = setTimeout(() => {
+        setIsGenerating(false);
+      }, 3000);
+
+      return () => clearTimeout(timeout);
     }
-  }, [qas]);
+  }, [finalText]);
+
+  // Stebim mic būseną
+  useEffect(() => {
+    if (mode === "listening") {
+      setHadListening(true);
+    }
+
+    if (mode === "idle" && hadListening && !finalText && !interimText) {
+      setShowNoInput(true);
+      setHadListening(false); // resetinam
+    }
+  }, [mode, finalText, interimText, hadListening]);
 
   return (
-    <div className="voicechat-screen">
-      {/* Header */}
-      <header className="vc-header">
-        <button className="vc-back" onClick={onBack}>
-          <img src="/img/back.svg" alt="Back" />
-          <span>Back</span>
-        </button>
-
-        <div className="vc-logo">
-          <img src="/img/logo-desktop.svg" alt="Alcemi" />
+    <div className={`voice-chat-screen ${mode === "listening" ? "listening" : ""}`}>
+      {/* HEADER */}
+      {!isGenerating && !showNoInput && (
+        <div className="vc-header">
+          <div className="vc-header-line" />
+          <h2 className="vc-question">{currentQuestion}</h2>
         </div>
+      )}
 
-        <button className="vc-close" onClick={onKeyboard}>
-          <img src="/img/keyboard.svg" alt="Keyboard" />
-        </button>
-      </header>
+      {/* BODY */}
+      <div className="vc-body" ref={logRef}>
+        {interimText && !isGenerating && !showNoInput && <div className="vc-answer">{interimText}</div>}
 
-      {/* Main content */}
-      <div className="vc-log" ref={scrollRef}>
-        {qas.map((qa, i) => (
-          <div key={i} className="vc-block">
-            <p className="vc-question">{qa.question}</p>
-            {qa.answer && <p className="vc-answer">{qa.answer}</p>}
+        {showNoInput && (
+          <div className="vc-error">
+            <p>Couldn’t hear you. Please try again.</p>
           </div>
-        ))}
+        )}
+
+        {isGenerating && finalText && (
+          <div className="vc-generating">
+            <img src="/img/generating-answer.svg" alt="Generating" />
+            <p>Generating answer…</p>
+          </div>
+        )}
       </div>
 
-      {/* Footer mic */}
-      <footer className="vc-footer">
-        <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={toggleListening}>
-          <img
-            src={
-              mode === "listening"
-                ? isMobile
-                  ? "/img/voice-chat-sphere-mobile.svg"
-                  : "/img/voice-chat-sphere-desktop.svg"
-                : isMobile
-                ? "/img/voice-sphere-mobile.svg"
-                : "/img/voice-sphere-desktop.svg"
-            }
-          />
+      {/* MIC ZONA virš footerio */}
+      {!isGenerating && (
+        <div className="vc-mic-wrap">
+          <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={toggleListening}>
+            <img src="/img/voice-sphere.svg" alt="Mic" />
+            {mode === "listening" && (
+              <>
+                <span className="vc-status">LISTENING...</span>
+                <div className="vc-ripples"></div>
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* FOOTER su iconomis */}
+      <div className="vc-footer">
+        <button className="footer-btn left">
+          <img src="/img/speaker.svg" alt="Speaker" />
         </button>
-        {mode === "listening" && <p className="vc-status">Listening…</p>}
-        {mode === "error" && <p className="vc-status">Couldn’t hear you</p>}
-      </footer>
+        <button className="footer-btn right" onClick={onKeyboard}>
+          <img src="/img/keyboard.svg" alt="Keyboard" />
+        </button>
+      </div>
     </div>
   );
 }

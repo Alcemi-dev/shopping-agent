@@ -1,20 +1,16 @@
-// screens/VoiceScreen.tsx
 import { useEffect, useState, useRef } from "react";
 import "../styles/voice-screen.css";
 import Chips from "../components/Chips";
 import { CHIP_ITEMS } from "../types";
-import { useSpeechToText } from "../hooks/useSpeechToText";
 
 type VoiceScreenProps = {
   onBack: () => void;
   onPickChip: (val: string) => void;
-  onVoiceResult: (text: string) => void;
+  onVoiceStart: () => void; // 👈 naujas prop – pereinam į voicechat
 };
 
-export default function VoiceScreen({ onBack, onPickChip, onVoiceResult }: VoiceScreenProps) {
+export default function VoiceScreen({ onBack, onPickChip, onVoiceStart }: VoiceScreenProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 610);
-  const { mode, text, toggleListening } = useSpeechToText(); // 👈 dabar toggleListening
-
   const chipsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,52 +20,27 @@ export default function VoiceScreen({ onBack, onPickChip, onVoiceResult }: Voice
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    if (text) {
-      onVoiceResult(text);
-    }
-  }, [text, onVoiceResult]);
-
-  useEffect(() => {
-    if (mode === "idle" && !text && chipsRef.current) {
-      chipsRef.current.scrollLeft = 0;
-    }
-  }, [mode, text]);
-
   return (
     <div className="voice-screen">
       <div className="voice-header">
-        <h1 className="voice-title">
-          {mode === "error" ? "Couldn’t hear you" : "Hello, what are you looking for today?"}
-        </h1>
+        <h1 className="voice-title">Hello, what are you looking for today?</h1>
         <p className="voice-subtitle">
-          {mode === "listening"
-            ? "Listening…"
-            : isMobile
-            ? "Tap to type · Tap mic to speak"
-            : "Tap mic to speak · Use keyboard to text chat"}
+          {isMobile ? "Tap to type · Tap mic to speak" : "Tap mic to speak · Use keyboard to text chat"}
         </p>
 
-        {mode === "idle" && !text && (
-          <div className="voice-chips" ref={chipsRef}>
-            <Chips items={CHIP_ITEMS} onPick={onPickChip} />
-          </div>
-        )}
+        <div className="voice-chips" ref={chipsRef}>
+          <Chips
+            items={CHIP_ITEMS}
+            onPick={(val) => {
+              onPickChip(val);
+            }}
+          />
+        </div>
       </div>
 
-      {/* Mic toggle */}
-      <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={toggleListening}>
-        <img
-          src={
-            mode === "listening"
-              ? isMobile
-                ? "/img/voice-chat-sphere-mobile.svg"
-                : "/img/voice-chat-sphere-desktop.svg"
-              : isMobile
-              ? "/img/voice-sphere-mobile.svg"
-              : "/img/voice-sphere-desktop.svg"
-          }
-        />
+      {/* Static mic – paleidžia voice režimą */}
+      <button className="mic-btn" onClick={onVoiceStart}>
+        <img src="/img/voice-sphere.svg" alt="Mic" />
       </button>
 
       <div className="voice-footer">

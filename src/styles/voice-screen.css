@@ -4,17 +4,16 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* header – centre – footer */
+  justify-content: space-between;
   align-items: center;
   background: transparent;
-  padding: 1.5rem 0rem;
+  padding: 1.5rem 0;
   z-index: 3;
 }
 
 /* ===== HEADER ===== */
 .voice-header {
-  margin-top: auto;
-  margin-bottom: auto;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,7 +28,7 @@
   font-weight: 300;
   line-height: 1.3;
   color: #fcfcfc;
-  margin-bottom: 0;
+  margin: 0;
   padding: 0 1rem;
 }
 
@@ -38,14 +37,12 @@
   line-height: 1.5;
   color: #e3e3e3;
   opacity: 0.9;
-  margin: 0;
-  margin-bottom: 2rem;
+  margin: 0 0 2rem;
 }
 
-/* ===== MOBILE: viena eilutė, karuselė tik VoiceScreen ===== */
+/* ===== MOBILE chips (scroll inline) ===== */
 .voice-chips {
   width: 100%;
-  max-width: 100%;
   overflow: hidden;
 }
 
@@ -55,13 +52,11 @@
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  gap: var(--space-3, 0.75rem);
-
-  justify-content: flex-start; /* 👈 svarbiausia, kad nebūtų centre */
+  gap: 0.75rem;
+  justify-content: flex-start;
   align-items: stretch;
-
-  padding: 0 1rem; /* nuimam centravimus */
-  margin: 0; /* kad nebūtų auto centravimo */
+  padding: 0 1rem;
+  margin: 0;
 
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -75,8 +70,9 @@
 
 .voice-chips.is-dragging {
   cursor: grabbing;
-  scroll-behavior: auto !important; /* kad nebūtų "smooth" drag metu */
+  scroll-behavior: auto !important;
 }
+
 /* ===== MIC (centre) ===== */
 .mic-btn {
   flex-shrink: 0;
@@ -85,38 +81,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 .mic-btn img {
-  width: 20rem;
+  width: 12rem;
+  max-width: 200px;
   height: auto;
 }
 
-/* ===== FOOTER ===== */
-.voice-footer {
-  position: absolute; /* 👈 prilipdo prie ekrano */
-  bottom: 0; /* 👈 visada apačioje */
-  left: 0;
-  right: 0;
-
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 0 2rem 1.5rem; /* stabilus padding */
-  z-index: 5; /* kad nepasislėptų */
-}
-.footer-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-.footer-btn img {
-  width: 28px;
-  height: 28px;
-}
-
-/* ===== MIC glow (kai klausosi) ===== */
+/* Glow (kai klausosi) */
 .mic-btn.listening img {
   animation: pulse 1.5s infinite ease-in-out;
   filter: drop-shadow(0 0 12px rgba(54, 84, 255, 0.8));
@@ -137,14 +110,35 @@
   }
 }
 
+/* ===== FOOTER ===== */
+.voice-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 2rem 1.5rem;
+  z-index: 5;
+}
+.footer-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.footer-btn img {
+  width: 28px;
+  height: 28px;
+}
+
 /* ===== DESKTOP ===== */
 @media (min-width: 610px) {
   .voice-screen {
-    width: 100%;
-    height: 100%;
     padding: 3rem 0;
-    flex-direction: column;
-    justify-content: space-between;
   }
 
   .voice-title {
@@ -156,11 +150,10 @@
 
   .voice-subtitle {
     font-size: 1.125rem;
-    margin-top: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin: 0.75rem 0 1.5rem;
   }
 
-  /* Desktop: kelių eilučių grid */
+  /* Chips wrap vietoj scroll */
   .voice-chips {
     display: grid;
     gap: 16px;
@@ -173,8 +166,8 @@
 
   .voice-chips .chips-inline {
     display: flex;
-    flex-wrap: wrap; /* desktop leidžiam wrap */
-    overflow: visible; /* jokio scroll */
+    flex-wrap: wrap;
+    overflow: visible;
     white-space: normal;
     gap: 1rem;
     margin: 3px 0;
@@ -182,7 +175,7 @@
     justify-content: center;
   }
 
-  .voice-chips .chips-inline .voice-chips .chip {
+  .voice-chips .chip {
     min-width: 120px;
     height: 47px;
     padding: 10px;
@@ -193,22 +186,17 @@
     color: #fcfcfc;
   }
 
-  /* Mic sphere: adaptyvus kaip mobile, bet didesnis limitas */
+  /* Mic sphere didesnis */
   .mic-btn img {
-    margin-top: -18rem;
-    width: 50rem; /* 👈 adaptyvus, pvz max 360px */
+    width: 10rem;
+    max-width: 360px;
     height: auto;
-    z-index: -1;
+    margin-bottom: 2rem;
   }
 
-  /* Footer pastoviam padding dešinėje */
+  /* Footer dešinėje */
   .voice-footer {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-
-    display: flex;
     justify-content: flex-end;
-    padding-right: 2rem; /* 👈 visada fiksuotas 2rem iš dešinės */
+    padding-right: 2rem;
   }
 }

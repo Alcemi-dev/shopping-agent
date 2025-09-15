@@ -305,7 +305,7 @@ html.kb-open .modal-root[open] .chat-log {
     display: none !important;
   }
   .modal-title {
-    max-width: 24rem;
+    max-width: 25rem;
     font-size: 1.875rem;
   }
   .break--desktop {
