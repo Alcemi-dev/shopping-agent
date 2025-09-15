@@ -86,6 +86,14 @@ export type ErrorMsg = {
   text: string;
 };
 
+// ✅ Naujas tipas — generuojamas atsakymas
+export type GeneratingMsg = {
+  id: string;
+  role: "assistant";
+  kind: "generating";
+  text?: string;
+};
+
 // ===== Union =====
 export type Msg =
   | UserMsg
@@ -95,7 +103,8 @@ export type Msg =
   | ActionsMsg
   | FeedbackMsg
   | ConnectionLostMsg
-  | ErrorMsg;
+  | ErrorMsg
+  | GeneratingMsg; // 👈 pridėtas
 
 // ===== Product model =====
 export type Product = {
@@ -108,10 +117,10 @@ export type Product = {
 };
 
 //---- toast state---//
-
 export type ToastPayload = {
   items: { title: string; qty: number }[];
 };
+
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
   "Product information",

@@ -10,6 +10,7 @@ type Props = {
   mode?: "default" | "answer";
   showTitle?: boolean;
   rightSlot?: ReactNode; // 🛒 papildomas slotas header'io dešinėje
+  extraClass?: string; // 👈 leidžia perduoti pvz. "listening"
 };
 
 function ModalScreen({
@@ -32,6 +33,7 @@ export default function Modal({
   mode = "default",
   showTitle = true,
   rightSlot,
+  extraClass = "",
 }: Props) {
   const dlgRef = useRef<HTMLDialogElement | null>(null);
   const headRef = useRef<HTMLDivElement | null>(null);
@@ -80,14 +82,10 @@ export default function Modal({
       : { "aria-labelledby": "modal-title" };
 
   return (
-    <dialog
-      id="ai-modal"
-      ref={dlgRef}
-      className="modal-root"
-      {...labelProps}
-      onClick={onClose}
-    >
-      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+
+    <dialog id="ai-modal" ref={dlgRef} className="modal-root" {...labelProps} onClick={onClose}>
+      <div className={`modal-card ${extraClass}`} onClick={(e) => e.stopPropagation()}>
+
         <div className="modal-ctr">
           <div
             className="modal-head"

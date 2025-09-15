@@ -7,11 +7,13 @@ import ChatScreen from "./screens/ChatScreen";
 import FeedbackScreen from "./screens/FeedbackScreen";
 import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
 import ConnectionLostScreen from "./screens/ConnectionLostScreen";
-import VoiceScreen from "./screens/VoiceScreen"; // overlay
-import VoiceChatScreen from "./screens/VoiceChatScreen"; // 👈 naujas
-import type { Msg, Category, View, Collected } from "./types";
+import VoiceScreen from "./screens/VoiceScreen";
+import VoiceChatScreen from "./screens/VoiceChatScreen";
+import type { Category, View } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
-import { createMockEngine, sentenceFor } from "./mock/engine";
+import { useChatEngine } from "./hooks/useChatEngine";
+// 👇 importuojam hooką kad galėtume stebėt mic būseną
+import { useSpeechToText } from "./hooks/useSpeechToText";
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -19,20 +21,11 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | null>(null);
   const [showSubchips, setShowSubchips] = useState(false);
-  const [messages, setMessages] = useState<Msg[]>([]);
-  const [, setCollected] = useState<Collected>({});
-  const [cartCount, setCartCount] = useState(0);
   const [hasUnread, setHasUnread] = useState(false);
 
   const dockRef = useRef<HTMLDivElement>(null);
-
-  const engineRef = useRef(
-    createMockEngine({
-      setMessages,
-      setCollected,
-      delayMs: 900,
-    })
-  );
+  const chat = useChatEngine();
+  const { mode } = useSpeechToText(); // 👈 mic mode: "idle" | "listening" | "error"
 
   /* dock height */
   useEffect(() => {
@@ -77,9 +70,9 @@ export default function App() {
     };
   }, [open]);
 
-  /* NOTIFICATION BADGE LOGIC */
+  /* notification badge + auto-view switching */
   useEffect(() => {
-    const last = messages[messages.length - 1];
+    const last = chat.messages[chat.messages.length - 1];
     if (last && last.role === "assistant" && !open) {
       setHasUnread(true);
     }
@@ -89,12 +82,12 @@ export default function App() {
     if (last && last.kind === "connection-lost") {
       setView("connection-lost");
     }
-  }, [messages, open]);
+  }, [chat.messages, open]);
 
   const handleOpen = () => {
     setOpen(true);
     setHasUnread(false);
-    if (messages.length === 0) setView("explain");
+    if (chat.messages.length === 0) setView("explain");
   };
 
   const handleClose = () => setOpen(false);
@@ -104,10 +97,8 @@ export default function App() {
     setView("chips");
     setCategory(null);
     setShowSubchips(false);
-    setMessages([]);
     setQuery("");
-    setCollected({});
-    setCartCount(0);
+    chat.reset();
   };
 
   const handleBack = () => {
@@ -129,62 +120,25 @@ export default function App() {
   const pickTopChip = (v: string) => {
     const cat = v as Category;
     setCategory(cat);
-    setMessages([
-      {
-        id: crypto.randomUUID?.() ?? Math.random().toString(),
-        role: "user",
-        kind: "text",
-        text: sentenceFor(cat),
-      },
-    ]);
+    chat.pickCategory(cat);
     setShowSubchips(true);
     setView("category");
   };
 
   const pickSubChip = (v: string) => {
     setShowSubchips(false);
-    send(v);
+    chat.sendMessage(v);
     setView("chat");
   };
 
   const send = (text: string) => {
     if (text.trim()) {
-      engineRef.current.send(text);
+      chat.sendMessage(text);
       if (view !== "chat") setView("chat");
       setQuery("");
     }
   };
 
-  useEffect(() => {
-    engineRef.current.handleMessagesEffect(messages);
-  }, [messages]);
-
-  const handleChangeCart = (_title: string, delta: number) => {
-    // _title panaikinam, nes nenaudojamas
-    setCartCount((c) => Math.max(0, c + delta));
-  };
-
-  const handleRetry = (lastUser: string) => {
-    setMessages((prev) => {
-      // 1) surandam paskutinį user + error id
-      const lastUserMsg = [...prev].reverse().find((m) => m.role === "user" && m.kind === "text");
-      const lastErrorMsg = [...prev].reverse().find((m) => m.role === "assistant" && m.kind === "error");
-
-      // 2) išfiltruojam juos lauk
-      let filtered = prev;
-      if (lastUserMsg) filtered = filtered.filter((m) => m.id !== lastUserMsg.id);
-      if (lastErrorMsg) filtered = filtered.filter((m) => m.id !== lastErrorMsg.id);
-
-      return filtered;
-    });
-
-    // 3) siųsti user tekstą iš naujo
-    if (lastUser.trim()) {
-      engineRef.current.send(lastUser);
-      if (view !== "chat") setView("chat");
-      setQuery("");
-    }
-  };
   return (
     <div className="app-root">
       <Background />
@@ -194,6 +148,8 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
+        // 👇 paduodam papildomą klasę į modalą
+        extraClass={mode === "listening" ? "listening" : ""}
         modalTitle={
           view === "explain"
             ? "How to use Quick Search"
@@ -203,11 +159,11 @@ export default function App() {
         }
         showTitle={view === "explain" || view === "chips"}
         rightSlot={
-          cartCount > 0 && (
+          chat.cartCount > 0 && (
             <div className="cart-indicator">
               <div className="cart-icon-wrap">
                 <img src="/img/cart.svg" alt="Cart" />
-                <span className="badge">{cartCount}</span>
+                <span className="badge">{chat.cartCount}</span>
               </div>
               <span className="cart-label">Cart</span>
             </div>
@@ -224,9 +180,9 @@ export default function App() {
 
         <Modal.Screen show={view === "category" || view === "chat"}>
           <ChatScreen
-            messages={messages}
-            onAddToCart={handleChangeCart}
-            onRetry={handleRetry}
+            messages={chat.messages}
+            onAddToCart={chat.handleChangeCart}
+            onRetry={chat.retry}
             extra={
               view === "category" &&
               category &&
@@ -242,10 +198,7 @@ export default function App() {
               setView("chips");
             }}
             onPickChip={pickTopChip}
-            onVoiceResult={(_text: string) => {
-              // _text nenaudojamas → pakeičiam į _text kad warning dingtų
-              setView("voicechat");
-            }}
+            onVoiceStart={() => setView("voicechat")} // ✅ dabar jungia voicechat
           />
         </Modal.Screen>
 
@@ -254,16 +207,11 @@ export default function App() {
         </Modal.Screen>
 
         <Modal.Screen show={view === "feedback"}>
-          <FeedbackScreen
-            onSubmit={(_rating, _comment) => {
-              // abu parametrai nenaudojami, prefix _ kad nebūtų warning
-              setView("feedback-filled");
-            }}
-          />
+          <FeedbackScreen onSubmit={() => setView("feedback-filled")} />
         </Modal.Screen>
 
         <Modal.Screen show={view === "feedback-filled"}>
-          <FeedbackFilledScreen onNewSearch={() => resetAll()} />
+          <FeedbackFilledScreen onNewSearch={resetAll} />
         </Modal.Screen>
 
         <Modal.Screen show={view === "connection-lost"}>
