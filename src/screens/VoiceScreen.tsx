@@ -6,11 +6,12 @@ import { CHIP_ITEMS } from "../types";
 type VoiceScreenProps = {
   onBack: () => void;
   onPickChip: (val: string) => void;
-  onVoiceStart: () => void; // 👈 naujas prop – pereinam į voicechat
+  onVoiceStart: (opts?: { autoStart?: boolean }) => void; // 👈 leidžiam perduoti autoStart
 };
 
 export default function VoiceScreen({ onBack, onPickChip, onVoiceStart }: VoiceScreenProps) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 610);
+  const [isCarousel, setIsCarousel] = useState(false);
   const chipsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,6 +19,20 @@ export default function VoiceScreen({ onBack, onPickChip, onVoiceStart }: VoiceS
     const update = () => setIsMobile(mq.matches);
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Tikrinam ar telpa vertikaliai
+  useEffect(() => {
+    const el = chipsRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      setIsCarousel(el.scrollHeight > el.clientHeight);
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
   }, []);
 
   return (
@@ -28,18 +43,13 @@ export default function VoiceScreen({ onBack, onPickChip, onVoiceStart }: VoiceS
           {isMobile ? "Tap to type · Tap mic to speak" : "Tap mic to speak · Use keyboard to text chat"}
         </p>
 
-        <div className="voice-chips" ref={chipsRef}>
-          <Chips
-            items={CHIP_ITEMS}
-            onPick={(val) => {
-              onPickChip(val);
-            }}
-          />
+        <div className={`voice-chips ${isCarousel ? "carousel" : "stack"}`} ref={chipsRef}>
+          <Chips items={CHIP_ITEMS} onPick={(val) => onPickChip(val)} />
         </div>
       </div>
 
-      {/* Static mic – paleidžia voice režimą */}
-      <button className="mic-btn" onClick={onVoiceStart}>
+      {/* 👇 čia paspaudus pereina į VoiceChatScreen ir iškart paleidžia mic */}
+      <button className="mic-btn" onClick={() => onVoiceStart({ autoStart: true })}>
         <img src="/img/voice-sphere.svg" alt="Mic" />
       </button>
 

@@ -29,7 +29,7 @@
 .modal-card:has(.explain) .modal-title {
   max-width: 100%;
   margin-inline: auto;
-  margin-top: 5vh;
+  margin-top: 7vh;
   text-align: center;
   font-size: clamp(1.5rem, 6vw, 2rem);
   line-height: 1.2;
@@ -125,7 +125,7 @@
 
 @media (min-width: 610px) {
   .modal-card:has(.explain) .modal-col {
-    margin-top: 0; /* nebepastumiam */
+    margin-top: 3vh; /* nebepastumiam */
     gap: 3rem; /* 48px */
   }
 
