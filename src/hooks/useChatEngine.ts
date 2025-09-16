@@ -19,9 +19,9 @@ export function useChatEngine() {
     engineRef.current.handleMessagesEffect(messages);
   }, [messages]);
 
-  const sendMessage = (text: string) => {
+  const sendMessage = (text: string, opts?: { source?: "chat" | "voice" }) => {
     if (text.trim()) {
-      engineRef.current.send(text);
+      engineRef.current.send(text, opts);
     }
   };
 
@@ -37,6 +37,7 @@ export function useChatEngine() {
     setMessages((prev) => prev.map((m) => (m.id === id ? newMsg : m)));
   };
 
+  /** Category pasirinkimas – tik user bubble + extra (CategoryScreen) */
   const pickCategory = (cat: Category) => {
     const userMsg: Msg = {
       id: crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`,
@@ -44,7 +45,12 @@ export function useChatEngine() {
       kind: "text",
       text: sentenceFor(cat),
     };
-    setMessages([userMsg]);
+
+    // 👇 Tik pridedam userMsg
+    setMessages((prev) => [...prev, userMsg]);
+
+    // ❌ Nebesiunčiam į engine → kad nebūtų loaderio ir default atsakymo
+    // engineRef.current.send(userMsg.text, { source: "chat" });
   };
 
   const retry = (lastUser: string) => {
@@ -60,7 +66,7 @@ export function useChatEngine() {
     });
 
     if (lastUser.trim()) {
-      engineRef.current.send(lastUser);
+      engineRef.current.send(lastUser, { source: "chat" });
     }
   };
 

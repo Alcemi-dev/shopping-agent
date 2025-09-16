@@ -8,11 +8,10 @@ import FeedbackScreen from "./screens/FeedbackScreen";
 import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
 import ConnectionLostScreen from "./screens/ConnectionLostScreen";
 import VoiceScreen from "./screens/VoiceScreen";
-import VoiceChatScreen from "./screens/VoiceChatScreen";
+import VoiceChatScreen from "./screens/VoiceChatScreen"; // 👈 turi būti default export
 import type { Category, View } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
 import { useChatEngine } from "./hooks/useChatEngine";
-// 👇 importuojam hooką kad galėtume stebėt mic būseną
 import { useSpeechToText } from "./hooks/useSpeechToText";
 
 export default function App() {
@@ -22,10 +21,13 @@ export default function App() {
   const [category, setCategory] = useState<Category | null>(null);
   const [showSubchips, setShowSubchips] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  const [autoStart, setAutoStart] = useState(false);
 
   const dockRef = useRef<HTMLDivElement>(null);
   const chat = useChatEngine();
-  const { mode } = useSpeechToText(); // 👈 mic mode: "idle" | "listening" | "error"
+
+  // 👇 vietoj setMessages naudojam chat.addMessage
+  const { mode } = useSpeechToText(chat.addMessage);
 
   /* dock height */
   useEffect(() => {
@@ -92,7 +94,6 @@ export default function App() {
 
   const handleClose = () => setOpen(false);
 
-  /** Reset visos būsenos į pradinę */
   const resetAll = () => {
     setView("chips");
     setCategory(null);
@@ -148,7 +149,6 @@ export default function App() {
         open={open}
         onClose={handleClose}
         onBack={handleBack}
-        // 👇 paduodam papildomą klasę į modalą
         extraClass={mode === "listening" ? "listening" : ""}
         modalTitle={
           view === "explain"
@@ -198,12 +198,21 @@ export default function App() {
               setView("chips");
             }}
             onPickChip={pickTopChip}
-            onVoiceStart={() => setView("voicechat")} // ✅ dabar jungia voicechat
+            onVoiceStart={() => {
+              setAutoStart(true); // 👈 čia mic startuoja
+              setView("voicechat");
+            }}
           />
         </Modal.Screen>
 
         <Modal.Screen show={view === "voicechat"}>
-          <VoiceChatScreen onBack={() => setView("chips")} onKeyboard={() => setView("chat")} />
+          <VoiceChatScreen
+            chat={chat}
+            autoStart={autoStart} // 👈 dinamiškai pagal scenarijų
+            initialQuestion="Hello, what are you looking for today?"
+            onBack={() => setView("chips")}
+            onKeyboard={() => setView("chat")}
+          />
         </Modal.Screen>
 
         <Modal.Screen show={view === "feedback"}>
@@ -229,7 +238,16 @@ export default function App() {
                 value={query}
                 onChange={setQuery}
                 onSubmit={() => send(query)}
-                onVoice={() => setView("voice")}
+                onVoice={() => {
+                  if (chat.messages.length === 0) {
+                    // 👇 jei istorijos nėra → VoiceScreen
+                    setView("voice");
+                  } else {
+                    // 👇 jei yra istorija → VoiceChatScreen, bet mic nestartuoja
+                    setAutoStart(false);
+                    setView("voicechat");
+                  }
+                }}
                 placeholder="Ask anything…"
               />
             </div>

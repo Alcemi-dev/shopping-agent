@@ -1,16 +1,18 @@
-/* ===== VOICE CHAT SCREEN ===== */
+/* ===== VOICE CHAT SCREEN (mobile first) ===== */
 .voice-chat-screen {
-  margin-top: -68px;
-  padding-top: 48px;
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
   color: #fcfcfc;
-  width: 100dvw;
-  height: 100dvh;
-  margin-bottom: 20px;
+  z-index: 3;
+  overflow: hidden;
+  padding: 0;
+  margin-top: -4.22rem;
+  padding-top: 4.22rem;
 }
 
 /* Glow on listening */
@@ -18,11 +20,11 @@
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3), inset 0 0 50px rgb(255, 255, 255);
 }
 
-/* ===== HEADER (question area) ===== */
+/* ===== HEADER ===== */
 .vc-header {
   display: flex;
   align-items: center;
-  padding: 12px;
+  margin-right: auto;
 }
 
 .vc-header-line {
@@ -38,181 +40,272 @@
   font-weight: 400;
   line-height: 130%;
   color: #fcfcfc;
-  flex: 1;
+  padding-right: 1rem;
 }
 
-/* ===== BODY (scrollable answers) ===== */
+/* ===== BODY ===== */
 .vc-body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: 20px;
-  padding: 0 30px;
+  padding: 0 24px;
   overflow-y: auto;
+  width: 100%;
 }
 
-.vc-answer {
-  font-size: 24px;
-  font-weight: 500;
+/* Instruction */
+.vc-instruction {
+  font-size: 18px;
+  font-weight: 400;
   line-height: 150%;
-  text-align: left;
-  color: #fcfcfc;
-  word-break: break-word;
-}
-
-.vc-error {
-  color: #ff8080;
-  font-size: 16px;
-  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #e3e3e3;
   text-align: center;
+  width: 100%;
+  margin-top: auto;
 }
 
+/* AI answer (centered) */
+.vc-answer--ai {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 140%;
+  color: #fcfcfc;
+  text-align: center;
+  width: 100%;
+  margin-bottom: auto;
+}
+
+/* User answer (mobile: left) */
+.vc-answer--user {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 140%;
+  color: #fcfcfc;
+  text-align: left;
+  align-self: flex-start;
+  max-width: 80%;
+  margin: 8px 0;
+}
+
+/* ===== NO INPUT ===== */
+.vc-noinput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  margin: auto;
+  width: 100%;
+}
+
+.vc-noinput-title {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: #fcfcfc;
+  margin: 0;
+  max-width: 15rem;
+}
+
+.vc-noinput-sub {
+  padding-top: 1rem;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  opacity: 0.9;
+  margin: 0;
+}
+/* overlay stilius */
+.vc-noinput-overlay {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  width: 100%;
+  pointer-events: none; /* 👈 mic vistiek clickable */
+}
+
+.vc-noinput-title {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: #fcfcfc;
+  margin: 0;
+  max-width: 15rem;
+}
+
+.vc-noinput-sub {
+  padding-top: 1rem;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* ===== GENERATING ===== */
 .vc-generating {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 400;
-  color: #e3e3e3;
+  margin: auto;
+  width: 100%;
+}
+
+.vc-generating img {
+  width: 120px;
+  height: 120px;
+}
+
+.vc-generating p {
+  margin-top: 0px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: #fcfcfc;
+  opacity: 0.8;
 }
 
 /* ===== MIC WRAP ===== */
 .vc-mic-wrap {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px 0;
+  margin-bottom: 2rem;
+  gap: 0.75rem;
 }
 
 .vc-mic {
-  position: relative;
-  z-index: 2;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: #2747fb;
+  flex-shrink: 0;
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
   cursor: pointer;
 }
 
+.vc-mic img {
+  width: 10rem;
+  height: auto;
+  transition: all 0.3s ease;
+}
+
+.vc-mic.is-listening img {
+  width: 6rem;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
 .vc-status {
-  position: absolute;
-  top: 110px;
   font-size: 14px;
   font-weight: 500;
   color: #fcfcfc;
   opacity: 0.8;
-}
-
-/* Ripple effect */
-.vc-ripples::before,
-.vc-ripples::after {
-  content: "";
+  text-align: center;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: 0.5px solid #fcfcfc;
-  transform: translate(-50%, -50%) scale(0.5);
-  opacity: 0;
-  animation: rippleAnim 3s infinite;
-}
-.vc-ripples::after {
-  animation-delay: 1.5s;
-}
-
-@keyframes rippleAnim {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 0.6;
-  }
-  70% {
-    opacity: 0.2;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(4);
-    opacity: 0;
-  }
-}
-
-/* Ripple tik kai listening */
-.vc-mic .vc-ripples {
-  display: none;
-}
-.vc-mic.is-listening .vc-ripples {
-  display: block;
+  bottom: 30px;
+  padding-left: 10px;
 }
 
 /* ===== FOOTER ===== */
 .vc-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  width: 100%;
   display: flex;
-  justify-content: space-between; /* mobile: viena kairėje, kita dešinėje */
+  justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
+  padding: 0 2rem 1.5rem;
+  z-index: 5;
 }
 
-.vc-buttons {
-  display: flex;
-  gap: 16px;
-}
-
-.footer-btn {
+.vc-footer .footer-btn {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+  line-height: 0;
 }
-.footer-btn img {
-  width: 24px;
-  height: 24px;
+
+.vc-footer .footer-btn img {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* ===== DESKTOP ===== */
 @media (min-width: 610px) {
-  .voice-chat-screen {
-    margin-top: -76px;
-    width: clamp(32.5rem, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
-    height: min(var(--modal-h-desktop), var(--modal-max-h));
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 28px;
-    border: 1px solid #fcfcfc;
-  }
-
-  .vc-header {
-    justify-content: center;
-    padding-top: 24px;
+  .vc-question {
+    font-size: 20px;
+    text-align: center;
+    width: 542px;
   }
 
   .vc-header-line {
     display: none;
   }
 
-  .vc-question {
-    text-align: center;
-    color: #e3e3e3;
-    font-size: 20px;
-    line-height: 150%;
+  .vc-header {
+    display: flex;
+    align-items: center;
+    margin-right: 0;
+    padding-top: 16px;
   }
 
   .vc-body {
-    max-width: 700px;
-    margin: 0 auto;
+    justify-content: flex-start; /* 👈 turinys eina nuo viršaus */
+    align-items: center; /* 👈 centras X ašyje */
+    text-align: center;
     padding: 16px;
   }
 
-  .vc-answer {
+  .vc-answer--user {
     text-align: center;
+    margin: 0 auto 12px auto; /* 👈 viršuje prilipęs, tik apatinis tarpas */
+    max-width: 600px;
+    align-self: center; /* 👈 laikom prie centro X */
+  }
+
+  .vc-answer--ai {
+    max-width: 600px;
+    margin: 0 auto; /* AI klausimas lieka centre */
+    margin-bottom: auto;
+  }
+
+  .vc-instruction {
+    font-size: 18px;
+    margin-bottom: 0;
+    margin-top: 3rem;
+  }
+
+  .vc-noinput-title {
+    font-size: 32px;
+    max-width: 20rem;
+  }
+
+  .vc-mic img {
+    margin-bottom: 80px;
   }
 
   .vc-footer {
-    justify-content: flex-end; /* desktop: abi dešinėje */
-    gap: 24px;
-    padding: 16px 32px;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-right: 2rem;
   }
 }

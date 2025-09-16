@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { uid } from "../mock/engine";
+import type { Msg } from "../types";
 
 type Mode = "idle" | "listening" | "error";
 
@@ -9,7 +11,8 @@ declare global {
   }
 }
 
-export function useSpeechToText() {
+// Priimam addMessage iš chatEngine
+export function useSpeechToText(addMessage: (msg: Msg) => void) {
   const [mode, setMode] = useState<Mode>("idle");
   const [finalText, setFinalText] = useState<string>("");
   const [interimText, setInterimText] = useState<string>("");
@@ -45,21 +48,34 @@ export function useSpeechToText() {
         }
 
         if (transcript) {
+          console.log("🎤 Interim voice text:", transcript);
           setInterimText(transcript);
           resetSilenceTimer();
         }
         if (finalTranscript) {
+          console.log("✅ Final voice text:", finalTranscript.trim());
           setFinalText(finalTranscript);
           setInterimText("");
           resetSilenceTimer();
+
+          const userMsg: Msg = {
+            id: uid(),
+            role: "user",
+            kind: "text",
+            text: finalTranscript.trim(),
+          };
+          console.log("👤 Adding userMsg to chat:", userMsg);
+          addMessage(userMsg);
         }
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = (err: any) => {
+        console.warn("⚠️ Speech recognition error:", err);
         setMode("error");
       };
 
       recognition.onend = () => {
+        console.log("ℹ️ Speech recognition ended");
         setMode("idle");
         recognitionRef.current = null;
         clearTimeout(silenceTimerRef.current);
@@ -68,17 +84,19 @@ export function useSpeechToText() {
       recognition.start();
       recognitionRef.current = recognition;
 
+      console.log("🎙️ Speech recognition started");
       setFinalText("");
       setInterimText("");
       setMode("listening");
       resetSilenceTimer();
     } catch (err) {
-      console.warn("Speech recognition error:", err);
+      console.warn("Speech recognition setup error:", err);
       setMode("error");
     }
   };
 
   const stopListening = () => {
+    console.log("🛑 Stop listening");
     recognitionRef.current?.stop();
     recognitionRef.current = null;
     setMode("idle");
@@ -89,7 +107,8 @@ export function useSpeechToText() {
   const resetSilenceTimer = () => {
     clearTimeout(silenceTimerRef.current);
     silenceTimerRef.current = setTimeout(() => {
-      stopListening(); // auto stop after 4s silence
+      console.log("⏱️ Silence timeout reached → auto stop");
+      stopListening();
     }, 4000);
   };
 
