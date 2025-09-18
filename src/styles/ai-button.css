@@ -5,21 +5,26 @@
   left: 50%;
   transform: translateX(-50%);
   /* vietoj top: ... -> kotvuojam prie apačios + safe area */
-  bottom: max(70px, calc(env(safe-area-inset-bottom, 0) + 20px));
+  /* pyzdu px tie fallbackai, kol kas, po to patikrinsim mobile */
+  /* bottom: max(70px, calc(env(safe-area-inset-bottom, 0) + 20px)); */
   /* senų Safari fallback (nebūtina, bet saugu) */
-  bottom: max(70px, calc(constant(safe-area-inset-bottom, 0) + 20px));
+  /* bottom: max(70px, calc(constant(safe-area-inset-bottom, 0) + 20px)); */
+  bottom: 2.1875rem;
 
   height: 3rem;
+  width: 12.5rem;
   padding: 0.75rem 1rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   border-radius: 1.5rem; /* Half of height will give you the pill look */
   border: none;
   background: var(--brand-blue);
-  color: #fff;
+  color: var(--text-default);
   font-weight: 500;
   font-size: 1rem;
+  letter-spacing: 0.03em;
   box-shadow: 0 0 30px 1px var(--elev-50);
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease;
@@ -28,12 +33,14 @@
 }
 
 .ai-fab:hover {
-  background: #2d46d9;
+  background: var(--fill-blue-550);
   box-shadow: 0 0 35px 3px var(--elev-50);
 }
 
 .ai-fab__label {
-  line-height: 1;
+  font-weight: 500;
+  line-height: 1.5;
+  text-transform: capitalize;
 }
 
 .ai-fab__icon img {
@@ -57,4 +64,13 @@
   background: #ff7344;
   border: 2px solid #fff;
   border-radius: 50%;
+}
+
+/* === MOBILE override'ai === */
+
+/* 38em = 608px */
+@media (max-width: 38em) {
+  .ai-fab {
+    bottom: 1.5rem;
+  }
 }
