@@ -31,7 +31,7 @@
   margin-inline: auto;
   margin-top: 7vh;
   text-align: center;
-  font-size: clamp(1.5rem, 6vw, 2rem);
+  font-size: 2rem; /* visada 2 rem */
   line-height: 1.2;
   font-weight: 400;
   color: var(--text-on-dark);
@@ -138,7 +138,7 @@
   .modal-card:has(.explain) .modal-title {
     max-width: 25rem; /* 400px */
     margin-top: 3rem; /* nebepastumiam į apačią */
-    font-size: 2rem; /* 32px */
+    /* font-size: 2rem; 32px */
     line-height: 1.2; /* 38px */
   }
 
