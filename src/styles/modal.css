@@ -129,7 +129,8 @@
 }
 
 .head-close {
-  padding: 0 0 0.5rem 0.5rem; /* for a larger clickable area, but still correct paddings */
+  /* this actually fucks with the layout too much */
+  /*padding: 0 0 0.5rem 0.5rem;*/ /* for a larger clickable area, but still correct paddings */
 }
 
 .head-back {
@@ -143,7 +144,8 @@
   padding: 0;
 }
 .head-logo-mobile img {
-  height: 1.5rem;
+  /* height: 1.5rem; */
+  width: 4rem;
   width: auto;
   display: block;
 }

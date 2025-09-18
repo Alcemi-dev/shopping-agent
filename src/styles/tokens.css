@@ -99,7 +99,8 @@
 
   /* colors */
 
-  --white-100: #fefefe;
   --fill-blue-550: #0e218e;
   --text-default: #fcfcfc;
+  --text-secondary: #e3e3e3;
+  --text-button-primary: #02092e;
 }
