@@ -103,7 +103,8 @@
   align-items: center;
   justify-content: space-between;
   min-height: 1.5rem;
-  padding: 1rem var(--gutter);
+  /* padding: 1rem var(--gutter); */
+  padding: 1.625rem 1.75rem;
   flex-shrink: 0;
 }
 
@@ -331,9 +332,8 @@ html.kb-open .modal-root[open] .chat-log {
       var(--modal-w-desktop)
     );
     height: min(var(--modal-h-desktop), var(--modal-max-h));
-    border: 0.0625rem solid var(--outline);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-elev-1);
+    border: 1px solid var(--outline);
+    border-radius: 1.25rem; /* var(--radius-xl); */
     background: var(--surface-modal) center/cover no-repeat;
   }
 
@@ -342,7 +342,7 @@ html.kb-open .modal-root[open] .chat-log {
     /* padding: 0.3125rem 0; */
   }
   .modal-head {
-    padding: 1.125rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     background: none;
   }
   .modal-head::after {
@@ -419,8 +419,7 @@ html.kb-open .modal-root[open] .chat-log {
     left: 1.5rem;
   }
   .modal-footer .powered-by {
-    height: 1.75rem;
-    width: auto;
+    width: 4rem;
     opacity: 0.85;
     display: block;
   }
@@ -476,11 +475,12 @@ html.kb-open .modal-root[open] .chat-log {
   align-items: center;
   justify-content: center;
 }
-@supports (padding: max(0px)) {
+/* for discussion later */
+/* @supports (padding: max(0px)) {
   .modal-head {
     padding-top: max(1.125rem, env(safe-area-inset-top));
   }
-}
+} */
 
 /* default: nerodom */
 .powered-by--head,

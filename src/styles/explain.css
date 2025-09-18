@@ -53,7 +53,7 @@
 .explain-item {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 5vw;
+  gap: 1.25rem;
   align-items: center;
   border-radius: var(--radius-md);
 }
@@ -66,7 +66,7 @@
 .explain-text {
   display: flex;
   flex-direction: column;
-  gap: 1vh;
+  gap: 0.25rem;
   max-width: var(--explain-text-w-mobile);
 }
 
@@ -81,7 +81,7 @@
 .explain-desc {
   margin: 0;
   font-weight: 400;
-  max-width: 20rem;
+  /* max-width: 20rem; */ /* need to think about this */
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-secondary);
@@ -123,54 +123,26 @@
   }
 
   .explain {
-    max-width: 22rem; /* 440px */
+    width: 20rem;
     gap: 3rem; /* 48px tarp dalių */
-    padding: 0 0 1.25rem;
+    padding: 0 0 1.25rem; /* HMMM, to think about */
   }
 
   .modal-card:has(.explain) .modal-title {
     max-width: 25rem; /* 400px */
     margin-top: 3rem; /* nebepastumiam į apačią */
-    /* font-size: 2rem; 32px */
-    line-height: 1.2; /* 38px */
-  }
-
-  .explain-list {
-    margin: 0;
-    gap: 1.5rem; /* 24px */
-    padding-left: 1rem; /* 16px */
-  }
-
-  .explain-item {
-    gap: 1.25rem; /* 20px */
-  }
-
-  .explain-icon {
-    width: 2rem; /* 32px */
-    height: 2rem;
-  }
-  .explain-icon img {
-    width: 2rem;
-    height: 2rem;
   }
 
   .explain-text {
-    max-width: 21.75rem; /* 348px */
-    gap: 0.25rem; /* 4px */
+    /*max-width: 21.75rem;*/ /* 348px */
   }
 
-  .explain-subtitle {
-    font-size: 1.125rem; /* 18px */
-  }
   .explain-desc {
-    font-size: 1rem; /* 16px */
     max-width: none;
   }
 
   .explain-cta {
     width: 13.75rem; /* 220px */
-    min-height: 3rem; /* 48px */
-    padding: 0.75rem 2rem;
-    border-radius: 2.25rem;
+    margin-top: 0;
   }
 }

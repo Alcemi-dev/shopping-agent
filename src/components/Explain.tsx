@@ -18,7 +18,7 @@ const Explain: FC<Props> = ({ onContinue }) => {
             aria-hidden="true"
           />
           <div className="explain-text">
-            <h3 className="explain-subtitle">Find Perfect Product</h3>
+            <h3 className="explain-subtitle">Find perfect product</h3>
             <p className="explain-desc">
               Explain what you're looking for just like you would to a store
               assistant
@@ -33,7 +33,7 @@ const Explain: FC<Props> = ({ onContinue }) => {
             aria-hidden="true"
           />
           <div className="explain-text">
-            <h3 className="explain-subtitle">Voice Chat</h3>
+            <h3 className="explain-subtitle">Voice chat</h3>
             <p className="explain-desc">
               Choose voice mode and have a natural back-and-forth conversation
             </p>
@@ -48,7 +48,7 @@ const Explain: FC<Props> = ({ onContinue }) => {
             aria-hidden="true"
           />
           <div className="explain-text">
-            <h3 className="explain-subtitle">Get Instant Answers</h3>
+            <h3 className="explain-subtitle">Get instant answers</h3>
             <p className="explain-desc">
               Fast help with anything from tracking your order to receiving a
               consultation
