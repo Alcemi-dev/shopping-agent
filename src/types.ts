@@ -14,8 +14,8 @@ export type Category =
   | "Product information"
   | "Consultation"
   | "Order status"
-  | "Shipping & delivery"
   | "Returns"
+  | "Shipping & delivery"
   | "Payment";
 
 // ===== Collected State (state machine memory) =====
@@ -124,15 +124,40 @@ export const CHIP_ITEMS: Category[] = [
   "Product information",
   "Consultation",
   "Order status",
-  "Shipping & delivery",
   "Returns",
+  "Shipping & delivery",
   "Payment",
 ];
 
 export const SUBCHIPS: Record<Category, string[]> = {
-  "Product information": ["Ingredients", "How to use", "Allergies & safety", "Stock availability", "Sizes & variants"],
-  Consultation: ["Book a call", "Skin type quiz", "Routine advice", "Shade matching", "Best-sellers"],
-  "Order status": ["Track order", "Change address", "Cancel order", "Invoice copy", "Late delivery"],
+  "Product information": [
+    "Ingredients",
+    "How to use",
+    "Allergies & safety",
+    "Stock availability",
+    "Sizes & variants",
+  ],
+  Consultation: [
+    "Book a call",
+    "Skin type quiz",
+    "Routine advice",
+    "Shade matching",
+    "Best-sellers",
+  ],
+  "Order status": [
+    "Track order",
+    "Change address",
+    "Cancel order",
+    "Invoice copy",
+    "Late delivery",
+  ],
+  Returns: [
+    "Start a return",
+    "Return policy",
+    "Refund timing",
+    "Exchange item",
+    "Return label",
+  ],
   "Shipping & delivery": [
     "Delivery methods",
     "Shipping status",
@@ -140,6 +165,11 @@ export const SUBCHIPS: Record<Category, string[]> = {
     "Delivery times",
     "International shipping",
   ],
-  Returns: ["Start a return", "Return policy", "Refund timing", "Exchange item", "Return label"],
-  Payment: ["Payment methods", "Installments", "Promo codes", "Billing issues", "Tax & VAT"],
+  Payment: [
+    "Payment methods",
+    "Installments",
+    "Promo codes",
+    "Billing issues",
+    "Tax & VAT",
+  ],
 };

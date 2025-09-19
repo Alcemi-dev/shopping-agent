@@ -160,6 +160,7 @@
   justify-content: center;
   cursor: pointer;
   z-index: 10;
+  box-shadow: 0 0 9px 1px #dde3ff;
 }
 
 /* Content */
@@ -207,7 +208,12 @@
 }
 
 .circle.circle--fav.is-fav {
-  background: #afbafb;
+  background: var(--bg-success-message);
+}
+
+.circle.circle--fav.is-fav img {
+  filter: brightness(0) saturate(100%) invert(11%) sepia(36%) saturate(2093%) hue-rotate(206deg) brightness(79%)
+    contrast(114%);
 }
 
 /* Kortelės būsena */
@@ -333,14 +339,14 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 418px;
-  height: 95px;
+  width: 90%;
+  max-width: 500px;
+  /* height: 95px; */
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: 8px;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
   background: #afbafb;
   color: #0e218e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -388,7 +394,7 @@
 /* Product line */
 .notification-toast .product-line {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   font-family: "Satoshi", sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -421,8 +427,9 @@
   font-size: 14px;
   font-weight: 700;
   color: #0e218e;
-  text-decoration: underline 2px;
-  text-underline-offset: 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
   cursor: pointer;
   align-self: flex-start;
 }
@@ -443,6 +450,7 @@
 .notification-toast .close-btn img {
   width: 16px;
   height: 16px;
+  filter: invert(13%) sepia(96%) saturate(4000%) hue-rotate(215deg) brightness(90%) contrast(95%);
 }
 
 .notification-toast.exit {
@@ -657,8 +665,8 @@
     top: 0rem;
     width: 418px; /* 418px */
     margin: -2rem auto 0;
-    height: 95px; /* figma desktop height */
-    padding: 12px;
+    /* height: 95px; */ /* figma desktop height */
+    padding: 0.75rem;
   }
 }
 

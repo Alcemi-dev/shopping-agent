@@ -51,11 +51,11 @@
   display: flex;
   overflow: visible;
   color: var(--text-on-dark);
-  background: var(--surface-modal) center/cover no-repeat;
+  background: url("/img/background-gradient-mobile.svg") var(--surface-modal) center/cover no-repeat;
   overflow: hidden;
 }
 
-.modal-card picture {
+/* .modal-card picture {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -72,7 +72,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-}
+} */
 @supports (height: 100dvh) {
   .modal-card {
     height: 100dvh;
@@ -103,7 +103,8 @@
   align-items: center;
   justify-content: space-between;
   min-height: 1.5rem;
-  padding: 1rem var(--gutter);
+  /* padding: 1rem var(--gutter); */
+  padding: 1.625rem 1.75rem;
   flex-shrink: 0;
 }
 
@@ -129,7 +130,8 @@
 }
 
 .head-close {
-  padding: 0 0 0.5rem 0.5rem; /* for a larger clickable area, but still correct paddings */
+  /* this actually fucks with the layout too much */
+  /*padding: 0 0 0.5rem 0.5rem;*/ /* for a larger clickable area, but still correct paddings */
 }
 
 .head-back {
@@ -143,7 +145,8 @@
   padding: 0;
 }
 .head-logo-mobile img {
-  height: 1.5rem;
+  /* height: 1.5rem; */
+  width: 4rem;
   width: auto;
   display: block;
 }
@@ -196,7 +199,7 @@
   width: 100%;
   min-height: 0;
   margin: 0 auto;
-  gap: 1.75rem;
+  gap: 3rem; /* 1.75rem buvo, pagal dizaina 3rem, bet gali buti kad kazkur netilps, keep in mind*/
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -315,10 +318,9 @@ html.kb-open .modal-root[open] .chat-log {
     transform: translate(-50%, -50%);
     width: clamp(32.5rem, calc(100vw - 2 * var(--edge)), var(--modal-w-desktop));
     height: min(var(--modal-h-desktop), var(--modal-max-h));
-    border: 0.0625rem solid var(--outline);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-elev-1);
-    background: var(--surface-modal) center/cover no-repeat;
+    border: 1px solid var(--outline);
+    border-radius: 1.25rem; /* var(--radius-xl); */
+    background: url("/img/background-gradient-desktop.svg") var(--surface-modal) center/cover no-repeat;
   }
 
   .modal-ctr {
@@ -326,7 +328,7 @@ html.kb-open .modal-root[open] .chat-log {
     /* padding: 0.3125rem 0; */
   }
   .modal-head {
-    padding: 1.125rem 1.5rem;
+    padding: 1.25rem 1.5rem;
     background: none;
   }
   .modal-head::after {
@@ -400,8 +402,7 @@ html.kb-open .modal-root[open] .chat-log {
     left: 1.5rem;
   }
   .modal-footer .powered-by {
-    height: 1.75rem;
-    width: auto;
+    width: 4rem;
     opacity: 0.85;
     display: block;
   }
@@ -431,8 +432,8 @@ html.kb-open .modal-root[open] .chat-log {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.125rem 0.1875rem;
+  gap: 0.5rem;
+  /* padding: 0.125rem 0.1875rem; */
   height: 1.75rem;
 }
 .cart-indicator .cart-icon-wrap {
@@ -470,11 +471,12 @@ html.kb-open .modal-root[open] .chat-log {
   align-items: center;
   justify-content: center;
 }
-@supports (padding: max(0px)) {
+/* for discussion later */
+/* @supports (padding: max(0px)) {
   .modal-head {
     padding-top: max(1.125rem, env(safe-area-inset-top));
   }
-}
+} */
 
 /* default: nerodom */
 .powered-by--head,
@@ -505,5 +507,13 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .powered-by--head {
     display: none;
+  }
+}
+
+/* only desktop */
+
+@media (min-width: 610px) {
+  .cart-indicator {
+    margin-right: 2.5rem;
   }
 }
