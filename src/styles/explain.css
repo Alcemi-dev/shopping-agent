@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6vh; /* vietoje 48px */
+  gap: 6.1vh; /* vietoje 48px */
   padding: 0 0 3vh;
 }
 
@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  margin-top: 1.25rem;
+  margin-top: 2.5vh; /*1.25rem;*/
   padding: 0;
   list-style: none;
 }
@@ -91,7 +91,7 @@
 /* CTA */
 
 .explain-cta {
-  margin-top: 1.5rem;
+  /* margin-top: 1.5rem; */
   width: 100%;
   height: 3rem;
   border-radius: 1.5rem;
