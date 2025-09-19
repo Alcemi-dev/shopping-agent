@@ -24,31 +24,34 @@ export type Collected = {
   budget?: string;
 };
 
-// ===== Messages =====
-export type UserMsg = {
+// ===== Base Message (visiems bendra) =====
+export type BaseMsg = {
   id: string;
+  source?: "chat" | "voice"; // 👈 dabar visi msg gali turėti source
+};
+
+// ===== Messages =====
+export type UserMsg = BaseMsg & {
   role: "user";
   kind: "text";
   text: string;
 };
 
-export type AssistantTextMsg = {
-  id: string;
+export type AssistantTextMsg = BaseMsg & {
   role: "assistant";
   kind: "text";
   text: string;
   extraClass?: string;
 };
 
-export type LoadingMsg = {
-  id: string;
+export type LoadingMsg = BaseMsg & {
   role: "system";
   kind: "loading";
   text?: string;
+  target?: "text" | "products";
 };
 
-export type ProductsMsg = {
-  id: string;
+export type ProductsMsg = BaseMsg & {
   role: "assistant";
   kind: "products";
   products: Product[];
@@ -59,36 +62,31 @@ export type ProductsMsg = {
   showMore?: boolean;
 };
 
-export type ActionsMsg = {
-  id: string;
+export type ActionsMsg = BaseMsg & {
   role: "assistant";
   kind: "actions";
   actions: { label: string; value: string }[];
   extraClass?: string;
 };
 
-export type FeedbackMsg = {
-  id: string;
+export type FeedbackMsg = BaseMsg & {
   role: "assistant";
   kind: "feedback";
 };
 
-export type ConnectionLostMsg = {
-  id: string;
+export type ConnectionLostMsg = BaseMsg & {
   role: "assistant";
   kind: "connection-lost";
 };
 
-export type ErrorMsg = {
-  id: string;
+export type ErrorMsg = BaseMsg & {
   role: "assistant";
   kind: "error";
   text: string;
 };
 
 // ✅ Naujas tipas — generuojamas atsakymas
-export type GeneratingMsg = {
-  id: string;
+export type GeneratingMsg = BaseMsg & {
   role: "assistant";
   kind: "generating";
   text?: string;
@@ -104,7 +102,7 @@ export type Msg =
   | FeedbackMsg
   | ConnectionLostMsg
   | ErrorMsg
-  | GeneratingMsg; // 👈 pridėtas
+  | GeneratingMsg;
 
 // ===== Product model =====
 export type Product = {

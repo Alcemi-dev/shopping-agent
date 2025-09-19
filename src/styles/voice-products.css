@@ -1,0 +1,249 @@
+/* === VOICE PRODUCTS (mobile-first) === */
+.voice-products-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 24.375rem; /* 390px */
+  margin: 0 auto;
+  border-radius: 1.25rem;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 2%, black 93%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 2%, black 93%, transparent 100%);
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  scrollbar-width: none;
+}
+
+.voice-products-wrap::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.voice-products-header {
+  font-family: "Satoshi", sans-serif;
+  text-align: center;
+}
+
+/* Vienas produktas -> gradientinis tekstas */
+.voice-products-header.is-single {
+  font-weight: 700;
+  font-size: 32px; /* 2rem */
+  line-height: 120%; /* ~38px */
+  letter-spacing: -0.02em;
+
+  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Daug produktų -> paprastas baltas tekstas */
+.voice-products-header.is-multiple {
+  font-weight: 400;
+  font-size: 16px; /* 1rem */
+  line-height: 150%; /* ~24px */
+  letter-spacing: 0.03em;
+
+  color: #fcfcfc;
+}
+.voice-products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.voice-products-grid.is-single {
+  justify-content: center;
+}
+
+.voice-products-grid.is-single .product-card {
+  flex: 1 1 100%;
+  max-width: 20.875rem;
+  height: 25rem;
+}
+
+.voice-products-grid.is-single .product-card .image-wrap {
+  height: 18.25rem;
+  width: 100%;
+}
+
+.voice-products-grid.is-single .product-card .content {
+  height: 6.75rem;
+}
+
+.voice-product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  isolation: isolate;
+  background: rgba(252, 252, 252, 0.05);
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+
+  flex: 1 1 calc(50% - 0.5rem); /* 2 kortelės per eilę mobile */
+  max-width: 10rem;
+  height: 17.875rem;
+}
+
+.voice-product-card .voice-product-img {
+  width: 100%;
+  height: 11.125rem;
+  object-fit: cover;
+  border-radius: 0.625rem;
+  display: block;
+}
+
+.voice-product-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 0.5rem 0.75rem;
+  gap: 0.75rem;
+  width: 100%;
+  height: 6.75rem;
+  z-index: 1;
+}
+
+.voice-products-footer {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.cta-buttons {
+  display: flex;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  min-width: 200px;
+  height: 48px;
+  border-radius: 36px;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #fcfcfc;
+  color: #02092e;
+  box-shadow: 0px 0px 8.9px 4px #dde3ff;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #02092e;
+  border: 2px solid #dde3ff;
+}
+
+.followup-btn {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 200px;
+  min-width: 120px;
+  height: 48px;
+  padding: 12px 32px;
+  background: #fcfcfc;
+  box-shadow: 0px 0px 8.9px 4px #dde3ff;
+  border-radius: 35.5px;
+  border: none;
+  cursor: pointer;
+  font-family: "Satoshi", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0.03em;
+  color: #02092e;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.followup-btn {
+  bottom: 32px;
+}
+
+.voice-products-grid-outer {
+  width: 100%;
+  max-width: 53rem; /* 4 kortelės + 3 tarpai */
+  margin: 0 auto;
+}
+
+/* === DESKTOP === */
+@media (min-width: 768px) {
+  .voice-products-wrap {
+    max-width: 83.125rem;
+    padding: 2.5rem;
+    padding-top: 3rem;
+    margin-top: -5rem;
+    padding-bottom: 7rem;
+    gap: 1rem;
+  }
+
+  .voice-products-header {
+    font-size: 2rem;
+    max-width: 37.5rem;
+    margin: 0 auto;
+  }
+
+  .voice-products-grid {
+    justify-content: center;
+    gap: 1rem;
+  }
+  .voice-products-grid.few {
+    justify-content: center;
+  }
+
+  .voice-products-grid.many {
+    justify-content: flex-start;
+  }
+  .voice-product-card {
+    flex: 1 1 calc(25% - 1rem); /* max 4 kortelės per eilę desktop */
+    max-width: 16rem;
+    width: 14.875rem;
+    height: 22.125rem;
+  }
+
+  .voice-product-card .voice-product-img {
+    width: 100%;
+    height: 15.375rem;
+  }
+
+  .voice-products-grid.is-single .product-card .image-wrap {
+    height: 18.25rem;
+    width: 100%;
+  }
+
+  .voice-product-content {
+    height: 6.75rem;
+  }
+  .add-to-cart-btn,
+  .cart-followup-btn {
+    bottom: 32px;
+  }
+
+  .followup-btn {
+    bottom: 64px;
+  }
+}
