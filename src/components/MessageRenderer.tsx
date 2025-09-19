@@ -1,5 +1,5 @@
 import Chips from "./Chips";
-import { ProductsStripMessage } from "./ProductsStripMessage";
+import { ProductsStripChat } from "./ProductsStrip/ProductsStripChat";
 import LoadingRail from "./LoadingRail";
 import type { Msg } from "../types";
 
@@ -56,7 +56,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetr
   if (m.kind === "products") {
     return (
       <div data-msg-id={m.id} className="msg msg--ai">
-        <ProductsStripMessage
+        <ProductsStripChat
           products={m.products}
           header={m.header}
           footer={m.footer}

@@ -1,0 +1,107 @@
+.loading-cards {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* gradient overlay kaip Vector 63 */
+.loading-overlay {
+  position: absolute;
+  width: 420px;
+  height: 220px;
+  background: #001068;
+  filter: blur(65px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; /* virš kortelių */
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.loading-wrapper {
+  position: absolute;
+  animation: wave 1.5s ease-in-out infinite;
+}
+
+/* kortelė pati */
+.loading-card {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  opacity: 0.85;
+  transform: translate(var(--x), var(--y)) rotateY(-15deg);
+}
+
+/* individualios pozicijos (9 kortelės, 5-ta centre) */
+.loading-wrapper-1 {
+  --x: -360px;
+  --y: 120px;
+  z-index: 9;
+}
+.loading-wrapper-2 {
+  --x: -270px;
+  --y: 90px;
+  z-index: 8;
+}
+.loading-wrapper-3 {
+  --x: -180px;
+  --y: 60px;
+  z-index: 7;
+}
+.loading-wrapper-4 {
+  --x: -90px;
+  --y: 30px;
+  z-index: 6;
+}
+.loading-wrapper-5 {
+  --x: 0px; /* CENTRAS */
+  --y: 0px;
+  z-index: 5;
+}
+.loading-wrapper-6 {
+  --x: 90px;
+  --y: -30px; /* kylam aukštyn */
+  z-index: 4;
+}
+.loading-wrapper-7 {
+  --x: 180px;
+  --y: -60px; /* dar aukščiau */
+  z-index: 3;
+}
+.loading-wrapper-8 {
+  --x: 270px;
+  --y: -90px;
+  z-index: 2;
+}
+.loading-wrapper-9 {
+  --x: 360px;
+  --y: -120px;
+  z-index: 1;
+}
+.loading-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: #fff;
+  font-family: "Satoshi", sans-serif;
+  z-index: 11; /* virš overlay */
+  text-align: center;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-40px);
+  } /* viena banga į viršų */
+  100% {
+    transform: translateY(0);
+  } /* grįžta į pradinę poziciją */
+}

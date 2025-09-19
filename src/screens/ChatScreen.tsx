@@ -26,13 +26,13 @@ type Toast = {
   title: string;
   qty: number;
   status: "added" | "removed";
-  exiting?: boolean;
 };
 
 export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
   const [toastList, setToastList] = useState<Toast[]>([]);
   const timersRef = useRef<Record<string, NodeJS.Timeout>>({});
+  const lastQtyRef = useRef<Record<string, number>>({}); // 👈 keep previous qty per product
 
   const uniqueMessages = useMemo(() => {
     const seen = new Set<string>();
@@ -47,47 +47,77 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
   const lastUser = [...messages].reverse().find((m) => m.role === "user" && m.kind === "text");
 
-  // 👇 handle toast updates su resetinimu
   const handleShowToast = (payload: ToastPayload) => {
     payload.items.forEach((item) => {
-      setToastList((prev) => {
-        let next = [...prev];
-        const existing = next.find((t) => t.title === item.title);
+      const prevQty = lastQtyRef.current[item.title] ?? 0;
+      const delta = item.qty - prevQty;
 
-        if (existing) {
-          // update qty/status
-          next = next.map((t) =>
-            t.title === item.title ? { ...t, qty: item.qty, status: item.qty > 0 ? "added" : "removed" } : t
-          );
+      if (delta > 0) {
+        // 🔹 ADD: visada vienas toast per produktą (qty update), perkeliame į viršų
+        setToastList((prev) => {
+          let existing = prev.find((t) => t.title === item.title && t.status === "added");
+          let next = prev.filter((t) => t.id !== existing?.id);
 
-          // 👇 resetinam timerį visada (tiek +, tiek -)
-          if (timersRef.current[item.title]) {
-            clearTimeout(timersRef.current[item.title]);
+          if (existing) {
+            existing = { ...existing, qty: item.qty }; // atnaujintas kiekis
+          } else {
+            existing = {
+              id: Math.random().toString(36).slice(2),
+              title: item.title,
+              qty: item.qty,
+              status: "added",
+            };
           }
-          timersRef.current[item.title] = setTimeout(() => {
-            setToastList((prev) => prev.filter((x) => x.title !== item.title));
-            delete timersRef.current[item.title];
+
+          // įdedam į viršų
+          next = [existing, ...next].slice(0, 3);
+
+          // reset timer
+          if (timersRef.current[existing.id]) {
+            clearTimeout(timersRef.current[existing.id]);
+          }
+          timersRef.current[existing.id] = setTimeout(() => {
+            setToastList((p) => p.filter((x) => x.id !== existing!.id));
+            delete timersRef.current[existing!.id];
           }, 5000);
-        } else {
-          // naujas toast
-          const newToast: Toast = {
-            id: Math.random().toString(36),
-            title: item.title,
-            qty: item.qty,
-            status: item.qty > 0 ? "added" : "removed",
-          };
 
-          next = [newToast, ...next];
+          return next;
+        });
+      } else if (delta < 0) {
+        // 🔹 REMOVE: grupuojam į vieną toastą per produktą
+        setToastList((prev) => {
+          let existing = prev.find((t) => t.title === item.title && t.status === "removed");
+          let next = prev.filter((t) => t.id !== existing?.id);
 
-          timersRef.current[item.title] = setTimeout(() => {
-            setToastList((prev) => prev.filter((x) => x.id !== newToast.id));
-            delete timersRef.current[item.title];
+          if (existing) {
+            existing = { ...existing, qty: existing.qty + Math.abs(delta) };
+          } else {
+            existing = {
+              id: Math.random().toString(36).slice(2),
+              title: item.title,
+              qty: Math.abs(delta),
+              status: "removed",
+            };
+          }
+
+          // įdedam į viršų
+          next = [existing, ...next].slice(0, 3);
+
+          // reset timer
+          if (timersRef.current[existing.id]) {
+            clearTimeout(timersRef.current[existing.id]);
+          }
+          timersRef.current[existing.id] = setTimeout(() => {
+            setToastList((p) => p.filter((x) => x.id !== existing!.id));
+            delete timersRef.current[existing!.id];
           }, 5000);
-        }
 
-        // max 3 visible
-        return next.slice(0, 3);
-      });
+          return next;
+        });
+      }
+
+      // updateinam atmintį
+      lastQtyRef.current[item.title] = item.qty;
     });
   };
 
@@ -140,14 +170,14 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
       {/* Toast stack */}
       <div className="toast-stack">
         {toastList.map((t, i) => (
-          <div key={t.id} className={`notification-toast ${t.exiting ? "exit" : ""}`} style={{ zIndex: 3 - i }}>
+          <div key={t.id} className="notification-toast" style={{ zIndex: 3 - i }}>
             <div className="checkmark">
               <img src="/img/check.svg" alt="✓" />
             </div>
             <div className="success-col">
               <div className="product-line">
                 <span className="product-name">{t.title}</span>
-                {t.status === "added" && <span className="product-qty">×{t.qty}</span>}
+                <span className="product-qty">×{t.qty}</span>
               </div>
 
               {t.status === "added" ? (
@@ -162,9 +192,9 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
             <button
               className="close-btn"
               onClick={() => {
-                if (timersRef.current[t.title]) {
-                  clearTimeout(timersRef.current[t.title]);
-                  delete timersRef.current[t.title];
+                if (timersRef.current[t.id]) {
+                  clearTimeout(timersRef.current[t.id]);
+                  delete timersRef.current[t.id];
                 }
                 setToastList((prev) => prev.filter((x) => x.id !== t.id));
               }}

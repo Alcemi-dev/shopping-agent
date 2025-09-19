@@ -165,8 +165,8 @@
 }
 
 .vc-generating img {
-  width: 120px;
-  height: 120px;
+  width: 10rem;
+  height: 10rem;
 }
 
 .vc-generating p {
@@ -273,6 +273,13 @@
     align-items: center; /* 👈 centras X ašyje */
     text-align: center;
     padding: 16px;
+    margin-top: -4rem;
+    padding-top: 5rem;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .vc-body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
   }
 
   .vc-answer--user {
