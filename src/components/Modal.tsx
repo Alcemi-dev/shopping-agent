@@ -82,10 +82,17 @@ export default function Modal({
       : { "aria-labelledby": "modal-title" };
 
   return (
-
-    <dialog id="ai-modal" ref={dlgRef} className="modal-root" {...labelProps} onClick={onClose}>
-      <div className={`modal-card ${extraClass}`} onClick={(e) => e.stopPropagation()}>
-
+    <dialog
+      id="ai-modal"
+      ref={dlgRef}
+      className="modal-root"
+      {...labelProps}
+      onClick={onClose}
+    >
+      <div
+        className={`modal-card ${extraClass}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-ctr">
           <div
             className="modal-head"
@@ -141,7 +148,7 @@ export default function Modal({
         </div>
 
         <div id="modal-overlays" aria-hidden />
-        <picture>
+        {/* <picture>
           <source
             srcSet="/img/background-gradient-mobile.svg"
             media="(max-width: 609px)"
@@ -156,7 +163,7 @@ export default function Modal({
             alt=""
             aria-hidden="true"
           />
-        </picture>
+        </picture> */}
       </div>
     </dialog>
   );
