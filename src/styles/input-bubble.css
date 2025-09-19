@@ -55,7 +55,8 @@
   );
   font-size: var(--fs-16, 1rem);
   line-height: var(--lh-relaxed, 1.5);
-  color: #444e85;
+  font-weight: 500;
+  color: var(--text-chat-bubble-default);
 
   overflow-x: hidden;
   overflow-y: hidden;
@@ -67,13 +68,14 @@
 }
 
 .input-wrap.input-bubble .input-field::placeholder {
-  color: #444e85;
-  opacity: 0.9;
+  font-weight: 400;
+  color: var(--text-chat-bubble-secondary);
+  /* opacity: 0.9; */
 }
-.input-wrap.input-bubble .input-field:focus,
+/* .input-wrap.input-bubble .input-field:focus,
 .input-wrap.input-bubble .input-field:not(:placeholder-shown) {
-  color: #0a1444;
-}
+  font-weight: 500;
+} */
 
 /* === Bendras stilius action mygtukams === */
 .input-wrap.input-bubble .input-action {

@@ -29,7 +29,12 @@ type Toast = {
   exiting?: boolean;
 };
 
-export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: ChatScreenProps) {
+export default function ChatScreen({
+  messages,
+  extra,
+  onAddToCart,
+  onRetry,
+}: ChatScreenProps) {
   const logRef = useRef<HTMLDivElement>(null);
   const [toastList, setToastList] = useState<Toast[]>([]);
   const timersRef = useRef<Record<string, NodeJS.Timeout>>({});
@@ -45,7 +50,9 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
   const { showHeadFade, showFootFade } = useChatScroll(logRef, uniqueMessages);
 
-  const lastUser = [...messages].reverse().find((m) => m.role === "user" && m.kind === "text");
+  const lastUser = [...messages]
+    .reverse()
+    .find((m) => m.role === "user" && m.kind === "text");
 
   // 👇 handle toast updates su resetinimu
   const handleShowToast = (payload: ToastPayload) => {
@@ -57,7 +64,13 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
         if (existing) {
           // update qty/status
           next = next.map((t) =>
-            t.title === item.title ? { ...t, qty: item.qty, status: item.qty > 0 ? "added" : "removed" } : t
+            t.title === item.title
+              ? {
+                  ...t,
+                  qty: item.qty,
+                  status: item.qty > 0 ? "added" : "removed",
+                }
+              : t
           );
 
           // 👇 resetinam timerį visada (tiek +, tiek -)
@@ -82,7 +95,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
           timersRef.current[item.title] = setTimeout(() => {
             setToastList((prev) => prev.filter((x) => x.id !== newToast.id));
             delete timersRef.current[item.title];
-          }, 5000);
+          }, 3400);
         }
 
         // max 3 visible
@@ -140,14 +153,20 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
       {/* Toast stack */}
       <div className="toast-stack">
         {toastList.map((t, i) => (
-          <div key={t.id} className={`notification-toast ${t.exiting ? "exit" : ""}`} style={{ zIndex: 3 - i }}>
+          <div
+            key={t.id}
+            className={`notification-toast ${t.exiting ? "exit" : ""}`}
+            style={{ zIndex: 3 - i }}
+          >
             <div className="checkmark">
               <img src="/img/check.svg" alt="✓" />
             </div>
             <div className="success-col">
               <div className="product-line">
                 <span className="product-name">{t.title}</span>
-                {t.status === "added" && <span className="product-qty">×{t.qty}</span>}
+                {t.status === "added" && (
+                  <span className="product-qty">×{t.qty}</span>
+                )}
               </div>
 
               {t.status === "added" ? (

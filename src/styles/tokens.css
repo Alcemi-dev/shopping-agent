@@ -104,4 +104,13 @@
   --text-secondary: #e3e3e3;
   --text-button-primary: #02092e;
   --notif-red: #ff4405;
+  --bg-message-sent: #dee3ff;
+  --text-chat-bubble-secondary: #303b74;
+  --text-chat-bubble-default: #02092e;
+  --fill-20-white: rgba(252, 252, 252, 0.2);
+  --fill-30-white: rgba(252, 252, 252, 0.3);
+  --bg-loading-empty: rgba(252, 252, 252, 0.1);
+  --bg-loading-full: #fcfcfc;
+  --bg-success-message: #afbafb;
+  --bg-main: #02092e;
 }

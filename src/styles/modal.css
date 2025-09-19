@@ -207,7 +207,7 @@
   width: 100%;
   min-height: 0;
   margin: 0 auto;
-  gap: 1.75rem;
+  gap: 3rem; /* 1.75rem buvo, pagal dizaina 3rem, bet gali buti kad kazkur netilps, keep in mind*/
   display: flex;
   flex-direction: column;
   align-items: stretch;
