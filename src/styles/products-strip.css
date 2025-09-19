@@ -394,7 +394,7 @@
 /* Product line */
 .notification-toast .product-line {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   font-family: "Satoshi", sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -428,7 +428,8 @@
   font-weight: 700;
   color: #0e218e;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
   cursor: pointer;
   align-self: flex-start;
 }

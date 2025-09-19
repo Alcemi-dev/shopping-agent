@@ -437,7 +437,7 @@ html.kb-open .modal-root[open] .chat-log {
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.125rem 0.1875rem;
+  /* padding: 0.125rem 0.1875rem; */
   height: 1.75rem;
 }
 .cart-indicator .cart-icon-wrap {
@@ -511,5 +511,13 @@ html.kb-open .modal-root[open] .chat-log {
   }
   .powered-by--head {
     display: none;
+  }
+}
+
+/* only desktop */
+
+@media (min-width: 610px) {
+  .cart-indicator {
+    margin-right: 2.5rem;
   }
 }
