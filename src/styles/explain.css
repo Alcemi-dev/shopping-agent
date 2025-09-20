@@ -30,7 +30,7 @@
 .modal-card:has(.explain) .modal-title {
   max-width: 13.875rem; /* To please figma for now */
   margin-inline: auto;
-  margin-top: 7vh; /* Tebunie, bet reiktu kazkaip kitaip padaryti */
+  margin-top: 1vh; /* Tebunie, bet reiktu kazkaip kitaip padaryti */
   text-align: center;
   font-size: 2rem;
   line-height: 1.2;
