@@ -4,18 +4,19 @@ type Props = {
   value: string;
   onChange: (v: string) => void;
   onSubmit: () => void;
-  onVoice?: () => void; // 👈 pridėjau
+  onVoice?: () => void;
   placeholder?: string;
 };
+
 const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
-  (
-    { value, onChange, onSubmit, onVoice, placeholder = "Ask anything…" },
-    ref
-  ) => {
+  ({ value, onChange, onSubmit, onVoice, placeholder = "Ask anything…" }, ref) => {
     const taRef = useRef<HTMLTextAreaElement>(null);
     const roRef = useRef<ResizeObserver | null>(null);
-    const MAX_H = 136;
 
+    const MIN_H = 24; // 👈 viena eilutė
+    const MAX_H = 136; // 👈 ~8 eilutės
+
+    /** Uždega fade */
     function updateFade(el: HTMLTextAreaElement) {
       const wrap = el.closest(".input-wrap") as HTMLElement | null;
       if (!wrap) return;
@@ -25,40 +26,35 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
       wrap.classList.toggle("scrolled", !atTop);
     }
 
+    /** Dinamiškai nustato textarea aukštį */
     function autoresize(el: HTMLTextAreaElement) {
-      // Saugiam perskaičiavimui — pirma nuliojam, tada matuojam
-      el.style.height = "auto";
+      el.style.height = MIN_H + "px"; // reset į minimalų
       const next = Math.min(el.scrollHeight, MAX_H);
-      el.style.height = next + "px";
-      el.style.overflowY = el.scrollHeight > next ? "auto" : "hidden";
+      el.style.height = next + "px"; // nustatom naują
+      el.style.overflowY = el.scrollHeight > MAX_H ? "auto" : "hidden";
       updateFade(el);
     }
 
+    /** Reset po submit */
     function resetSize(el: HTMLTextAreaElement) {
-      el.style.height = "auto";
+      el.style.height = MIN_H + "px";
       el.style.overflowY = "hidden";
       updateFade(el);
     }
 
-    // 1) Perskaičiuoti kai keičiasi value
     useEffect(() => {
       const el = taRef.current;
       if (!el) return;
       autoresize(el);
     }, [value]);
 
-    // 2) Perskaičiuoti kai keičiasi layout (breakpoint’ai, modal width ir pan.)
     useLayoutEffect(() => {
       const el = taRef.current;
       if (!el) return;
-
-      // pradinė būsena
       autoresize(el);
 
-      // ResizeObserver ant textarea ir jos wrap’o
       const wrap = el.closest(".input-wrap") as HTMLElement | null;
       const ro = new ResizeObserver(() => {
-        // Vengiame sinchroninio reflow — atidedam į kitą frame
         requestAnimationFrame(() => {
           if (taRef.current) autoresize(taRef.current);
         });
@@ -67,7 +63,6 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
       if (wrap) ro.observe(wrap);
       roRef.current = ro;
 
-      // Fallback: lango resize / orientationchange
       const onWinResize = () => {
         if (!taRef.current) return;
         requestAnimationFrame(() => autoresize(taRef.current!));
@@ -89,7 +84,7 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
         onSubmit={(e) => {
           e.preventDefault();
           onSubmit();
-          if (taRef.current) resetSize(taRef.current); // reset po submit
+          if (taRef.current) resetSize(taRef.current);
         }}
       >
         <textarea
@@ -118,23 +113,17 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
           }}
         />
         <div className="button-group">
-          <button
-            type="button"
-            className="input-action voice-action"
-            aria-label="Start voice input"
-            onClick={onVoice}
-          >
-            <img src="/img/voice.svg" alt="Voice" width={32} height={32} />
-          </button>
-          <button
-            type="submit"
-            className="input-action"
-            aria-label="Send message"
-          >
-            <img src="/img/send-button.svg" alt="" width={32} height={32} />
-          </button>
+          {value.trim().length === 0 ? (
+            <button type="button" className="voice-button" aria-label="Start voice input" onClick={onVoice}>
+              <img src="/img/voice.svg" alt="Voice button" />
+            </button>
+          ) : (
+            <button type="submit" className="send-button" aria-label="Send message">
+              <img src="/img/send-button.svg" alt="Send" />
+            </button>
+          )}
         </div>
-        {/* Gradient overlay */}
+
         <div className="input-fade-top" aria-hidden="true" />
       </form>
     );
