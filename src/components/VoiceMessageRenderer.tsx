@@ -1,4 +1,5 @@
 import type { Msg } from "../types";
+import { GeneratingAnswerIcon } from "./SvgIcons";
 
 type Props = {
   m: Msg;
@@ -28,7 +29,7 @@ export default function VoiceMessageRenderer({ m, onRetry }: Props) {
   if (m.role === "assistant" && m.kind === "generating") {
     return (
       <div data-msg-id={m.id} className="vc-msg vc-msg--generating">
-        <img src="/img/generating-answer.svg" alt="Generating" className="vc-generating-icon" />
+        <GeneratingAnswerIcon className="vc-generating-icon" />
         <p className="vc-generating-text">Generating answer…</p>
       </div>
     );

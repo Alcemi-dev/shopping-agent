@@ -1,13 +1,14 @@
 // screens/ConnectionLostScreen.tsx
 import type { FC } from "react";
 import "../styles/connection-lost.css";
+import { ConnectionLostIcon } from "../components/SvgIcons";
 
 const ConnectionLostScreen: FC = () => {
   return (
     <section className="connection-lost-screen">
       <div className="cls-content">
         <div className="cls-icon">
-          <img src="/img/connection-lost.svg" alt="Connection lost" />
+          <ConnectionLostIcon />
         </div>
 
         <h2 className="cls-title">A-oh, we lost a connection :(</h2>

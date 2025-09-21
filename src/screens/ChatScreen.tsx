@@ -4,6 +4,7 @@ import type { Msg } from "../types";
 import MessageRenderer from "../components/MessageRenderer";
 import { useChatScroll } from "../hooks/useChatScroll";
 import type { ToastPayload } from "../components/MessageRenderer";
+import { CheckIcon, CloseIcon } from "../components/SvgIcons";
 
 export type Product = {
   id: string;
@@ -172,7 +173,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
         {toastList.map((t, i) => (
           <div key={t.id} className="notification-toast" style={{ zIndex: 3 - i }}>
             <div className="checkmark">
-              <img src="/img/check.svg" alt="✓" />
+              <CheckIcon />
             </div>
             <div className="success-col">
               <div className="product-line">
@@ -199,7 +200,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
                 setToastList((prev) => prev.filter((x) => x.id !== t.id));
               }}
             >
-              <img src="/img/popup-close.svg" alt="Close" />
+              <CloseIcon />
             </button>
           </div>
         ))}

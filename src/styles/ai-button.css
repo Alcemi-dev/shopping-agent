@@ -43,7 +43,8 @@
   text-transform: capitalize;
 }
 
-.ai-fab__icon img {
+.ai-fab__icon img,
+.ai-fab__icon svg {
   width: 1.375rem;
   height: 1.375rem;
 }

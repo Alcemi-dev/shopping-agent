@@ -1,4 +1,5 @@
 import "../styles/loading.css";
+import { LoadingProductCardIcon } from "./SvgIcons";
 
 export function LoadingProducts() {
   return (
@@ -6,7 +7,7 @@ export function LoadingProducts() {
       {/* kortelės */}
       {Array.from({ length: 9 }).map((_, i) => (
         <div key={i} className={`loading-wrapper loading-wrapper-${i + 1}`} style={{ animationDelay: `${i * 0.15}s` }}>
-          <img src="/img/loading-product-card.svg" alt="Loading product" className="loading-card" />
+          <LoadingProductCardIcon className="loading-card" />
         </div>
       ))}
 

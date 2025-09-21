@@ -120,9 +120,9 @@
 }
 
 .product-card .reactions .circle {
-  width: 1.75rem; /* 28px */
-  height: 1.75rem; /* 28px */
-  border-radius: 1rem; /* 16px */
+  width: 2.25rem; /* 28px */
+  height: 2.25rem; /* 28px */
+  border-radius: 1.125rem; /* 16px */
   border: none;
   display: flex;
   align-items: center;
@@ -180,6 +180,7 @@
   font-weight: 700;
   font-size: 1rem; /* 16px */
   line-height: 130%;
+  color: #fcfcfc;
 }
 .product-card .reviews {
   display: flex;
@@ -187,7 +188,8 @@
   gap: 0.25rem; /* 4px */
   font-size: 0.875rem; /* 14px */
 }
-.product-card .reviews img {
+.product-card .reviews img,
+.product-card .reviews svg {
   width: 0.875rem; /* 14px */
   height: 0.875rem;
 }
@@ -211,7 +213,8 @@
   background: var(--bg-success-message);
 }
 
-.circle.circle--fav.is-fav img {
+.circle.circle--fav.is-fav img,
+.circle.circle--fav.is-fav svg {
   filter: brightness(0) saturate(100%) invert(11%) sepia(36%) saturate(2093%) hue-rotate(206deg) brightness(79%)
     contrast(114%);
 }
@@ -522,12 +525,14 @@
   padding: 0;
 }
 
-.qty-panel button img.icon-add {
+.qty-panel button img.icon-add,
+.qty-panel button svg.icon-add {
   margin-top: -2px;
   margin-right: -8px;
 }
 
-.qty-panel button img.icon-remove {
+.qty-panel button img.icon-remove,
+.qty-panel button svg.icon-remove {
   margin-top: -2px;
   margin-right: 4px;
 }

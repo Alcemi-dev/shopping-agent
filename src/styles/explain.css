@@ -16,8 +16,7 @@
 
 /* ===== Explanation (mobile-first) ===== */
 .explain {
-  /* width: 100%; */
-  width: 19.875rem; /* To please figma for now */
+  width: 100%;
   max-width: var(--explain-col-w-mobile);
   margin-inline: auto;
   display: flex;
@@ -28,9 +27,9 @@
 }
 
 .modal-card:has(.explain) .modal-title {
-  max-width: 13.875rem; /* To please figma for now */
+  max-width: 25rem;
   margin-inline: auto;
-  margin-top: 1vh; /* Tebunie, bet reiktu kazkaip kitaip padaryti */
+  margin-top: 1vh;
   text-align: center;
   font-size: 2rem;
   line-height: 1.2;
@@ -124,9 +123,10 @@
   }
 
   .explain {
-    width: 20rem;
+    width: 100%;
+    max-width: 30rem;
     gap: 3rem; /* 48px tarp dalių */
-    padding: 0 0 1.25rem; /* HMMM, to think about */
+    padding: 0 0 1.25rem;
   }
 
   .modal-card:has(.explain) .modal-title {
@@ -134,16 +134,16 @@
     margin-top: 3rem; /* nebepastumiam į apačią */
   }
 
-  .explain-text {
-    /*max-width: 21.75rem;*/ /* 348px */
-  }
+  /* .explain-text {
+    max-width: 21.75rem; 348px
+  } */
 
   .explain-desc {
     max-width: none;
   }
 
   .explain-cta {
-    width: 13.75rem; /* 220px */
+    width: 16rem; /* 256px */
     margin-top: 0;
   }
 }

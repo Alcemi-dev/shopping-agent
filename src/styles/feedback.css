@@ -47,7 +47,8 @@
   font-size: 0.875rem; /* 14px */
 }
 
-.feedback-icon img {
+.feedback-icon img,
+.feedback-icon svg {
   width: clamp(2.5rem, 12vw, 3.25rem); /* ~40–52px on mobile */
   height: clamp(2.5rem, 12vw, 3.25rem);
   border-radius: 50%;
@@ -55,7 +56,8 @@
   transition: all 0.2s ease;
 }
 
-.feedback-icon.selected img {
+.feedback-icon.selected img,
+.feedback-icon.selected svg {
   background: rgba(255, 255, 255, 0.8);
   border: 0.125rem solid #fff;
   box-shadow: 0 0 1.25rem rgba(255, 255, 255, 0.6);
@@ -135,7 +137,8 @@
     gap: 0.5rem;
   }
 
-  .feedback-icon img {
+  .feedback-icon img,
+  .feedback-icon svg {
     width: clamp(3rem, 6vw, 4rem); /* 48–64px */
     height: clamp(3rem, 6vw, 4rem);
   }

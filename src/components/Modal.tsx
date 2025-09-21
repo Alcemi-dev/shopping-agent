@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
+import { BackIcon, CloseIcon, LogoMobileIcon, LogoDesktopIcon, BackgroundGradiantMobile, BackgroundGradiantDesktop, BackgroundGradiantExplain } from './SvgIcons';
 
 type Props = {
   open: boolean;
@@ -105,26 +106,22 @@ export default function Modal({
               className="head-logo-mobile"
               onClick={onBack ?? onClose}
             >
-              <img src="/img/logo-mobile.svg" alt="Alcemi" />
+              <LogoMobileIcon />
             </button>
 
             <button className="icon-btn head-back" onClick={onBack ?? onClose}>
-              <img src="/img/back.svg" alt="" aria-hidden="true" />
+              <BackIcon />
             </button>
 
             <div className="head-spacer" />
 
             {/* 611–790px: Powered by mobile logo headeryje */}
-            <img
-              className="powered-by powered-by--head"
-              src="/img/logo-mobile.svg"
-              alt="Powered by Alcemi"
-            />
+            <LogoMobileIcon className="powered-by powered-by--head" />
 
             {rightSlot}
 
             <button className="icon-btn head-close" onClick={onClose}>
-              <img src="/img/close.svg" alt="" aria-hidden="true" />
+              <CloseIcon />
             </button>
           </div>
 
@@ -139,31 +136,18 @@ export default function Modal({
 
           {/* ≥790px: Powered by desktop logo footeryje */}
           <div className="modal-footer">
-            <img
-              className="powered-by powered-by--footer"
-              src="/img/logo-desktop.svg"
-              alt="Powered by Alcemi"
-            />
+            <LogoDesktopIcon className="powered-by powered-by--footer" />
           </div>
         </div>
 
         <div id="modal-overlays" aria-hidden />
-        {/* <picture>
-          <source
-            srcSet="/img/background-gradient-mobile.svg"
-            media="(max-width: 609px)"
-          />
-          <source
-            srcSet="/img/background-gradient-desktop.svg"
-            media="(min-width: 610px)"
-          />
-          <img
-            className="background-gradient"
-            src="/img/background-gradient-mobile.svg"
-            alt=""
-            aria-hidden="true"
-          />
-        </picture> */}
+        
+        {/* Background SVG Components */}
+        <div className="background-svg-container" aria-hidden="true">
+          <BackgroundGradiantMobile className="background-svg background-svg--mobile" />
+          <BackgroundGradiantDesktop className="background-svg background-svg--desktop" />
+          <BackgroundGradiantExplain className="background-svg background-svg--explain" />
+        </div>
       </div>
     </dialog>
   );

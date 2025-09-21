@@ -2,6 +2,7 @@ import Chips from "./Chips";
 import { ProductsStripChat } from "./ProductsStrip/ProductsStripChat";
 import LoadingRail from "./LoadingRail";
 import type { Msg } from "../types";
+import { ErrorIcon } from "./SvgIcons";
 
 // 👇 bendras toast payload tipas
 export type ToastPayload = {
@@ -39,7 +40,7 @@ export default function MessageRenderer({ m, onAddToCart, onActionSelect, onRetr
   if (m.role === "assistant" && m.kind === "error") {
     return (
       <div data-msg-id={m.id} className="msg msg--ai error-bubble">
-        <img src="/img/error.svg" alt="Error" className="error-icon" />
+        <ErrorIcon className="error-icon" />
         <div>
           <p className="ai-text error-text">{m.text}</p>
           {onRetry && (

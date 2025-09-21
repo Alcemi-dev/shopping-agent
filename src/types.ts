@@ -119,6 +119,16 @@ export type ToastPayload = {
   items: { title: string; qty: number }[];
 };
 
+// ===== Configuration =====
+export interface ShoppingAgentConfig {
+  promptType?: string;
+  welcomeMessage?: string;
+  enableFloatingChat?: boolean;
+  buttonText?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
+}
+
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
   "Product information",

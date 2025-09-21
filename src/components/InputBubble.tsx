@@ -1,4 +1,5 @@
 import { useEffect, useRef, forwardRef, useLayoutEffect } from "react";
+import { SendButtonIcon, VoiceIcon } from './SvgIcons';
 
 type Props = {
   value: string;
@@ -115,11 +116,11 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
         <div className="button-group">
           {value.trim().length === 0 ? (
             <button type="button" className="voice-button" aria-label="Start voice input" onClick={onVoice}>
-              <img src="/img/voice.svg" alt="Voice button" />
+              <VoiceIcon />
             </button>
           ) : (
             <button type="submit" className="send-button" aria-label="Send message">
-              <img src="/img/send-button.svg" alt="Send" />
+              <SendButtonIcon />
             </button>
           )}
         </div>

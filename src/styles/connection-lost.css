@@ -17,7 +17,8 @@
   gap: 20px;
 }
 
-.cls-icon img {
+.cls-icon img,
+.cls-icon svg {
   width: 120px;
   height: auto;
 }
@@ -46,7 +47,8 @@
 
 /* Desktop tweaks */
 @media (min-width: 610px) {
-  .cls-icon img {
+  .cls-icon img,
+  .cls-icon svg {
     margin-top: -4rem;
     width: 144px;
   }

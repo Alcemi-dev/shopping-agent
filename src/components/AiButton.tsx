@@ -1,3 +1,5 @@
+import { SearchIcon } from './SvgIcons';
+
 type Props = {
   onOpen: () => void;
   hasUnread?: boolean;
@@ -13,7 +15,7 @@ export default function AiButton({ onOpen, hasUnread }: Props) {
     >
       <span className="ai-fab__label">Quick search</span>
       <span className="ai-fab__icon" aria-hidden>
-        <img src="img/search-icon.svg" alt="" />
+        <SearchIcon />
       </span>
       {hasUnread && <span className="notif-dot" />}
     </button>

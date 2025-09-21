@@ -164,7 +164,8 @@
   width: 100%;
 }
 
-.vc-generating img {
+.vc-generating img,
+.vc-generating svg {
   width: 10rem;
   height: 10rem;
 }
@@ -198,13 +199,15 @@
   cursor: pointer;
 }
 
-.vc-mic img {
+.vc-mic img,
+.vc-mic svg {
   width: 10rem;
   height: auto;
   transition: all 0.3s ease;
 }
 
-.vc-mic.is-listening img {
+.vc-mic.is-listening img,
+.vc-mic.is-listening svg {
   width: 6rem;
   height: auto;
   margin-bottom: 1rem;
@@ -244,7 +247,8 @@
   line-height: 0;
 }
 
-.vc-footer .footer-btn img {
+.vc-footer .footer-btn img,
+.vc-footer .footer-btn svg {
   width: 1.5rem;
   height: 1.5rem;
 }
@@ -306,7 +310,8 @@
     max-width: 20rem;
   }
 
-  .vc-mic img {
+  .vc-mic img,
+  .vc-mic svg {
     margin-bottom: 80px;
   }
 
