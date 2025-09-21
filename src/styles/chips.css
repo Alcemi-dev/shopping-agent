@@ -80,6 +80,9 @@
   margin: 0;
 }
 
+html.kb-open .modal-title {
+  padding-top: 10rem;
+}
 /* Kai mobile atidaryta keyboard → karuselė */
 html.kb-open .chips-inline {
   flex-wrap: nowrap;

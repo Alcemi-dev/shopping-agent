@@ -501,5 +501,7 @@ html.kb-open .modal-root[open] .chat-log {
 @media (min-width: 810px) {
   .cart-indicator {
     margin-right: 2.5rem;
+    margin-top: -0.3rem;
+    padding-top: 0.3rem;
   }
 }
