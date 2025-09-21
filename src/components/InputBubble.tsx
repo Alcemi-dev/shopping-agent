@@ -13,10 +13,9 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
     const taRef = useRef<HTMLTextAreaElement>(null);
     const roRef = useRef<ResizeObserver | null>(null);
 
-    const MIN_H = 24; // 👈 viena eilutė
-    const MAX_H = 136; // 👈 ~8 eilutės
+    const MIN_H = 24;
+    const MAX_H = 136;
 
-    /** Uždega fade */
     function updateFade(el: HTMLTextAreaElement) {
       const wrap = el.closest(".input-wrap") as HTMLElement | null;
       if (!wrap) return;
@@ -26,16 +25,14 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
       wrap.classList.toggle("scrolled", !atTop);
     }
 
-    /** Dinamiškai nustato textarea aukštį */
     function autoresize(el: HTMLTextAreaElement) {
-      el.style.height = MIN_H + "px"; // reset į minimalų
+      el.style.height = MIN_H + "px";
       const next = Math.min(el.scrollHeight, MAX_H);
-      el.style.height = next + "px"; // nustatom naują
+      el.style.height = next + "px";
       el.style.overflowY = el.scrollHeight > MAX_H ? "auto" : "hidden";
       updateFade(el);
     }
 
-    /** Reset po submit */
     function resetSize(el: HTMLTextAreaElement) {
       el.style.height = MIN_H + "px";
       el.style.overflowY = "hidden";
@@ -43,9 +40,7 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
     }
 
     useEffect(() => {
-      const el = taRef.current;
-      if (!el) return;
-      autoresize(el);
+      if (taRef.current) autoresize(taRef.current);
     }, [value]);
 
     useLayoutEffect(() => {
@@ -112,16 +107,24 @@ const InputBubble = forwardRef<HTMLTextAreaElement, Props>(
             }
           }}
         />
+
         <div className="button-group">
-          {value.trim().length === 0 ? (
-            <button type="button" className="voice-button" aria-label="Start voice input" onClick={onVoice}>
-              <img src="/img/voice.svg" alt="Voice button" />
-            </button>
-          ) : (
-            <button type="submit" className="send-button" aria-label="Send message">
-              <img src="/img/send-button.svg" alt="Send" />
-            </button>
-          )}
+          <button
+            type="button"
+            className={`voice-button ${value.trim().length > 0 ? "hidden" : ""}`}
+            aria-label="Start voice input"
+            onClick={onVoice}
+          >
+            <img src="/img/voice.svg" alt="Voice button" />
+          </button>
+
+          <button
+            type="submit"
+            className={`send-button ${value.trim().length === 0 ? "hidden" : ""}`}
+            aria-label="Send message"
+          >
+            <img src="/img/send-button.svg" alt="Send" />
+          </button>
         </div>
 
         <div className="input-fade-top" aria-hidden="true" />
