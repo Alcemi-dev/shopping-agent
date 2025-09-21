@@ -46,7 +46,7 @@
 }
 
 /* Desktop tweaks */
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .cls-icon img,
   .cls-icon svg {
     margin-top: -4rem;

@@ -1,7 +1,7 @@
 // src/components/ProductsStrip/ProductsStripChat.tsx
 import { useRef, useEffect, useState } from "react";
 import "../../styles/products-strip.css";
-import type { Product } from "../../screens/ChatScreen";
+import type { Product, ToastPayload } from "../../types"; // 👈 čia importuojam ToastPayload
 import { useDragScroll } from "../../hooks/useDragScroll";
 import { useProductsState } from "./useProductsState";
 import { ThumbsDownIcon, ThumbsUpIcon, RemoveIcon, AddIcon, StarIcon } from "../SvgIcons";
@@ -13,7 +13,7 @@ type Props = {
   visibleCount?: number;
   showMore?: boolean;
   onAddToCart?: (title: string, qty: number) => void;
-  onShowToast?: (payload: { items: { title: string; qty: number }[] }) => void;
+  onShowToast?: (payload: ToastPayload) => void; // 👈 VIENODAS tipas
 };
 
 export function ProductsStripChat({
@@ -53,7 +53,9 @@ export function ProductsStripChat({
     const product = products[0];
     if (product) {
       onAddToCart?.(product.title, 1);
-      onShowToast?.({ items: [{ title: product.title, qty: 1 }] });
+      onShowToast?.({
+        items: [{ title: product.title, qty: 1, status: "added" }], // 👈 pridedam status
+      });
       setCtaDismissed(true);
       setShowFollowup(true);
     }

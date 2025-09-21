@@ -1,13 +1,8 @@
 import Chips from "./Chips";
 import { ProductsStripChat } from "./ProductsStrip/ProductsStripChat";
 import LoadingRail from "./LoadingRail";
-import type { Msg } from "../types";
+import type { Msg, ToastPayload } from "../types";
 import { ErrorIcon } from "./SvgIcons";
-
-// 👇 bendras toast payload tipas
-export type ToastPayload = {
-  items: { title: string; qty: number }[];
-};
 
 type Props = {
   m: Msg;

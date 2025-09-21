@@ -116,7 +116,7 @@
 
 /* === DESKTOP override'ai === */
 
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .modal-card:has(.explain) .modal-col {
     margin-top: 3vh; /* nebepastumiam */
     gap: 3rem; /* 48px */

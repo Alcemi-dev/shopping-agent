@@ -120,8 +120,8 @@
   transform: translateY(-2px);
 }
 
-/* === Desktop tweaks (≥610px) === */
-@media (min-width: 610px) {
+/* === Desktop tweaks (≥810px) === */
+@media (min-width: 810px) {
   .feedback-wrap {
     padding: 3rem;
     width: 100%;

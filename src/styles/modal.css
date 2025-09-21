@@ -182,7 +182,7 @@
 .modal-title {
   margin: 0 auto;
   width: 70%;
-  margin-top: clamp(3rem, 15vh, 8rem);
+  margin-top: 15dvh;
   text-align: center;
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 400;
@@ -321,7 +321,7 @@ html.kb-open .modal-root[open] .chat-log {
 /* ==========================================================================
    15. Desktop Overrides
    ========================================================================== */
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   :root {
     --chat-w: 30rem;
   }
@@ -447,7 +447,7 @@ html.kb-open .modal-root[open] .chat-log {
    ========================================================================== */
 
 /* Mobile – cart indikatorius centre */
-@media (max-width: 609px) {
+@media (max-width: 810px) {
   .modal-head {
     position: relative; /* kad būtų reference point */
   }
@@ -516,20 +516,6 @@ html.kb-open .modal-root[open] .chat-log {
   display: none;
 }
 
-/* 611–790px → rodom headeryje mobile logo KAIRĖJE */
-@media (min-width: 610px) and (max-width: 790px) {
-  .powered-by--head {
-    display: block;
-    order: -1; /* nustumia į pradžią flex konteineryje */
-    margin-right: auto;
-    height: 1.5rem;
-    opacity: 0.85;
-  }
-  .modal-footer {
-    display: none;
-  }
-}
-
 /* ≥790px → rodom footeryje desktop logo */
 @media (min-width: 790px) {
   .powered-by--footer {
@@ -544,7 +530,7 @@ html.kb-open .modal-root[open] .chat-log {
 
 /* only desktop */
 
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .cart-indicator {
     margin-right: 2.5rem;
   }

@@ -74,8 +74,8 @@
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
-/* === Desktop (≥610px) === */
-@media (min-width: 610px) {
+/* === Desktop (≥810px) === */
+@media (min-width: 810px) {
   .feedback-filled-wrap {
     gap: 4rem;
     padding: 5rem;
