@@ -14,14 +14,7 @@
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-on-dark, #fff);
 
-  font-family: var(
-    --font-sans,
-    system-ui,
-    -apple-system,
-    Segoe UI,
-    Roboto,
-    sans-serif
-  );
+  font-family: var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 500;
   font-size: var(--fs-16, 1rem);
   line-height: 1.3;
@@ -57,8 +50,7 @@
 .chip[aria-pressed="true"]:focus:not(:active) {
   outline: none;
   background: var(--fill-20-white);
-  box-shadow: 0 0 0 2px #fff inset,
-    /* imituoja baltą borderį */ 0 0 0 6px var(--ring-focus, #3654ff);
+  box-shadow: 0 0 0 2px #fff inset, /* imituoja baltą borderį */ 0 0 0 6px var(--ring-focus, #3654ff);
 }
 
 /* Default: mobile chips = stack kaip desktop */
@@ -66,6 +58,7 @@
   display: flex;
   flex-wrap: wrap; /* leidžia wrap’inti */
   margin: 0 auto;
+  max-width: 35rem;
   justify-content: center;
   gap: 0.75rem;
   overflow: visible; /* jokių scroll */
@@ -81,6 +74,10 @@
   justify-content: flex-start; /* 👈 kairėje */
   padding: 0;
   padding-top: 1rem;
+}
+
+.products-overlay .chips-block .chips-inline.category-chips {
+  margin: 0;
 }
 
 /* Kai mobile atidaryta keyboard → karuselė */
@@ -106,7 +103,7 @@ html.kb-open .chips-inline::-webkit-scrollbar {
 }
 
 /* ===== Desktop patobulinimai ===== */
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .chip {
     /* min-height: 2.9375rem; 47px */
     /* font-size: 1.125rem; ~18px */

@@ -10,8 +10,8 @@
   scrollbar-width: none;
   scroll-behavior: auto;
   padding: 0 var(--gutter) 0;
-  padding-bottom: 2.5rem;
-  margin-bottom: 8rem;
+  padding-bottom: 5.5rem;
+  margin-bottom: 3rem;
   margin-top: -0.5rem;
 }
 .chat-log::-webkit-scrollbar {
@@ -69,6 +69,7 @@
   padding-left: 2rem;
   margin-right: -2rem;
   padding-right: 2rem;
+  justify-content: flex-start;
 }
 
 /* support text be padding-bottom – tarpelį daro ::after */
@@ -116,10 +117,10 @@
 }
 
 .chat-log {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5.6%, black 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 4%, black 93%, transparent 100%);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 5.6%, black 93%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 4%, black 93%, transparent 100%);
   mask-repeat: no-repeat;
   mask-size: 100% 100%;
 }
@@ -202,16 +203,15 @@
   margin-top: 1rem;
 }
 /* Desktop override */
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .chat-log {
     position: static;
-    width: 30rem;
-    margin-bottom: 10rem;
+    width: 40rem;
+    height: 100dvh;
     margin-top: -4.3rem;
     padding-top: 6.25rem;
     padding-left: 0;
     padding-right: 0;
-    padding-bottom: 3.5rem;
   }
 
   .modal-ctr {
@@ -268,5 +268,50 @@
 
   .ai-text.error-text {
     padding-left: 0;
+  }
+}
+@media (min-width: 810px) {
+  .chat-log {
+    position: static;
+    width: 100%; /* nebūtinai 40rem, o full modal */
+    height: 100%; /* 👈 per visą modal aukštį */
+    max-height: none; /* nuimam ribojimą */
+    margin-top: -4.3rem;
+    padding-top: 6.25rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0;
+    padding-bottom: 10rem;
+  }
+
+  .chat-messages {
+    width: 30rem;
+    margin: 0 auto;
+  }
+
+  .chat-log .msg:first-child {
+    padding-top: 0rem;
+  }
+
+  .chat-head-fade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* visas modal plotis */
+    height: 4rem;
+    background: none;
+    pointer-events: none;
+    z-index: 15;
+    margin: 0;
+    margin-top: -4.4rem;
+  }
+
+  .chat-foot-fade {
+    position: absolute;
+    bottom: 0;
+    width: 100%; /* visas modal plotis */
+    background: transparent;
+    pointer-events: none;
+    z-index: 0;
   }
 }
