@@ -1,26 +1,43 @@
-// src/components/ProductsStrip/useProductsState.ts
 import { useState, useEffect } from "react";
-import type { Product } from "../../screens/ChatScreen";
+import type { Product, ToastPayload } from "../../types";
 
 type Options = {
-  onAddToCart?: (title: string, qty: number) => void;
-  onShowToast?: (payload: { items: { title: string; qty: number }[] }) => void;
+  onAddToCart?: (title: string, delta: number) => void;
+  onShowToast?: (payload: ToastPayload) => void;
 };
 
-export function useProductsState(
-  products: Product[], // dabar naudojam useEffect'e
-  { onAddToCart, onShowToast }: Options = {}
-) {
+export function useProductsState(products: Product[], { onAddToCart, onShowToast }: Options = {}) {
   const [muted, setMuted] = useState<Record<string, boolean>>({});
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [lastChange, setLastChange] = useState<{
+    delta: number;
+    next: number;
+    product: Product;
+  } | null>(null);
 
-  //fiksuojam product list pasikeitimus, bet nieko nevalom
+  // 👇 Visas side-effect logikas dedam čia
   useEffect(() => {
-    // ateityje galima čia dėti logiką, pvz. sync su backend cart
-    // dabar tiesiog pasakom TS, kad products naudojamas
-    console.debug("Products list updated:", products.length);
-  }, [products]);
+    if (!lastChange) return;
+    const { delta, next, product } = lastChange;
+
+    if (delta !== 0) {
+      onAddToCart?.(product.title, delta);
+
+      if (delta > 0) {
+        onShowToast?.({
+          items: [{ title: product.title, qty: next, status: "added" }],
+        });
+      } else {
+        const removed = Math.abs(delta);
+        onShowToast?.({
+          items: [{ title: product.title, qty: removed, status: "removed" }],
+        });
+      }
+    }
+
+    setLastChange(null); // resetinam
+  }, [lastChange, onAddToCart, onShowToast]);
 
   const changeQty = (id: string, delta: number, product?: Product) => {
     setQuantities((prev) => {
@@ -28,14 +45,8 @@ export function useProductsState(
       const next = Math.max(0, current + delta);
 
       if (product) {
-        if (current === 0 && delta > 0) {
-          onAddToCart?.(product.title, 1);
-          onShowToast?.({ items: [{ title: product.title, qty: 1 }] });
-        } else if (delta > 0) {
-          onShowToast?.({ items: [{ title: product.title, qty: next }] });
-        } else if (delta < 0) {
-          onShowToast?.({ items: [{ title: product.title, qty: next }] });
-        }
+        // 👇 užfiksuojam pakeitimą, bet ne render callback’o viduje kviečiam setState kitam componentui
+        setLastChange({ delta, next, product });
       }
 
       return { ...prev, [id]: next };
@@ -46,6 +57,13 @@ export function useProductsState(
     setMuted((prev) => {
       const newMuted = !prev[id];
       if (newMuted) {
+        const qty = quantities[id] ?? 0;
+        if (qty > 0) {
+          const product = products.find((p) => p.id === id);
+          if (product) {
+            setLastChange({ delta: -qty, next: 0, product });
+          }
+        }
         setQuantities((q) => ({ ...q, [id]: 0 }));
         setFavorites((f) => ({ ...f, [id]: false }));
       }

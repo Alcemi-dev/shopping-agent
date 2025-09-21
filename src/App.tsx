@@ -26,7 +26,6 @@ export default function App() {
   const dockRef = useRef<HTMLDivElement>(null);
   const chat = useChatEngine();
 
-  // 👇 vietoj setMessages naudojam chat.addMessage
   const { mode } = useSpeechToText(chat.addMessage);
 
   /* dock height */
@@ -86,10 +85,26 @@ export default function App() {
     }
   }, [chat.messages, open]);
 
+  // 👇 pirmo karto logika
+  useEffect(() => {
+    const hasSeenExplain = localStorage.getItem("hasSeenExplain");
+    if (!hasSeenExplain) {
+      setView("explain");
+    } else {
+      setView("chips");
+    }
+  }, []);
+
   const handleOpen = () => {
     setOpen(true);
     setHasUnread(false);
-    if (chat.messages.length === 0) setView("explain");
+
+    const hasSeenExplain = localStorage.getItem("hasSeenExplain");
+    if (!hasSeenExplain && chat.messages.length === 0) {
+      setView("explain");
+    } else if (chat.messages.length === 0) {
+      setView("chips");
+    }
   };
 
   const handleClose = () => setOpen(false);
@@ -171,7 +186,12 @@ export default function App() {
         }
       >
         <Modal.Screen show={view === "explain"}>
-          <ExplainScreen onContinue={() => setView("chips")} />
+          <ExplainScreen
+            onContinue={() => {
+              localStorage.setItem("hasSeenExplain", "true");
+              setView("chips");
+            }}
+          />
         </Modal.Screen>
 
         <Modal.Screen show={view === "chips"}>
@@ -199,7 +219,7 @@ export default function App() {
             }}
             onPickChip={pickTopChip}
             onVoiceStart={() => {
-              setAutoStart(true); // 👈 čia mic startuoja
+              setAutoStart(true);
               setView("voicechat");
             }}
           />
@@ -208,7 +228,7 @@ export default function App() {
         <Modal.Screen show={view === "voicechat"}>
           <VoiceChatScreen
             chat={chat}
-            autoStart={autoStart} // 👈 dinamiškai pagal scenarijų
+            autoStart={autoStart}
             initialQuestion="Hello, what are you looking for today?"
             onBack={() => setView("chips")}
             onKeyboard={() => setView("chat")}
@@ -240,10 +260,8 @@ export default function App() {
                 onSubmit={() => send(query)}
                 onVoice={() => {
                   if (chat.messages.length === 0) {
-                    // 👇 jei istorijos nėra → VoiceScreen
                     setView("voice");
                   } else {
-                    // 👇 jei yra istorija → VoiceChatScreen, bet mic nestartuoja
                     setAutoStart(false);
                     setView("voicechat");
                   }

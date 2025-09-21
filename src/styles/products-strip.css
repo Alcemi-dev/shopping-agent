@@ -324,7 +324,7 @@
 /* Toast container */
 .toast-stack {
   position: fixed;
-  top: 4.5rem; /* 👈 reguliuok viso stacko poziciją */
+  top: 2em; /* 👈 reguliuok viso stacko poziciją */
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -338,10 +338,9 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 0); /* bazinis centras */
   width: 90%;
   max-width: 500px;
-  /* height: 95px; */
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -351,25 +350,59 @@
   color: #0e218e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(15px);
+  opacity: 0;
 
-  animation: fadeInUp 0.2s ease forwards;
-  transition: transform 0.25s ease, opacity 0.25s ease; /* 👈 tik judėjimui */
+  /* 👇 transition ir margin, ir filter */
+  transition: margin-top 0.35s cubic-bezier(0.4, 0, 0.2, 1), filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* stacking */
+/* Animacijos */
+.notification-toast.enter {
+  animation: fadeIn 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.notification-toast.exit {
+  animation: fadeOut 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Keyframes (fade + slight slide) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50px); /* truputį aukščiau */
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50px);
+  }
+}
+
+/* stacking be transform konfliktų */
 .toast-stack .notification-toast:nth-child(1) {
-  transform: translate(-50%, 0);
-  opacity: 1;
+  margin-top: 0;
+  filter: opacity(1);
   z-index: 3;
 }
+
 .toast-stack .notification-toast:nth-child(2) {
-  transform: translate(-50%, -10px);
-  opacity: 0.7;
+  margin-top: -8px; /* 👈 reguliuok kiek persidengia */
+  filter: opacity(0.8);
   z-index: 2;
 }
+
 .toast-stack .notification-toast:nth-child(3) {
-  transform: translate(-50%, -20px);
-  opacity: 0.4;
+  margin-top: -16px;
+  filter: opacity(0.6);
   z-index: 1;
 }
 /* Checkmark */
@@ -450,14 +483,8 @@
 .notification-toast .close-btn img {
   width: 16px;
   height: 16px;
-  filter: invert(13%) sepia(96%) saturate(4000%) hue-rotate(215deg) brightness(90%) contrast(95%);
 }
 
-.notification-toast.exit {
-  opacity: 0 !important;
-  transform: translate(-50%, -20px) scale(0.95) !important;
-  transition: all 0.3s ease;
-}
 .products-cta .cta-q-secondary {
   margin-top: 1rem;
 }
@@ -558,23 +585,73 @@
   z-index: 0; /* sumažinam, kad neperšoktų inputo */
 }
 
-/* === 9) Desktop overrides (≥ 610px) ====================================== */
+/* === 9a) Tablet overrides (610px – 809px) ================================ */
 
-@media (min-width: 610px) {
-  /* 610px */
+@media (min-width: 560px) and (max-width: 810px) {
+  .product-card {
+    width: 14rem; /* ~176px */
+    height: auto;
+  }
+  .product-card .image-wrap {
+    width: 14rem; /* ~176px */
+    height: 14rem; /* ~192px */
+  }
+
+  .products-scroll.is-multiple {
+    gap: 0.875rem; /* tarp mobilio ir desktop */
+  }
+
+  .products-header,
+  .products-contain,
+  .products-cta,
+  .products-followup {
+    max-width: 34rem; /* šiek tiek platesnis nei desktop 30rem */
+    margin: 0;
+  }
+  .products-header {
+    margin-bottom: 1rem;
+  }
+
+  .products-cta .cta-buttons {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .products-header-more {
+    font-size: 0.95rem;
+  }
+
+  .show-more-btn {
+    margin-bottom: 1rem;
+  }
+}
+/* === 9) Desktop overrides (≥ 810px) ====================================== */
+
+@media (min-width: 810px) {
+  /* 810px */
   /* Burbulas jau absolute by default – nieko nekeičiam, tik vidines ribas */
+  .products-wrap {
+    width: 40rem;
 
+    position: relative; /* svarbu: reference point absolute children’ui */
+  }
   .products-scroll.is-multiple {
     display: flex;
     justify-content: center;
     gap: 1rem;
     overflow: visible;
     flex-wrap: nowrap;
-    transform: scale(0.76); /* temporary fix for size*/
     transform-origin: center bottom;
-    margin-top: -5rem;
+    margin-right: 8.2rem;
   }
 
+  .products-overlay {
+    position: relative;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 1rem;
+  }
   .products-scroll.is-single {
     display: flex;
     justify-content: flex-start;
@@ -595,12 +672,10 @@
 
   .products-header {
     max-width: 30rem;
-    margin: 0 auto;
     padding-left: 0;
   }
   .products-contain {
     max-width: 30rem;
-    margin: 0 auto;
   }
   .products-followup {
     margin-top: 0;

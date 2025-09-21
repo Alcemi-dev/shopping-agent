@@ -135,7 +135,7 @@
 }
 
 /* === DESKTOP override === */
-@media (min-width: 610px) {
+@media (min-width: 810px) {
   .input-wrap.input-bubble {
     width: 480px;
     min-height: 60px;
