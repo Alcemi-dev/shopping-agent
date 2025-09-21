@@ -163,7 +163,7 @@
 .modal-title {
   margin: 0 auto;
   width: 70%;
-  margin-top: 15dvh;
+  margin-top: 13dvh;
   text-align: center;
   font-family: var(--font-sans, "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 400;
@@ -338,8 +338,8 @@ html.kb-open .modal-root[open] .chat-log {
     display: none !important;
   }
   .modal-title {
-    max-width: 25rem;
-    font-size: 1.875rem;
+    max-width: 24rem;
+    font-size: 2rem;
   }
   .break--desktop {
     display: inline;
