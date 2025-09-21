@@ -70,6 +70,8 @@
   margin-right: -2rem;
   padding-right: 2rem;
   justify-content: flex-start;
+  display: flex;
+  flex-wrap: wrap; /* leidžia chipams peršokti į kitą eilutę */
 }
 
 /* support text be padding-bottom – tarpelį daro ::after */
@@ -277,7 +279,6 @@
     height: 100%; /* 👈 per visą modal aukštį */
     max-height: none; /* nuimam ribojimą */
     margin-top: -4.3rem;
-    padding-top: 6.25rem;
     padding-left: 0;
     padding-right: 0;
     margin-bottom: 0;

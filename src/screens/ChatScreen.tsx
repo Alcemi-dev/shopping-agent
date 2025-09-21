@@ -62,10 +62,8 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
 
         if (existing) {
           if (status === "added") {
-            // ✅ Added – rodom bendrą kiekį iš state
             existing = { ...existing, qty: item.qty, exiting: false };
           } else {
-            // ✅ Removed – kaupiam pašalintų kiekį
             existing = { ...existing, qty: existing.qty + item.qty, exiting: false };
           }
         } else {
@@ -92,7 +90,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
     });
   };
 
-  // forward touch events
+  // forward touch events (dragging modal content)
   useEffect(() => {
     const host = document.querySelector(".modal-card") as HTMLElement | null;
     const log = logRef.current;
@@ -118,6 +116,36 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
       host.removeEventListener("touchmove", forwardTouch);
       host.removeEventListener("touchend", forwardTouch);
       host.removeEventListener("touchcancel", forwardTouch);
+    };
+  }, []);
+
+  // auto scroll kai focus/blur ant input (iOS keyboard fix)
+  useEffect(() => {
+    const log = logRef.current;
+    if (!log) return;
+
+    const inputs = document.querySelectorAll("input, textarea");
+
+    const scrollToBottom = () => {
+      requestAnimationFrame(() => {
+        log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
+      });
+      // papildomas delay Safari animacijai
+      setTimeout(() => {
+        log.scrollTo({ top: log.scrollHeight, behavior: "smooth" });
+      }, 300);
+    };
+
+    inputs.forEach((inp) => {
+      inp.addEventListener("focus", scrollToBottom);
+      inp.addEventListener("blur", scrollToBottom);
+    });
+
+    return () => {
+      inputs.forEach((inp) => {
+        inp.removeEventListener("focus", scrollToBottom);
+        inp.removeEventListener("blur", scrollToBottom);
+      });
     };
   }, []);
 
