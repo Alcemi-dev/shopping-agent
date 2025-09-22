@@ -4,6 +4,9 @@
 /* Design tokens */
 @import "./styles/tokens.css";
 
+/* Themes (naujas failas) */
+@import "./styles/themes.css";
+
 /* Feature CSS (centrizuojam čia, o ne App.tsx) */
 @import "./styles/modal.css";
 @import "./styles/input-bubble.css";
