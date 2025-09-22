@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import "../styles/voice-screen.css";
 import Chips from "../components/Chips";
 import { CHIP_ITEMS } from "../types";
+import { VoiceSphereIcon, SpeakerIcon, KeyboardIcon } from "../components/SvgIcons";
 
 type VoiceScreenProps = {
   onBack: () => void;
@@ -50,15 +51,15 @@ export default function VoiceScreen({ onBack, onPickChip, onVoiceStart }: VoiceS
 
       {/* 👇 čia paspaudus pereina į VoiceChatScreen ir iškart paleidžia mic */}
       <button className="mic-btn" onClick={() => onVoiceStart({ autoStart: true })}>
-        <img src="/img/voice-sphere.svg" alt="Mic" />
+        <VoiceSphereIcon />
       </button>
 
       <div className="voice-footer">
         <button className="footer-btn">
-          <img src="/img/speaker.svg" alt="Speaker" />
+          <SpeakerIcon />
         </button>
         <button className="footer-btn" onClick={onBack}>
-          <img src="/img/keyboard.svg" alt="Keyboard" />
+          <KeyboardIcon />
         </button>
       </div>
     </div>

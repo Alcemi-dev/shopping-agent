@@ -9,12 +9,17 @@ import FeedbackFilledScreen from "./screens/FeedbackFilledScreen";
 import ConnectionLostScreen from "./screens/ConnectionLostScreen";
 import VoiceScreen from "./screens/VoiceScreen";
 import VoiceChatScreen from "./screens/VoiceChatScreen"; // 👈 turi būti default export
-import type { Category, View } from "./types";
+import type { Category, View, ShoppingAgentConfig } from "./types";
 import { CHIP_ITEMS, SUBCHIPS } from "./types";
 import { useChatEngine } from "./hooks/useChatEngine";
 import { useSpeechToText } from "./hooks/useSpeechToText";
+import { CartIcon } from "./components/SvgIcons";
 
-export default function App() {
+interface AppProps {
+  config: ShoppingAgentConfig;
+}
+
+export default function App({ config }: AppProps) {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>("chips");
   const [query, setQuery] = useState("");
@@ -169,7 +174,7 @@ export default function App() {
           view === "explain"
             ? "How to use Quick Search"
             : view === "chips" || view === "voice"
-            ? "Hello, what are you\nlooking for today?"
+            ? config.welcomeMessage || "Hello, what are you\nlooking for today?"
             : undefined
         }
         showTitle={view === "explain" || view === "chips"}
@@ -177,7 +182,7 @@ export default function App() {
           chat.cartCount > 0 && (
             <div className="cart-indicator">
               <div className="cart-icon-wrap">
-                <img src="/img/cart.svg" alt="Cart" />
+                <CartIcon />
                 <span className="badge">{chat.cartCount}</span>
               </div>
               <span className="cart-label">Cart</span>

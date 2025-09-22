@@ -6,6 +6,7 @@ import type { AssistantTextMsg, Msg } from "../types";
 import type { useChatEngine } from "../hooks/useChatEngine";
 import { ProductsStripVoice } from "../components/ProductsStrip/ProductsStripVoice";
 import { LoadingProducts } from "../components/LoadingProducts";
+import { GeneratingAnswerIcon, VoiceSphereIcon, SpeakerIcon, KeyboardIcon } from "../components/SvgIcons";
 
 type VoiceChatScreenProps = {
   chat: ReturnType<typeof useChatEngine>;
@@ -206,7 +207,7 @@ export default function VoiceChatScreen({
                 console.log("✍️ Rodo text generating (pagal isGenerating=true)");
                 return (
                   <div className="vc-generating">
-                    <img src="/img/generating-answer.svg" alt="Generating" />
+                    <GeneratingAnswerIcon />
                     <p>GENERATING ANSWER…</p>
                   </div>
                 );
@@ -258,7 +259,7 @@ export default function VoiceChatScreen({
       {showMic && (
         <div className="vc-mic-wrap">
           <button className={`vc-mic ${mode === "listening" ? "is-listening" : ""}`} onClick={toggleListening}>
-            <img src="/img/voice-sphere.svg" alt="Mic" />
+            <VoiceSphereIcon />
             {mode === "listening" && <div className="vc-ripples"></div>}
           </button>
           {mode === "listening" && <span className="vc-status">LISTENING...</span>}
@@ -267,10 +268,10 @@ export default function VoiceChatScreen({
 
       <div className="vc-footer">
         <button className="footer-btn left">
-          <img src="/img/speaker.svg" alt="Speaker" />
+          <SpeakerIcon />
         </button>
         <button className="footer-btn right" onClick={onKeyboard}>
-          <img src="/img/keyboard.svg" alt="Keyboard" />
+          <KeyboardIcon />
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import "../styles/chat-screen.css";
 import type { Msg, ToastPayload } from "../types";
 import MessageRenderer from "../components/MessageRenderer";
 import { useChatScroll } from "../hooks/useChatScroll";
+import { CheckIcon, CloseIcon } from "../components/SvgIcons";
 
 export type Product = {
   id: string;
@@ -186,7 +187,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
               }}
             >
               <div className="checkmark">
-                <img src="/img/check.svg" alt="✓" />
+                <CheckIcon />
               </div>
               <div className="success-col">
                 <div className="product-line">
@@ -213,7 +214,7 @@ export default function ChatScreen({ messages, extra, onAddToCart, onRetry }: Ch
                   scheduleRemove(t.id);
                 }}
               >
-                <img src="/img/popup-close.svg" alt="Close" />
+                <CloseIcon />
               </button>
             </div>
           );

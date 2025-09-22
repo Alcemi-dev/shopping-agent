@@ -9,7 +9,7 @@
   border-radius: 1.25rem;
   padding: 4rem 1rem;
   padding-bottom: calc(2rem + env(safe-area-inset-bottom)); /* 👈 padaro tarpą apačioj */
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   text-align: center;
 }
 
@@ -21,7 +21,7 @@
   font-size: 2.25rem; /* ~36px */
   line-height: 120%;
   letter-spacing: -0.03em;
-  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  background: var(--feedback-gradient, linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -33,7 +33,7 @@
   line-height: 120%;
   letter-spacing: -0.02em;
   margin-top: 0.5rem;
-  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  background: var(--feedback-gradient, linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -42,7 +42,7 @@
   font-family: "Satoshi", sans-serif;
   font-size: 1.25rem; /* ~20px */
   line-height: 1.3;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   margin-top: 1rem;
 }
 
@@ -62,14 +62,14 @@
   width: 90%;
 
   padding: 0.75rem 2rem;
-  background: #fcfcfc;
-  color: #02092e;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
   font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 1rem;
   border: none;
   border-radius: 2rem;
-  box-shadow: 0px 0px 0.55rem 0.25rem #dde3ff;
+  box-shadow: 0px 0px 0.55rem 0.25rem var(--shadow-button);
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }

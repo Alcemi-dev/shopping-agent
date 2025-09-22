@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "../../styles/voice-products.css";
 import type { Product } from "../../screens/ChatScreen";
 import { useProductsState } from "./useProductsState";
+import { ThumbsDownIcon, ThumbsUpIcon, RemoveIcon, AddIcon, StarIcon } from "../SvgIcons";
 
 type Props = {
   products: Product[];
@@ -77,34 +78,34 @@ export function ProductsStripVoice({ products, header, onAddToCart, onShowToast,
                     <img className="product-img" src={p.img} alt={p.title} />
 
                     <div className="reactions">
-                      <button
-                        type="button"
-                        className="circle circle--dislike"
-                        aria-label="Dislike"
-                        aria-pressed={isMuted}
-                        onClick={() => toggleDislike(key)}
-                      >
-                        <img src="/img/dislike.svg" alt="" />
-                      </button>
-                      <button
-                        type="button"
-                        className={`circle circle--fav ${isFav ? "is-fav" : ""}`}
-                        aria-label="Save"
-                        aria-pressed={isFav}
-                        onClick={() => toggleFavorite(key)}
-                      >
-                        <img src="/img/favorite.svg" alt="" />
-                      </button>
+                        <button
+                          type="button"
+                          className="circle circle--dislike"
+                          aria-label="Dislike"
+                          aria-pressed={isMuted}
+                          onClick={() => toggleDislike(key)}
+                        >
+                          <ThumbsDownIcon fill="#02092E" />
+                        </button>
+                        <button
+                          type="button"
+                          className={`circle circle--fav ${isFav ? "is-fav" : ""}`}
+                          aria-label="Save"
+                          aria-pressed={isFav}
+                          onClick={() => toggleFavorite(key)}
+                        >
+                          <ThumbsUpIcon fill="#02092E" />
+                        </button>
                     </div>
 
                     {qty > 0 ? (
                       <div className={`qty-panel${isMuted ? " is-disabled" : ""}`}>
                         <button disabled={isMuted} onClick={() => changeQty(key, -1, p)}>
-                          <img src="/img/remove.svg" alt="Remove" className="icon-remove" />
+                          <RemoveIcon className="icon-remove" />
                         </button>
                         <span>{qty}</span>
                         <button disabled={isMuted} onClick={() => changeQty(key, +1, p)}>
-                          <img src="/img/add.svg" alt="Add" className="icon-add" />
+                          <AddIcon className="icon-add" fill="#02092E" />
                         </button>
                       </div>
                     ) : (
@@ -113,7 +114,7 @@ export function ProductsStripVoice({ products, header, onAddToCart, onShowToast,
                         onClick={() => changeQty(key, +1, p)}
                         disabled={isMuted}
                       >
-                        <img src="/img/add.svg" alt="Add" className="icon-add" />
+                        <AddIcon className="icon-add" fill="#02092E" />
                       </button>
                     )}
                   </div>
@@ -126,7 +127,7 @@ export function ProductsStripVoice({ products, header, onAddToCart, onShowToast,
                         <span className="price">120 €</span>
                       )}
                       <span className="reviews">
-                        <img src="/img/star.svg" alt="" />
+                        <StarIcon />
                         <span>{p.rating ?? 4.8}</span>
                         <a className="reviews-count" href="#" onClick={(e) => e.preventDefault()}>
                           ({p.reviews ?? 20})

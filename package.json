@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-shopify": "node scripts/build-shopify.js",
+    "watch-shopify": "nodemon --watch src --watch public --exec \"npm run build-shopify\" --ext ts,tsx,js,jsx,css,svg,png,jpg,jpeg,gif",
+    "dev-shopify": "concurrently \"npm run dev\" \"npm run watch-shopify\"",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -19,10 +22,12 @@
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "nodemon": "^3.1.10",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",

@@ -1,0 +1,11 @@
+{
+  "src/main.tsx": {
+    "file": "shopping-agent.js",
+    "name": "shopping-agent",
+    "src": "src/main.tsx",
+    "isEntry": true,
+    "css": [
+      "shopping-agent-CXegOYHu.css"
+    ]
+  }
+}

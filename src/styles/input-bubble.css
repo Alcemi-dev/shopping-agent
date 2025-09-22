@@ -12,8 +12,8 @@
   margin: 0 auto;
   padding: 12px 16px;
 
-  background: #dee3ff;
-  border: 1px solid #fcfcfc;
+  background: var(--user-bubble-bg);
+  border: 1px solid var(--user-bubble-border);
   border-radius: 30px;
 
   overflow: hidden;
@@ -30,7 +30,7 @@
   outline: 0;
   resize: none;
 
-  width: ;
+  width: 100%;
   min-height: 24px;
   max-height: 8rem;
 
@@ -43,8 +43,8 @@
   font-family: var(--font-sans, "Satoshi", system-ui, sans-serif);
   font-size: 16px;
   line-height: 24px;
-  font-weight: 400;
-  color: #303b74;
+  font-weight: 500;
+  color: var(--color-text-secondary);
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -56,7 +56,7 @@
 }
 .input-wrap.input-bubble .input-field::placeholder {
   font-weight: 400;
-  color: #303b74;
+  color: var(--color-text-placeholder);
 }
 
 /* === Button group (fiksuota apačioje) === */
@@ -93,7 +93,8 @@
   width: 84px;
   height: 36px;
   padding: 0 12px;
-  background: #0e218e;
+  background: var(--color-button-send);
+  color: var(--color-button-send);
   border-radius: 36px;
 
   cursor: pointer;
@@ -103,7 +104,7 @@
 .voice-button span {
   font-family: var(--font-sans, "Satoshi", system-ui, sans-serif);
   font-size: 14px;
-  color: #fcfcfc;
+  color: var(--color-icon-send);
 }
 
 /* === Send mygtukas === */
@@ -114,15 +115,19 @@
 
   width: 36px;
   height: 36px;
-  background: #0e218e;
+  background: var(--color-button-send);
   border-radius: 50%;
   border: none;
   cursor: pointer;
 }
+.voice-button svg,
+.send-button svg {
+  color: var(--color-icon-send);
+}
 
 /* === Focus ring === */
 .input-wrap.input-bubble:focus-within {
-  box-shadow: inset 0 0 0 1px #fff, 0 0 10px rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 0 0 1px var(--user-bubble-border), 0 0 10px rgba(255, 255, 255, 0.6);
 }
 
 /* === Fade viršuje === */

@@ -55,7 +55,7 @@
   pointer-events: auto;
   max-width: min(45rem, 100%); /* 720px → 45rem */
   margin: 0.25rem 0 0.5rem; /* 4px 0 8px */
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   line-height: 1.5;
 }
 
@@ -120,9 +120,9 @@
 }
 
 .product-card .reactions .circle {
-  width: 1.75rem; /* 28px */
-  height: 1.75rem; /* 28px */
-  border-radius: 1rem; /* 16px */
+  width: 2.25rem; /* 28px */
+  height: 2.25rem; /* 28px */
+  border-radius: 1.125rem; /* 16px */
   border: none;
   display: flex;
   align-items: center;
@@ -153,14 +153,17 @@
   width: 2rem; /* 32px */
   height: 2rem; /* 32px */
   border-radius: 50%;
-  background: rgba(252, 252, 252, 1);
+  background: var(--color-button-bg);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  box-shadow: 0 0 9px 1px #dde3ff;
+  box-shadow: var(--shadow-button);
+}
+.product-card .add-btn svg {
+  color: ;
 }
 
 /* Content */
@@ -169,7 +172,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem; /* 12px */
-  color: #fcfcfc;
+  color: var(--text-on-dark);
 }
 .product-card .price-row {
   display: flex;
@@ -180,6 +183,7 @@
   font-weight: 700;
   font-size: 1rem; /* 16px */
   line-height: 130%;
+  color: #fcfcfc;
 }
 .product-card .reviews {
   display: flex;
@@ -187,12 +191,13 @@
   gap: 0.25rem; /* 4px */
   font-size: 0.875rem; /* 14px */
 }
-.product-card .reviews img {
+.product-card .reviews img,
+.product-card .reviews svg {
   width: 0.875rem; /* 14px */
   height: 0.875rem;
 }
 .product-card .reviews .reviews-count {
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   text-decoration: underline;
 }
 .product-card .title {
@@ -200,7 +205,7 @@
   line-height: 150%;
   font-weight: 400;
   margin: 0;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -211,7 +216,8 @@
   background: var(--bg-success-message);
 }
 
-.circle.circle--fav.is-fav img {
+.circle.circle--fav.is-fav img,
+.circle.circle--fav.is-fav svg {
   filter: brightness(0) saturate(100%) invert(11%) sepia(36%) saturate(2093%) hue-rotate(206deg) brightness(79%)
     contrast(114%);
 }
@@ -233,10 +239,11 @@
 /* Dislike mygtukas visada ryškus */
 .product-card.is-muted .reactions .circle[aria-label="Dislike"] {
   opacity: 1;
-  background: rgba(252, 252, 252, 1);
+  background: var(--color-button-bg);
   cursor: pointer;
   z-index: 20;
 }
+
 /* === 5) CTA mygtukai (single product) ==================================== */
 
 .products-cta {
@@ -251,7 +258,7 @@
   margin-top: 0.75rem;
   font-size: 1rem; /* 16px */
   line-height: 150%;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
 }
 
 .cta-buttons {
@@ -272,15 +279,15 @@
   align-items: center;
   padding: 0.75rem 2rem; /* 12px 32px */
   height: 3rem; /* 48px */
-  background: #fcfcfc;
-  color: #02092e;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
   font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 1rem; /* 16px */
   line-height: 130%;
   border: none;
   border-radius: 2.219rem; /* 35.5px */
-  box-shadow: 0 0 2px 2px #dde3ff;
+  box-shadow: var(--shadow-button);
   cursor: pointer;
   z-index: 0;
 }
@@ -295,12 +302,12 @@
   padding: 0.75rem 2rem; /* 12px 32px */
   height: 3rem; /* 48px */
   background: transparent;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 1rem; /* 16px */
   line-height: 130%;
-  border: 1px solid #fcfcfc;
+  border: 1px solid var(--text-on-dark);
   border-radius: 2.219rem; /* 35.5px */
   cursor: pointer;
   z-index: 0;
@@ -317,10 +324,11 @@
   pointer-events: auto;
   max-width: min(45rem, 90%); /* 720px */
   margin: 0.75rem 0 0rem; /* 12px 0 16px */
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   line-height: 1.5;
   font-size: 1rem; /* 16px */
 }
+
 /* Toast container */
 .toast-stack {
   position: fixed;
@@ -346,8 +354,8 @@
   gap: 0.75rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  background: #afbafb;
-  color: #0e218e;
+  background: var(--toast-bg, #afbafb);
+  color: var(--toast-text, #0e218e);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(15px);
   opacity: 0;
@@ -405,6 +413,7 @@
   filter: opacity(0.6);
   z-index: 1;
 }
+
 /* Checkmark */
 .notification-toast .checkmark {
   flex-shrink: 0;
@@ -431,7 +440,7 @@
   font-family: "Satoshi", sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #0e218e;
+  color: var(--toast-text, #0e218e);
 }
 .notification-toast .product-line .product-name {
   overflow: hidden;
@@ -448,7 +457,7 @@
   font-size: 14px;
   font-weight: 400;
   opacity: 0.85;
-  color: #0e218e;
+  color: var(--toast-text, #0e218e);
 }
 
 /* View cart button */
@@ -459,7 +468,7 @@
   font-family: "Satoshi", sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #0e218e;
+  color: var(--toast-text, #0e218e);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 2px;
@@ -494,13 +503,13 @@
 .products-strip {
   z-index: 1; /* žemai, tik fonui */
 }
+
 /* === 8) Overlay/Pointer events fix ======================================= */
 
 [data-overlay-anchor] {
   pointer-events: none !important;
 }
 .msg.msg--ai:has([data-overlay-anchor]) {
-  /*pointer-events: none; */
   background: transparent !important;
 }
 
@@ -531,7 +540,7 @@
   padding: 0 0.5rem; /* horizontali erdvė */
   height: 2rem; /* 32px */
   min-width: 5.5rem; /* užtenka qty + du btn */
-  background: #fcfcfc;
+  background: var(--color-button-bg);
   border-radius: 36px;
   z-index: 2;
   box-sizing: border-box;
@@ -549,12 +558,14 @@
   padding: 0;
 }
 
-.qty-panel button img.icon-add {
+.qty-panel button img.icon-add,
+.qty-panel button svg.icon-add {
   margin-top: -2px;
   margin-right: -8px;
 }
 
-.qty-panel button img.icon-remove {
+.qty-panel button img.icon-remove,
+.qty-panel button svg.icon-remove {
   margin-top: -2px;
   margin-right: 4px;
 }
@@ -563,7 +574,7 @@
   font-family: "Satoshi", sans-serif;
   font-size: 0.9rem;
   line-height: 1;
-  color: #02092e;
+  color: var(--user-bubble-text);
   text-align: center;
   min-width: 1.5rem; /* 24px */
 }
@@ -625,15 +636,13 @@
     margin-bottom: 1rem;
   }
 }
+
 /* === 9) Desktop overrides (≥ 810px) ====================================== */
 
 @media (min-width: 810px) {
-  /* 810px */
-  /* Burbulas jau absolute by default – nieko nekeičiam, tik vidines ribas */
   .products-wrap {
     width: 40rem;
-
-    position: relative; /* svarbu: reference point absolute children’ui */
+    position: relative;
   }
   .products-scroll.is-multiple {
     display: flex;
@@ -691,7 +700,7 @@
   .products-cta .cta-buttons {
     justify-content: flex-start;
     width: auto;
-    margin: 0.75rem 0 0; /* 12px 0 0 */
+    margin: 0.75rem 0 0;
     gap: 0;
   }
   .products-cta .btn-primary,
@@ -703,16 +712,12 @@
     margin-left: 0.2rem;
     margin-right: 0.1rem;
     min-width: 13.375rem; /* 214px */
-    border-top-right-radius: 0.625rem; /* 10px */
-    border-bottom-right-radius: 0.625rem; /* 10px */
-    border-radius: 2.219rem; /* 35.5px */
+    border-radius: 2.219rem;
   }
   .products-cta .btn-secondary {
-    min-width: 7.5rem; /* 120px */
-    border-top-left-radius: 0.625rem; /* 10px */
-    border-bottom-left-radius: 0.625rem; /* 10px */
+    min-width: 7.5rem;
     margin-left: -1px;
-    border-radius: 2.219rem; /* 35.5px */
+    border-radius: 2.219rem;
   }
 
   .success-block {
@@ -738,9 +743,8 @@
 
   .notification-toast {
     top: 0rem;
-    width: 418px; /* 418px */
+    width: 418px;
     margin: -2rem auto 0;
-    /* height: 95px; */ /* figma desktop height */
     padding: 0.75rem;
   }
 }

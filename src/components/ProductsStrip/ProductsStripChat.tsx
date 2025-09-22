@@ -4,6 +4,7 @@ import "../../styles/products-strip.css";
 import type { Product, ToastPayload } from "../../types"; // 👈 čia importuojam ToastPayload
 import { useDragScroll } from "../../hooks/useDragScroll";
 import { useProductsState } from "./useProductsState";
+import { ThumbsDownIcon, ThumbsUpIcon, RemoveIcon, AddIcon, StarIcon } from "../SvgIcons";
 
 type Props = {
   products: Product[];
@@ -107,7 +108,7 @@ export function ProductsStripChat({
                       aria-pressed={isMuted}
                       onClick={() => toggleDislike(key)}
                     >
-                      <img src="/img/dislike.svg" alt="" />
+                      <ThumbsDownIcon fill="#02092E" />
                     </button>
                     <button
                       type="button"
@@ -116,28 +117,28 @@ export function ProductsStripChat({
                       aria-pressed={isFav}
                       onClick={() => toggleFavorite(key)}
                     >
-                      <img src="/img/favorite.svg" alt="" />
+                      <ThumbsUpIcon fill="#02092E" />
                     </button>
                   </div>
 
                   {qty > 0 ? (
                     <div className={`qty-panel${isMuted ? " is-disabled" : ""}`}>
                       <button disabled={isMuted} onClick={() => changeQty(key, -1, p)}>
-                        <img src="/img/remove.svg" alt="Remove" className="icon-remove" />
+                        <RemoveIcon className="icon-remove" />
                       </button>
                       <span>{qty}</span>
-                      <button disabled={isMuted} onClick={() => changeQty(key, +1, p)}>
-                        <img src="/img/add.svg" alt="Add" className="icon-add" />
-                      </button>
+                        <button disabled={isMuted} onClick={() => changeQty(key, +1, p)}>
+                          <AddIcon className="icon-add" fill="#02092E" />
+                        </button>
                     </div>
                   ) : (
-                    <button
-                      className={`add-btn${isMuted ? " is-disabled" : ""}`}
-                      onClick={() => changeQty(key, +1, p)}
-                      disabled={isMuted}
-                    >
-                      <img src="/img/add.svg" alt="Add" className="icon-add" />
-                    </button>
+                      <button
+                        className={`add-btn${isMuted ? " is-disabled" : ""}`}
+                        onClick={() => changeQty(key, +1, p)}
+                        disabled={isMuted}
+                      >
+                        <AddIcon className="icon-add" fill="#02092E" />
+                      </button>
                   )}
                 </div>
 
@@ -149,7 +150,7 @@ export function ProductsStripChat({
                       <span className="price">120 €</span>
                     )}
                     <span className="reviews">
-                      <img src="/img/star.svg" alt="" />
+                      <StarIcon />
                       <span>{p.rating ?? 4.8}</span>
                       <a className="reviews-count" href="#" onClick={(e) => e.preventDefault()}>
                         ({p.reviews ?? 20})

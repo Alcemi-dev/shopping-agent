@@ -85,7 +85,8 @@
   justify-content: center;
   cursor: pointer;
 }
-.mic-btn img {
+.mic-btn img,
+.mic-btn svg {
   width: 10rem;
   height: auto;
   margin-bottom: 8px;
@@ -113,7 +114,8 @@
   padding: 0;
   line-height: 0;
 }
-.footer-btn img {
+.footer-btn img,
+.footer-btn svg {
   width: 1.5rem;
   height: 1.5rem;
 }
@@ -164,7 +166,8 @@
   }
 
   /* Mic sphere */
-  .mic-btn img {
+  .mic-btn img,
+  .mic-btn svg {
     height: auto;
     margin-bottom: 5.5rem;
   }

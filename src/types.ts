@@ -122,6 +122,17 @@ export type ToastPayload = {
     status: "added" | "removed"; // 👈 būtinas status
   }[];
 };
+
+// ===== Configuration =====
+export interface ShoppingAgentConfig {
+  promptType?: string;
+  welcomeMessage?: string;
+  enableFloatingChat?: boolean;
+  buttonText?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
+}
+
 // ===== Static data (chips) =====
 export const CHIP_ITEMS: Category[] = [
   "Product information",
