@@ -7,7 +7,7 @@
   width: 100%;
   height: 100%;
   padding: 20px;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
 }
 
 .cls-content {
@@ -28,7 +28,7 @@
   font-size: 40px;
   line-height: 120%;
   letter-spacing: -0.02em;
-  background: linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%);
+  background: var(--connection-lost-gradient, linear-gradient(90deg, #bec8ff -0.36%, #ffffff 102.04%));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -40,7 +40,7 @@
   font-size: 18px;
   line-height: 150%;
   letter-spacing: 0.02em;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
   max-width: 320px;
 }
 

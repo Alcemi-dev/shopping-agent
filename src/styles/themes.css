@@ -1,0 +1,243 @@
+/* === Alcemi Widget Themes === */
+
+/* DEFAULT (alcemi blue) */
+[data-theme="alcemi-default"] {
+  /* Ai button */
+  --ai-button-bg: #1632cd;
+  --ai-button-text: #fcfcfc;
+  --ai-button-shadow: 0px 0px 30px 1px #f2f4fc80;
+  --ai-button-hover: #0e218e;
+
+  /* Backgrounds */
+  --color-bg: #02092e;
+  --color-bg-gradient-1: #1632cd;
+  --color-bg-gradient-2: #1632cd99; /* su opacity */
+  --color-bg-gradient-3: #fcfcfc; /* blend */
+
+  /* Logo */
+  --powered-logo: #f7f7f7; /* mobile solid */
+
+  /* Text */
+  --color-text-primary: #fcfcfc;
+  --color-text-secondary: #02092e;
+  --color-text-dark: #0a1344;
+  --color-text-placeholder: #303b74;
+
+  /* Chips */
+  --color-chip-bg: #fcfcfc1a;
+  --color-chip-text: #fcfcfc;
+
+  /* Bubbles */
+  --color-bubble-bg: #dee3ff;
+  --color-bubble-border: #edf0ff;
+
+  /* Buttons */
+  --color-button-bg: #fcfcfc;
+  --color-button-text: #02092e;
+  --color-button-send: #0e218e;
+  --color-icon-send: #fcfcfc;
+
+  /* Shadow */
+  --shadow-button: 0px 0px 9px 1px #dde3ff;
+
+  /* === Modal tokens === */
+  --background-main: url("/img/background-gradient-mobile.svg") #02092e center/cover no-repeat;
+  --background-main-desktop: url("/img/background-gradient-desktop.svg") #02092e center/cover no-repeat;
+  --surface-modal: #02092e;
+  --background-explain: url("/img/background-gradient-explain.svg") center/cover no-repeat;
+
+  --text-on-dark: #fcfcfc;
+
+  --user-bubble-bg: #dee3ff;
+  --user-bubble-text: #0a1344;
+  --user-bubble-message: #dee3ff;
+  --user-bubble-border: #fcfcfc;
+
+  --cart-label: #f7f7f7;
+  --cart-badge-bg: #dee3ff;
+  --cart-badge-text: #02092e;
+}
+
+[data-theme="alcemi-default"] .powered-by--desktop path {
+  fill: url(#alcemi-gradient); /* gradient ID logotipo SVG’e */
+}
+
+/* NEUTRAL LIGHT */
+[data-theme="neutral-light"] {
+  /* Ai button */
+  --ai-button-bg: #1632cd;
+  --ai-button-text: #fcfcfc;
+  --ai-button-shadow: 0px 0px 30px 1px #f2f4fc80;
+  --ai-button-hover: #0e218e;
+
+  /* Backgrounds */
+  --color-bg: #fcfcfc;
+  --color-bg-gradient-1: #eff2ff;
+  --color-bg-gradient-2: #e9edff;
+
+  /* Text */
+  --color-text-primary: #02092e;
+  --color-text-secondary: #303b74;
+  --color-text-accent: #0e218e;
+  --color-text-placeholder: #303b74;
+
+  /* Chips */
+  --color-chip-bg: #e5e9ff;
+  --color-chip-text: #0e218e;
+
+  /* Bubbles */
+  --color-bubble-bg: #fcfcfc;
+  --color-bubble-border: #edf0ff;
+  --color-bubble-user-bg: #dee3ff;
+
+  /* Buttons */
+  --color-button-bg: #02092e;
+  --color-button-text: #fcfcfc;
+  --color-button-send: #303b74;
+  --color-icon-send: #fcfcfc;
+
+  /* Shadow */
+  --shadow-bubble: 0px 0px 20px #d5d9ed;
+  --shadow-button: 0px 0px 9px 3px #dde3ff;
+
+  /* === Modal tokens === */
+  --background-main: #fcfcfc; /* kol kas placeholder, nes mobile neturim */
+  --background-main-desktop: url("/img/background-gradient-desktop-neutral-light.svg") #fcfcfc center/cover no-repeat;
+  --surface-modal: #fcfcfc;
+  --background-explain: none;
+
+  --text-on-dark: #02092e;
+
+  --user-bubble-bg: #fcfcfc;
+  --user-bubble-message: #dee3ff;
+  --user-bubble-text: #02092e;
+  --user-bubble-border: #edf0ff;
+
+  --cart-label: #303b74;
+  --cart-badge-bg: #e6e9ff;
+  --cart-badge-text: #02092e;
+}
+
+/* NEUTRAL DARK */
+[data-theme="neutral-dark"] {
+  /* Ai button */
+  --ai-button-bg: #232a54;
+  --ai-button-text: #fcfcfc;
+  --ai-button-shadow: 0px 0px 20px rgba(252, 252, 252, 0.3);
+  --ai-button-hover: #02092e;
+
+  /* Backgrounds */
+  --color-bg: #03071e;
+  --color-bg-gradient-1: #141937;
+  --color-bg-gradient-2: #232844;
+
+  /* Text */
+  --color-text-primary: #fcfcfc;
+  --color-text-secondary: #b4b8d2;
+  --color-text-placeholder: #b4b8d2;
+
+  /* Chips */
+  --color-chip-bg: #232a54;
+  --color-chip-text: #fcfcfc;
+
+  /* Bubbles */
+  --color-bubble-bg: #353950;
+  --color-bubble-border: #474c6b;
+  --color-bubble-user-bg: #62667b;
+
+  /* Buttons */
+  --color-button-bg: #edf0ff;
+  --color-button-text: #343745;
+  --color-button-send: #edf0ff;
+  --color-icon-send: #343745;
+
+  /* Shadow */
+  --shadow-bubble: 0px 0px 20px rgb(252, 252, 252);
+  --shadow-button: 0px 0px 9px 1px #dde3ff;
+
+  /* === Modal tokens === */
+  --background-main: url("/img/background-gradient-mobile-neutral-dark.svg") #03071e center/cover no-repeat;
+  --background-main-desktop: url("/img/background-gradient-desktop-neutral-dark.svg") #03071e center/cover no-repeat;
+  --surface-modal: #03071e;
+  --background-explain: none;
+
+  --text-on-dark: #fcfcfc;
+
+  --user-bubble-bg: #353950;
+  --user-bubble-text: #fcfcfc;
+  --user-bubble-message: #62667b;
+  --user-bubble-border: #474c6b;
+
+  --cart-label: #b4b8d2;
+  --cart-badge-bg: #232a54;
+  --cart-badge-text: #fcfcfc;
+}
+
+/* LIGHT PINK */
+[data-theme="light-pink"] {
+  /* Ai button */
+  --ai-button-bg: #a33551;
+  --ai-button-text: #ffffff;
+  --ai-button-shadow: 0px 0px 12px #ffc2d1;
+  --ai-button-hover: #550e20;
+
+  /* Backgrounds */
+  --color-bg: #fff6f9;
+
+  /* Text */
+  --color-text-primary: #2e0211;
+  --color-text-secondary: #5a0c2b;
+  --color-text-placeholder: #303b74;
+
+  /* Chips */
+  --color-chip-bg: #f8ebee;
+  --color-chip-text: #5a0c2b;
+
+  /* Bubbles */
+  --color-bubble-bg: #ffffff;
+  --color-bubble-border: #ffc2d1;
+
+  /* Buttons */
+  --color-button-bg: #550e20;
+  --color-button-text: #ffffff;
+  --color-button-send: #212121;
+  --color-icon-send: #ffffff;
+
+  /* === Modal tokens === */
+  --background-main: url("/img/background-gradient-mobile-light-pink.svg") #fff6f9 center/cover no-repeat;
+  --background-main-desktop: url("/img/background-gradient-desktop-light-pink.svg") #fff6f9 center/cover no-repeat;
+  --surface-modal: #fff6f9;
+  --background-explain: none;
+
+  --text-on-dark: #2e0211;
+
+  --user-bubble-bg: #ffffff;
+  --user-bubble-text: #2e0211;
+  --user-bubble-message: #ffe2e9;
+  --user-bubble-border: #ffc2d1;
+
+  --cart-label: #5a0c2b;
+  --cart-badge-bg: #ffd6e0;
+  --cart-badge-text: #2e0211;
+
+  --shadow-button: 0px 0px 9px 3px #dde3ff;
+}
+
+/* ==========================================================
+   Logo Coloring Rules
+   ========================================================== */
+
+/* Neutral Light: abu gradientai (desktop logo SVG su defs) */
+[data-theme="neutral-light"] .powered-by path {
+  fill: url(#alcemi-gradient);
+}
+
+/* Neutral Dark: abu solid baltas */
+[data-theme="neutral-dark"] {
+  --powered-logo: #fcfcfc;
+}
+
+/* Light Pink: abu solid #303B74 */
+[data-theme="light-pink"] {
+  --powered-logo: #303b74;
+}

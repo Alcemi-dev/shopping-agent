@@ -11,8 +11,8 @@
 
   border: none; /* default: jokio border */
   border-radius: var(--radius-sm, 10px);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-on-dark, #fff);
+  background: var(--color-chip-bg, rgba(255, 255, 255, 0.1));
+  color: var(--color-chip-text, var(--text-on-dark));
 
   font-family: var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif);
   font-weight: 500;
@@ -24,33 +24,32 @@
   transition: background 0.12s ease, box-shadow 0.12s ease;
 }
 
-/* HOVER: 1px baltas „borderis“ (per box-shadow − be layout šuolių) */
+/* HOVER: 1px „borderis“ (per box-shadow − be layout šuolių) */
 .chip:hover {
-  background: var(--fill-20-white);
-  box-shadow: 0 0 0 1px #fff inset;
+  background: var(--fill-20-white, var(--color-chip-bg));
+  box-shadow: 0 0 0 1px var(--text-on-dark) inset;
 }
 
 /* LAIKANT nuspaudus – jokio borderio */
 .chip:active {
-  background: var(--fill-30-white);
+  background: var(--fill-30-white, var(--color-chip-bg));
   box-shadow: none !important;
 }
 
 /* TOGGLINTAS (aria-pressed="true"): toks pat fonas kaip hover */
 .chip[aria-pressed="true"] {
-  background: var(--fill-20-white);
+  background: var(--fill-20-white, var(--color-chip-bg));
   box-shadow: none;
 }
 
-/* FOCUS RING: rodom tiek paprastam, tiek togglintam chip
-   (uždedam ir „1px baltą“, ir mėlyną iš tokens) */
+/* FOCUS RING: rodom tiek paprastam, tiek togglintam chip */
 .chip:focus-visible:not(:active),
 .chip:focus:not(:active),
 .chip[aria-pressed="true"]:focus-visible:not(:active),
 .chip[aria-pressed="true"]:focus:not(:active) {
   outline: none;
-  background: var(--fill-20-white);
-  box-shadow: 0 0 0 2px #fff inset, /* imituoja baltą borderį */ 0 0 0 6px var(--ring-focus, #3654ff);
+  background: var(--fill-20-white, var(--color-chip-bg));
+  box-shadow: 0 0 0 2px var(--text-on-dark) inset, 0 0 0 6px var(--ring-focus, var(--color-button-bg));
 }
 
 /* Default: mobile chips = stack kaip desktop */
@@ -97,11 +96,12 @@ html.kb-open .chips-inline {
 html.kb-open .chips-inline::-webkit-scrollbar {
   display: none;
 }
+
 /* Mobile/touch: kai chip togglintas, rodyk ring net ir be focus */
 @media (hover: none) and (pointer: coarse) {
   .chip[aria-pressed="true"] {
     /* baltas 1px + mėlynas token ring */
-    box-shadow: 0 0 0 1px #fff, 0 0 0 6px var(--ring-focus, #3654ff);
+    box-shadow: 0 0 0 1px var(--text-on-dark), 0 0 0 6px var(--ring-focus, var(--color-button-bg));
   }
 }
 

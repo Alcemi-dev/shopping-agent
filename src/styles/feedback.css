@@ -11,7 +11,7 @@
   padding: 20dvh 1rem;
 
   border-radius: 1.25rem;
-  color: #fcfcfc;
+  color: var(--text-on-dark);
 }
 
 /* === Title === */
@@ -24,6 +24,7 @@
   margin: 0 auto; /* kad centruotųsi */
   max-width: 90%; /* 👈 riboja pločio užėmimą iki 80% konteinerio */
 }
+
 /* === Rating icons === */
 .feedback-icons {
   display: flex;
@@ -42,7 +43,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #fff;
+  color: var(--text-on-dark);
   font-family: "Satoshi", sans-serif;
   font-size: 0.875rem; /* 14px */
 }
@@ -51,13 +52,13 @@
   width: clamp(2.5rem, 12vw, 3.25rem); /* ~40–52px on mobile */
   height: clamp(2.5rem, 12vw, 3.25rem);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1); /* palikta kaip efektas */
   transition: all 0.2s ease;
 }
 
 .feedback-icon.selected img {
   background: rgba(255, 255, 255, 0.8);
-  border: 0.125rem solid #fff;
+  border: 0.125rem solid var(--text-on-dark);
   box-shadow: 0 0 1.25rem rgba(255, 255, 255, 0.6);
 }
 
@@ -68,7 +69,7 @@
   gap: 0.5rem;
   width: 90%;
   max-width: 20.875rem; /* 334px */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* semi-transparent, paliekam */
   padding-bottom: 0.5rem;
 }
 
@@ -77,13 +78,13 @@
   border: none;
   outline: none;
   font-size: 1rem;
-  color: #fff;
+  color: var(--text-on-dark);
   padding: 0.5rem 0;
   text-align: center; /* tekstas per centrą */
 }
 
 .feedback-input input::placeholder {
-  color: #fff;
+  color: var(--text-on-dark);
   text-align: left;
   font-family: "Satoshi", sans-serif;
 }
@@ -98,8 +99,8 @@
   padding: 0.75rem 2rem;
   width: 90%;
   max-width: 22rem;
-  background: #fcfcfc;
-  color: #02092e;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
   font-family: "Satoshi", sans-serif;
   font-weight: 700;
   font-size: 1rem;
@@ -107,15 +108,14 @@
 
   border: none;
   border-radius: 2.25rem;
-  box-shadow: 0px 0px 0.55rem 0.25rem #dde3ff;
+  box-shadow: 0px 0px 0.55rem 0.25rem var(--shadow-button);
 
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .feedback-submit:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
+  background: var(--color-chip-bg); /* šviesesnis hover */
 }
 
 /* === Desktop tweaks (≥810px) === */
